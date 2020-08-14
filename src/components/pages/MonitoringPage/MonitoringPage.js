@@ -17,6 +17,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
+import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Formik, Form, Field } from "formik";
 import { red, green, purple } from "@material-ui/core/colors/";
@@ -48,23 +49,34 @@ const useStyles = makeStyles((theme) => ({
   extendedIcon: {
     marginRight: theme.spacing(1),
   },
-  row: {
-    borderLeft: 1,
-    borderRight: 1,
-    borderBottom: 1,
-    borderTop: 1,
-    borderColor: "#E0E0E0",
-    borderStyle: "solid",
-  },
 }));
 
+// const theme = createMuiTheme({
+//   palette: {
+//     // primary: {
+//     //   500: "#0FF",
+//     // },
+//     fourth: {
+//       500: "#0FF",
+//     },
+//   },
+// });
+
 const theme = createMuiTheme({
-  palette: {
-    // primary: {
-    //   500: "#0FF",
-    // },
-    fourth: {
-      500: "#0FF",
+  overrides: {
+    // Style sheet name ⚛️
+    MuiButton: {
+      // Name of the rule
+      text: {
+        // Some CSS
+        background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+        borderRadius: 3,
+        border: 0,
+        color: "white",
+        height: 48,
+        padding: "6px",
+        boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+      },
     },
   },
 });
@@ -507,6 +519,36 @@ export default (props) => {
               title={`MPR Detail`}
               columns={columnsdetail}
               data={prdetailReducer.result ? prdetailReducer.result : []}
+              components={{
+                Toolbar: (props) => (
+                  <div>
+                    <MTableToolbar {...props} />
+                    <div style={{ padding: "0px 10px" }}>
+                      <Button
+                        fullWidth
+                        // disabled={createdisable}
+                        variant="contained"
+                        color="primary"
+                        // component={Link}
+                        // to="/stock/create"
+                        startIcon={<MailOutlineIcon />}
+                        onClick={(event, rowData) => {
+                          // let phgroup = "PH";
+                          // setItemPRDetail({ ...itemprdetail, vAddFreeItem: "1" });
+                          // setSelectedProduct("rowData");
+                          // setEditNameDisable(false);
+                          // setConfirmDisable(true);
+                          // setOpenDialog(true);
+                          // dispatch(itemActions.getItems(prhead.vWarehouse));
+                          // dispatch(phgroupActions.getPHGroups(phgroup));
+                        }}
+                      >
+                        Send Email
+                      </Button>
+                    </div>
+                  </div>
+                ),
+              }}
               options={{
                 // exportButton: true,
                 // toolbar: false,
@@ -519,27 +561,16 @@ export default (props) => {
                   borderTop: 1,
                   borderColor: "#E0E0E0",
                   borderStyle: "solid",
+                  paddingLeft: "6px",
+                  paddingRight: "6px",
+                  paddingBottom: "12px",
+                  paddingTop: "12px",
                   // backgroundColor: "red",
                   // padding: "5px",
                   // whiteSpace: "normal",
                   // wordWrap: "break-word",
                   // wordBreak: "break-all"
                 },
-                cellStyle: {
-                  textAlign: "center",
-                  borderLeft: 1,
-                  borderRight: 1,
-                  borderBottom: 1,
-                  borderTop: 1,
-                  borderColor: "#E0E0E0",
-                  borderStyle: "solid",
-                },
-                // rowStyle: rowData => ({
-                //   // backgroundColor:
-                //   //   selectedRow && selectedRow.tableData.id === rowData.tableData.id
-                //   //     ? "#EEE"
-                //   //     : "#FFF"
-                // }),
                 fixedColumns: {
                   // left: 2
                 },
@@ -569,6 +600,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -588,9 +623,13 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
-        <Typography variant="body1" noWrap>
+        <Typography variant="body1" noWrap alignSelf="baseline">
           {item.HD_IBPURC}
         </Typography>
       ),
@@ -607,16 +646,11 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
-      // editComponent: props => (
-      //   <Autocomplete
-      //     id="combo-box-demo"
-      //     options={top100Films}
-      //     getOptionLabel={option => option.title}
-      //     style={{ width: 100 }}
-      //     renderInput={params => <TextField {...params} />}
-      //   />
-      // ),
       render: (item) => (
         <Typography variant="body1" noWrap>
           {item.HD_IBWHLO}
@@ -635,6 +669,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -642,45 +680,6 @@ export default (props) => {
         </Typography>
       ),
     },
-    // {
-    //   title: "HD_IBBUYE",
-    //   field: "HD_IBBUYE",
-    //   headerStyle: { maxWidth: 50, whiteSpace: "nowrap", textAlign: "center" },
-    //   cellStyle: {
-    //     textAlign: "center",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       {item.HD_IBBUYE}
-    //     </Typography>
-    //   ),
-    // },
-    // {
-    //   title: "HD_IBMODL",
-    //   field: "HD_IBMODL",
-    //   // type: "numeric",
-    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "left" },
-    //   cellStyle: {
-    //     textAlign: "right",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       {item.HD_IBMODL}
-    //     </Typography>
-    //   ),
-    // },
     {
       title: "Month",
       field: "HD_IBMTH",
@@ -694,6 +693,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -714,6 +717,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -733,6 +740,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -752,6 +763,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -771,6 +786,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -790,6 +809,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -811,6 +834,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -832,6 +859,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -851,6 +882,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -872,6 +907,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -891,6 +930,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -912,6 +955,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -931,6 +978,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -952,6 +1003,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -974,6 +1029,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -993,6 +1052,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1012,6 +1075,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1031,6 +1098,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1051,6 +1122,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1071,6 +1146,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1090,6 +1169,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1107,13 +1190,17 @@ export default (props) => {
       field: "PR_IBPUPR",
       headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
-        textAlign: "center",
+        textAlign: "right",
         borderLeft: 1,
         borderRight: 1,
         borderBottom: 1,
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1138,6 +1225,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1157,6 +1248,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1183,6 +1278,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1202,6 +1301,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1221,6 +1324,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1242,6 +1349,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1266,6 +1377,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1278,13 +1393,17 @@ export default (props) => {
       field: "PR_REM5",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
-        textAlign: "left",
+        textAlign: "right",
         borderLeft: 1,
         borderRight: 1,
         borderBottom: 1,
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1309,6 +1428,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1328,6 +1451,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1347,6 +1474,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1380,20 +1511,14 @@ export default (props) => {
             borderTop: 1,
             borderColor: "#E0E0E0",
             borderStyle: "solid",
+            paddingLeft: "6px",
+            paddingRight: "6px",
+            paddingBottom: "12px",
+            paddingTop: "12px",
             // backgroundColor: "red",
-            // padding: "5px",
             // whiteSpace: "normal",
             // wordWrap: "break-word",
             // wordBreak: "break-all"
-          },
-          cellStyle: {
-            textAlign: "center",
-            borderLeft: 1,
-            borderRight: 1,
-            borderBottom: 1,
-            borderTop: 1,
-            borderColor: "#E0E0E0",
-            borderStyle: "solid",
           },
           fixedColumns: {
             // left: 2
@@ -1403,6 +1528,7 @@ export default (props) => {
           (rowData) => ({
             icon: "search",
             tooltip: "Search row",
+            iconProps: { color: "primary" },
             onClick: (event, rowData) => {
               // console.log("rowData: " + JSON.stringify([rowData]));
               let data = [rowData];

@@ -392,6 +392,7 @@ export default (props) => {
               <Grid container item xs={12} className={classes.margin}>
                 <Grid item xs={12} sm={2} className={classes.margin}>
                   <TextField
+                    error={true}
                     fullWidth
                     select
                     size="small"
@@ -487,7 +488,7 @@ export default (props) => {
                   size="small"
                   id="vPRNumber"
                   label="MPR Number"
-                  placeholder="Placeholder"
+                  placeholder="MPR Number"
                   variant="outlined"
                   value={prhead.vPRNumber}
                   values={(values.vPRNumber = prhead.vPRNumber)}
@@ -498,6 +499,7 @@ export default (props) => {
                       vPRNumber: event.target.value,
                     });
                   }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 <TextField
@@ -537,6 +539,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   style={{ width: "150px" }}
+                  error={true}
                   disabled={whsdisable}
                   select
                   size="small"
@@ -570,6 +573,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   style={{ maxWidth: 100 }}
+                  error={true}
                   required
                   disabled={deptdisable}
                   select
@@ -607,6 +611,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   style={{ width: "150px" }}
+                  error={true}
                   disabled={deptdisable}
                   select
                   size="small"
@@ -646,17 +651,11 @@ export default (props) => {
                   size="small"
                   id="vMonth"
                   label="Month"
-                  placeholder="Placeholder"
+                  placeholder="Month"
                   variant="outlined"
                   value={prhead.vMonth}
                   values={(values.vMonth = prhead.vMonth)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    // setPRHead({
-                    //   ...prhead,
-                    //   vMonth: event.target.value
-                    // });
-                  }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 <TextField
@@ -668,17 +667,11 @@ export default (props) => {
                   size="small"
                   id="vPlanUnPlan"
                   label="Plan / UnPlan"
-                  placeholder="Placeholder"
+                  placeholder="Plan / UnPlan"
                   variant="outlined"
                   value={prhead.vPlanUnPlan}
                   values={(values.vPlanUnPlan = prhead.vPlanUnPlan)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    // setPRHead({
-                    //   ...prhead,
-                    //   vPlanUnPlan: event.target.value
-                    // });
-                  }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 {/* <FormControl
@@ -738,12 +731,12 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   style={{ maxWidth: 100 }}
-                  // required
+                  error={true}
                   disabled={editdisable}
                   size="small"
                   id="vCAPNo"
                   label="CAP No"
-                  placeholder="Placeholder"
+                  placeholder="CAP No"
                   variant="outlined"
                   value={prhead.vCAPNo}
                   values={(values.vCAPNo = prhead.vCAPNo)}
@@ -754,6 +747,7 @@ export default (props) => {
                       vCAPNo: event.target.value,
                     });
                   }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 <TextField
@@ -765,28 +759,22 @@ export default (props) => {
                   size="small"
                   id="vRequestor"
                   label="Requestor"
-                  placeholder="Placeholder"
+                  placeholder="Requestor"
                   variant="outlined"
                   value={prhead.vRequestor}
                   values={(values.vRequestor = prhead.vRequestor)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    // setPRHead({
-                    //   ...prhead,
-                    //   vRequestor: event.target.value,
-                    // });
-                  }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 <TextField
                   className={classes.margin}
                   style={{ maxWidth: 200 }}
-                  // required
+                  error={true}
                   disabled={editdisable}
                   size="small"
                   id="vRemark"
                   label="Remark"
-                  placeholder="Placeholder"
+                  placeholder="Remark"
                   variant="outlined"
                   value={prhead.vRemark}
                   values={(values.vRemark = prhead.vRemark)}
@@ -797,12 +785,14 @@ export default (props) => {
                       vRemark: event.target.value,
                     });
                   }}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid container item xs className={classes.margin}>
                 <TextField
                   className={classes.margin}
                   style={{ width: "200px" }}
+                  error={true}
                   disabled={editdisable}
                   select
                   size="small"
@@ -836,6 +826,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   style={{ width: "200px" }}
+                  error={true}
                   disabled={editdisable}
                   select
                   size="small"
@@ -869,6 +860,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   style={{ width: "200px" }}
+                  error={true}
                   disabled={editdisable}
                   select
                   size="small"
@@ -902,6 +894,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   style={{ width: "200px" }}
+                  error={true}
                   disabled={editdisable}
                   select
                   size="small"
@@ -1095,6 +1088,7 @@ export default (props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      error={true}
                       id="vItemNo"
                       label="Item No"
                       required
@@ -1105,7 +1099,7 @@ export default (props) => {
               <Grid item xs>
                 <TextField
                   className={classes.margin}
-                  // required
+                  error={true}
                   fullWidth
                   disabled={editnamedisable}
                   margin="dense"
@@ -1128,6 +1122,7 @@ export default (props) => {
               <Grid item xs={5}>
                 <TextField
                   required
+                  error={true}
                   fullWidth
                   // disabled="true"
                   margin="dense"
@@ -1152,6 +1147,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   disabled={editnamedisable}
+                  error={true}
                   fullWidth
                   required
                   select
@@ -1186,6 +1182,7 @@ export default (props) => {
             </Grid>
             <TextField
               required
+              error={true}
               fullWidth
               margin="dense"
               type="date"
@@ -1366,6 +1363,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   disabled={editdisable}
+                  error={true}
                   fullWidth
                   required
                   select
@@ -1405,6 +1403,7 @@ export default (props) => {
                 <TextField
                   className={classes.margin}
                   disabled={editdisable}
+                  error={true}
                   fullWidth
                   required
                   select
@@ -1441,6 +1440,7 @@ export default (props) => {
             <TextField
               className={classes.margin}
               disabled={editdisable}
+              error={true}
               fullWidth
               required
               select
@@ -1475,9 +1475,7 @@ export default (props) => {
             </TextField>
 
             <TextField
-              // required
               fullWidth
-              // disabled="true"
               margin="dense"
               id="vRemarkDetail"
               label="Remark"
@@ -1541,6 +1539,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1579,6 +1581,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       // editComponent: props => (
       //   <Autocomplete
@@ -1607,6 +1613,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1626,6 +1636,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1646,6 +1660,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1671,6 +1689,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1696,6 +1718,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1715,6 +1741,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1734,6 +1764,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1753,6 +1787,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1772,6 +1810,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1793,6 +1835,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1817,6 +1863,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1841,6 +1891,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1865,6 +1919,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1884,6 +1942,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1903,6 +1965,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -2118,6 +2184,10 @@ export default (props) => {
             borderTop: 1,
             borderColor: "#E0E0E0",
             borderStyle: "solid",
+            paddingLeft: "6px",
+            paddingRight: "6px",
+            paddingBottom: "12px",
+            paddingTop: "12px",
             // backgroundColor: "red",
             // padding: "5px",
             // whiteSpace: "normal",
@@ -2207,6 +2277,7 @@ export default (props) => {
           (rowData) => ({
             icon: "edit",
             tooltip: "Edit row",
+            iconProps: { color: "secondary" },
             onClick: (event, rowData) => {
               console.log("rowData: " + JSON.stringify([rowData]));
 

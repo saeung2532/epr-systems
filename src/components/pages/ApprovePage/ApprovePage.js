@@ -115,18 +115,16 @@ export default (props) => {
     let params = props.match.params;
     let statusDetail = "10";
     // console.log(params);
+
     setParams({
       cono: params.cono,
       divi: params.divi,
       prno: params.prno,
       status: params.status,
-      // approve: params.approve,
-      approve: loginActions.getApproveTokenUsername(),
+      approve: params.approve,
+      // approve: loginActions.getApproveTokenUsername(),
       token: params.token,
     });
-
-    // alert(loginActions.getApproveTokenUsername());
-    // alert("approve: " + params.approve);
 
     localStorage.setItem(server.APPROVE_TOKEN_KEY, params.token);
 
@@ -552,7 +550,27 @@ export default (props) => {
                     </div>
                   ),
                 }}
-                options={{ paging: false }}
+                options={{
+                  paging: false,
+                  headerStyle: {
+                    textAlign: "center",
+                    borderLeft: 1,
+                    borderRight: 1,
+                    borderBottom: 1,
+                    borderTop: 1,
+                    borderColor: "#E0E0E0",
+                    borderStyle: "solid",
+                    paddingLeft: "6px",
+                    paddingRight: "6px",
+                    paddingBottom: "12px",
+                    paddingTop: "12px",
+                    // backgroundColor: "red",
+                    // padding: "5px",
+                    // whiteSpace: "normal",
+                    // wordWrap: "break-word",
+                    // wordBreak: "break-all"
+                  },
+                }}
               />
               <br />
               <Grid
@@ -690,6 +708,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -709,6 +731,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -728,6 +754,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -747,6 +777,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -767,6 +801,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -807,6 +845,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -831,6 +873,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -856,6 +902,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -880,6 +930,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -904,6 +958,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -928,6 +986,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -952,6 +1014,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -971,6 +1037,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -990,6 +1060,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1009,6 +1083,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1028,6 +1106,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1047,6 +1129,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1066,6 +1152,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1094,17 +1184,22 @@ export default (props) => {
           formData.append("vDivi", params.divi);
           formData.append("vPRNumber", prhead.vPRNumber);
           formData.append("vApprove", prhead.vApprove);
+          // formData.append("vApprove", loginActions.getApproveTokenUsername());
           // formData.append("vApproveSign", prhead.vApproveSign);
           formData.append("vApproveDate", prhead.vApproveDate);
           formData.append("vStatus", prhead.vStatus);
 
           if (approve) {
             // console.log("approve");
-            dispatch(prheadapproveActions.approvePRHead(formData));
-            setTimeout(() => {
-              dispatch(prheadapproveActions.checkApprovePRHead(formData));
-            }, 1000);
-            setApprove(false);
+            if (prhead.vApprove === loginActions.getApproveTokenUsername()) {
+              dispatch(prheadapproveActions.approvePRHead(formData));
+              setTimeout(() => {
+                dispatch(prheadapproveActions.checkApprovePRHead(formData));
+              }, 1000);
+              setApprove(false);
+            } else {
+              alert("Approver not match.");
+            }
           } else {
             // console.log("reject");
             dispatch(prheadapproveActions.rejectPRHead(formData));

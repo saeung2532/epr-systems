@@ -247,7 +247,9 @@ export default (props) => {
         let fromStatus = "05";
         let toStatus = "10";
         dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
-        let statusprhead = "20";
+
+        let statusprhead = "15";
+
         dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, statusprhead));
         prheadReducer.result = null;
         prdetailbuyerReducer.result = null;
@@ -458,6 +460,7 @@ export default (props) => {
               <Grid container item xs={12} className={classes.margin}>
                 <Grid item xs={12} sm={2} className={classes.margin}>
                   <TextField
+                    error={true}
                     fullWidth
                     select
                     size="small"
@@ -582,7 +585,7 @@ export default (props) => {
                   size="small"
                   id="vPRNumber"
                   label="MPR Number"
-                  placeholder="Placeholder"
+                  placeholder="MPR Number"
                   variant="outlined"
                   value={prhead.vPRNumber}
                   values={(values.vPRNumber = prhead.vPRNumber)}
@@ -593,6 +596,7 @@ export default (props) => {
                       vPRNumber: event.target.value,
                     });
                   }}
+                  InputLabelProps={{ shrink: true }}
                 />
                 <TextField
                   className={classes.margin}
@@ -743,17 +747,11 @@ export default (props) => {
                   size="small"
                   id="vMonth"
                   label="Month"
-                  placeholder="Placeholder"
+                  placeholder="Month"
                   variant="outlined"
                   value={prhead.vMonth}
                   values={(values.vMonth = prhead.vMonth)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    // setPRHead({
-                    //   ...prhead,
-                    //   vMonth: event.target.value
-                    // });
-                  }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 <TextField
@@ -765,17 +763,11 @@ export default (props) => {
                   size="small"
                   id="vPlanUnPlan"
                   label="Plan / UnPlan"
-                  placeholder="Placeholder"
+                  placeholder="Plan / UnPlan"
                   variant="outlined"
                   value={prhead.vPlanUnPlan}
                   values={(values.vPlanUnPlan = prhead.vPlanUnPlan)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    // setPRHead({
-                    //   ...prhead,
-                    //   vPlanUnPlan: event.target.value
-                    // });
-                  }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 {/* <FormControl
@@ -841,7 +833,7 @@ export default (props) => {
                   size="small"
                   id="vCAPNo"
                   label="CAP No"
-                  placeholder="Placeholder"
+                  placeholder="CAP No"
                   variant="outlined"
                   value={prhead.vCAPNo}
                   values={(values.vCAPNo = prhead.vCAPNo)}
@@ -852,6 +844,7 @@ export default (props) => {
                       vCAPNo: event.target.value,
                     });
                   }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 <TextField
@@ -863,17 +856,11 @@ export default (props) => {
                   size="small"
                   id="vRequestor"
                   label="Requestor"
-                  placeholder="Placeholder"
+                  placeholder="Requestor"
                   variant="outlined"
                   value={prhead.vRequestor}
                   values={(values.vRequestor = prhead.vRequestor)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    // setPRHead({
-                    //   ...prhead,
-                    //   vRequestor: event.target.value,
-                    // });
-                  }}
+                  InputLabelProps={{ shrink: true }}
                 />
 
                 <TextField
@@ -885,7 +872,7 @@ export default (props) => {
                   size="small"
                   id="vRemark"
                   label="Remark"
-                  placeholder="Placeholder"
+                  placeholder="Remark"
                   variant="outlined"
                   value={prhead.vRemark}
                   values={(values.vRemark = prhead.vRemark)}
@@ -896,6 +883,7 @@ export default (props) => {
                       vRemark: event.target.value,
                     });
                   }}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid container item xs className={classes.margin}>
@@ -1134,6 +1122,7 @@ export default (props) => {
             <Grid container item xs={12} spacing={2}>
               <Grid item xs={5}>
                 <Autocomplete
+                  error
                   className={classes.margin}
                   autoFocus
                   required
@@ -1199,6 +1188,7 @@ export default (props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      error={true}
                       id="vItemNo"
                       label="Item No"
                       required
@@ -1209,7 +1199,7 @@ export default (props) => {
               <Grid item xs>
                 <TextField
                   className={classes.margin}
-                  // required
+                  error={true}
                   fullWidth
                   disabled={editnamedisable}
                   margin="dense"
@@ -1232,6 +1222,7 @@ export default (props) => {
               <Grid item xs={5}>
                 <TextField
                   required
+                  error={true}
                   fullWidth
                   disabled={editnamedisable}
                   margin="dense"
@@ -1353,6 +1344,7 @@ export default (props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      error={true}
                       id="vSupplierNo"
                       label="Supplier No"
                       required
@@ -1378,6 +1370,7 @@ export default (props) => {
               <Grid item xs={4}>
                 <TextField
                   required
+                  error={true}
                   fullWidth
                   // disabled="true"
                   margin="dense"
@@ -1401,14 +1394,22 @@ export default (props) => {
               <Grid item xs>
                 <TextField
                   required
+                  error={true}
                   fullWidth
-                  // disabled={editnamedisable}
+                  disabled={editnamedisable}
                   margin="dense"
                   id="vVat"
                   label="Vat"
-                  type="text"
+                  type="number"
                   value={itemprdetail.vVat}
                   values={(values.vVat = itemprdetail.vVat)}
+                  onChange={(event) => {
+                    // console.log(event.target.value);
+                    setItemPRDetail({
+                      ...itemprdetail,
+                      vVat: event.target.value,
+                    });
+                  }}
                 />
               </Grid>
               <Grid item xs>
@@ -1470,6 +1471,7 @@ export default (props) => {
               <Grid item xs={5}>
                 <TextField
                   className={classes.margin}
+                  error={true}
                   disabled={editdisable}
                   fullWidth
                   required
@@ -1509,6 +1511,7 @@ export default (props) => {
               <Grid item xs>
                 <TextField
                   className={classes.margin}
+                  error={true}
                   disabled={editdisable}
                   fullWidth
                   required
@@ -1545,6 +1548,7 @@ export default (props) => {
 
             <TextField
               className={classes.margin}
+              error={true}
               disabled={editdisable}
               fullWidth
               required
@@ -1650,6 +1654,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1669,6 +1677,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1688,6 +1700,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       // editComponent: props => (
       //   <Autocomplete
@@ -1716,6 +1732,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1735,6 +1755,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1780,6 +1804,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1807,6 +1835,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1831,6 +1863,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1855,6 +1891,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1879,6 +1919,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1899,6 +1943,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1918,6 +1966,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1937,6 +1989,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1956,6 +2012,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1975,6 +2035,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -1999,6 +2063,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -2018,6 +2086,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -2037,6 +2109,10 @@ export default (props) => {
         borderTop: 1,
         borderColor: "#E0E0E0",
         borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
@@ -2205,6 +2281,10 @@ export default (props) => {
             borderTop: 1,
             borderColor: "#E0E0E0",
             borderStyle: "solid",
+            paddingLeft: "6px",
+            paddingRight: "6px",
+            paddingBottom: "12px",
+            paddingTop: "12px",
             // backgroundColor: "red",
             // padding: "5px",
             // whiteSpace: "normal",
@@ -2283,7 +2363,6 @@ export default (props) => {
                   )
                 );
               });
-
               setTimeout(() => {
                 {
                   setItemPRDetail({ ...initialStateItemPRDetail });
@@ -2297,6 +2376,7 @@ export default (props) => {
           (rowData) => ({
             icon: "edit",
             tooltip: "Edit row",
+            iconProps: { color: "secondary" },
             onClick: (event, rowData) => {
               // console.log("rowData: " + JSON.stringify([rowData]));
 
