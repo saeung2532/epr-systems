@@ -31,6 +31,7 @@ import * as buActions from "./../../../actions/bu.action";
 import * as departmentActions from "./../../../actions/department.action";
 import * as costcenterActions from "./../../../actions/costcenter.action";
 import * as phgroupActions from "./../../../actions/phgroup.action";
+import * as sendemailActions from "./../../../actions/sendemail.action";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -533,6 +534,29 @@ export default (props) => {
                         // to="/stock/create"
                         startIcon={<MailOutlineIcon />}
                         onClick={(event, rowData) => {
+                          let fromStatus = "";
+                          let toStatus = "";
+
+                          if (itemprdetail.vStatus === "15") {
+                            fromStatus = "10";
+                            toStatus = "15";
+                          } else if (itemprdetail.vStatus === "20") {
+                            fromStatus = "15";
+                            toStatus = "20";
+                          } else if (itemprdetail.vStatus === "92") {
+                            fromStatus = "20";
+                            toStatus = "92";
+                          }
+
+                          // alert(itemprdetail.vPRNumber + " : " + fromStatus + " : " + toStatus);
+
+                          dispatch(
+                            sendemailActions.sendEmail(
+                              itemprdetail.vPRNumber,
+                              fromStatus,
+                              toStatus
+                            )
+                          );
                           // let phgroup = "PH";
                           // setItemPRDetail({ ...itemprdetail, vAddFreeItem: "1" });
                           // setSelectedProduct("rowData");
@@ -1533,7 +1557,11 @@ export default (props) => {
               // console.log("rowData: " + JSON.stringify([rowData]));
               let data = [rowData];
               data.map((item) => {
-                setItemPRDetail({ ...itemprdetail, vPRNumber: item.HD_IBPLPN });
+                setItemPRDetail({
+                  ...itemprdetail,
+                  vPRNumber: item.HD_IBPLPN,
+                  vStatus: item.HD_STATUS,
+                });
                 dispatch(
                   prdetailActions.getPRDetailsMonitoring(item.HD_IBPLPN)
                 );

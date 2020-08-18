@@ -22,6 +22,7 @@ import supplierReducer from "./supplier.reducer";
 import prconfirmbuyerReducer from "./prconfirmbuyer.reducer";
 import monthReducer from "./month.reducer";
 import statusReducer from "./status.reducer";
+import sendemailReducer from "./sendemail.reducer";
 
 export default combineReducers({
   companyReducer,
@@ -47,4 +48,5 @@ export default combineReducers({
   prconfirmbuyerReducer,
   monthReducer,
   statusReducer,
+  sendemailReducer,
 });

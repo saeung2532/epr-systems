@@ -121,7 +121,8 @@ export default function App() {
         <PrivateRoute exact path="/printreport" component={PrintReportPage} />
         <PublicRoute
           exact
-          path="/approve/:cono/:divi/:prno/:status/:approve/:token"
+          // path="/approve/:cono/:divi/:prno/:fromstatus/:tostatus/:approve/:token"
+          path="/approve/:cono/:divi/:prno/:approve/:token"
           component={ApprovePage}
         />
         {/* The Default not found component */}

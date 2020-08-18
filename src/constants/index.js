@@ -142,24 +142,11 @@ export const HTTP_STATUS_FAILED = "HTTP_STATUS_FAILED";
 export const HTTP_STATUS_SUCCESS = "HTTP_STATUS_SUCCESS";
 export const HTTP_STATUS_CLEAR = "HTTP_STATUS_CLEAR";
 
-// Stock Edit Page
-export const HTTP_STOCK_EDIT_FETCHING = "HTTP_STOCK_EDIT_FETCHING";
-export const HTTP_STOCK_EDIT_SUCCESS = "HTTP_STOCK_EDIT_SUCCESS";
-export const HTTP_STOCK_EDIT_FAILED = "HTTP_STOCK_EDIT_FAILED";
-export const HTTP_STOCK_EDIT_INITIALED = "HTTP_STOCK_EDIT_INITIALED";
-
-// Transaction Edit Page
-export const HTTP_TRANSACTION_FETCHING = "HTTP_TRANSACTION_FETCHING";
-export const HTTP_TRANSACTION_SUCCESS = "HTTP_TRANSACTION_SUCCESS";
-export const HTTP_TRANSACTION_FAILED = "HTTP_TRANSACTION_FAILED";
-
-// Shop Page
-export const HTTP_SHOP_FETCHING = "HTTP_SHOP_FETCHING";
-export const HTTP_SHOP_SUCCESS = "HTTP_SHOP_SUCCESS";
-export const HTTP_SHOP_FAILED = "HTTP_SHOP_FAILED";
-
-export const SHOP_UPDATE_ORDER = "SHOP_UPDATE_ORDER";
-export const SHOP_UPDATE_PAYMENT = "SHOP_UPDATE_PAYMENT";
+// STATUS
+export const HTTP_SENDEMAIL_FETCHING = "HTTP_SENDEMAIL_FETCHING";
+export const HTTP_SENDEMAIL_FAILED = "HTTP_SENDEMAIL_FAILED";
+export const HTTP_SENDEMAIL_SUCCESS = "HTTP_SENDEMAIL_SUCCESS";
+export const HTTP_SENDEMAIL_CLEAR = "HTTP_SENDEMAIL_CLEAR";
 
 // Error Code
 export const E_PICKER_CANCELLED = "E_PICKER_CANCELLED";
@@ -187,7 +174,7 @@ export const apiUrl = `${process.env.REACT_APP_API_URL}/br_api/`;
 export const imageUrl = "http://localhost:8080";
 
 export const server = {
-  HTTP_LOGIN_URL: `api_auth/login`,
+  LOGIN_URL: `api_auth/login`,
   COMPANY_URL: `api_data/company`,
   COMPANYWITHCONODIVI_URL: `api_data/companywithconodivi`,
   BU_URL: `api_data/bu`,
@@ -221,12 +208,9 @@ export const server = {
   STATUS_URL: `api_data/status`,
   PRHEADMONITORING_URL: `api_data/prheadmonitoring`,
   PRDETAILMONITORING_URL: `api_data/prdetailmonitoring`,
+  SENDEMAIL_URL: `api_data/resendemail`,
 
   REFRESH_TOKEN_URL: `refresh/token`,
-  REGISTER_URL: `register`,
-  PRODUCT_URL: `product`,
-  TRANSACTION_URL: `transaction`,
-  REPORT_URL: `report`,
   TOKEN_KEY: `token`,
   APPROVE_TOKEN_KEY: `approve_token`,
   REFRESH_TOKEN_KEY: `refresh_token`,

@@ -69,7 +69,8 @@ export default (props) => {
     cono: "",
     divi: "",
     prno: "",
-    status: "",
+    // fromstatus: "",
+    // tostatus: "",
     approve: "",
     token: "",
   };
@@ -113,6 +114,8 @@ export default (props) => {
 
   useEffect(() => {
     let params = props.match.params;
+    let fromStatus = "15";
+    let toStatus = "20";
     let statusDetail = "10";
     // console.log(params);
 
@@ -120,7 +123,8 @@ export default (props) => {
       cono: params.cono,
       divi: params.divi,
       prno: params.prno,
-      status: params.status,
+      // fromstatus: params.fromstatus,
+      // tostatus: params.tostatus,
       approve: params.approve,
       // approve: loginActions.getApproveTokenUsername(),
       token: params.token,
@@ -137,7 +141,8 @@ export default (props) => {
         params.cono,
         params.divi,
         params.prno,
-        params.status,
+        fromStatus,
+        toStatus,
         params.approve
       )
     );
@@ -1188,6 +1193,10 @@ export default (props) => {
           // formData.append("vApproveSign", prhead.vApproveSign);
           formData.append("vApproveDate", prhead.vApproveDate);
           formData.append("vStatus", prhead.vStatus);
+          formData.append(
+            "vNextStatus",
+            prhead.vStatus === "15" ? "20" : prhead.vStatus
+          );
 
           if (approve) {
             // console.log("approve");
@@ -1220,12 +1229,16 @@ export default (props) => {
           }
 
           setTimeout(() => {
+            let fromStatus = "15";
+            let toStatus = "20";
+
             dispatch(
               prheadapproveActions.getPRHeadApproves(
                 params.cono,
                 params.divi,
                 params.prno,
-                params.status,
+                fromStatus,
+                toStatus,
                 params.approve
               )
             );

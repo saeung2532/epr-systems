@@ -24,11 +24,26 @@ const setStatePRHeadApproveToClear = () => ({
   type: HTTP_PRHEADAPPROVE_CLEAR,
 });
 
-export const getPRHeadApproves = (cono, divi, prno, status, approve) => {
+export const getPRHeadApproves = (
+  cono,
+  divi,
+  prno,
+  fromstatus,
+  tostatus,
+  approve
+) => {
   return async (dispatch) => {
     // console.log("PR: " + prno + " STS: " + status);
     dispatch(setStatePRHeadApproveToFetching());
-    doGetPRHeadApproves(dispatch, cono, divi, prno, status, approve);
+    doGetPRHeadApproves(
+      dispatch,
+      cono,
+      divi,
+      prno,
+      fromstatus,
+      tostatus,
+      approve
+    );
   };
 };
 
@@ -37,12 +52,13 @@ const doGetPRHeadApproves = async (
   cono,
   divi,
   prno,
-  status,
+  fromstatus,
+  tostatus,
   approve
 ) => {
   try {
     let result = await httpClient.get(
-      `${server.PRHEADAPPROVE_URL}/${cono}/${divi}/${prno}/${status}/${approve}`
+      `${server.PRHEADAPPROVE_URL}/${cono}/${divi}/${prno}/${fromstatus}/${tostatus}/${approve}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRHeadApproveToSuccess(result.data));
