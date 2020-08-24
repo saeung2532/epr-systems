@@ -80,11 +80,26 @@ export const deletePRDetail = (prno, itemline) => {
   };
 };
 
-export const updatePRConfirmDetail = (prno, buyer) => {
+export const updatePRConfirmDetailReject = (prno, buyer) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.put(`${server.PRCONFIRMDETAIL_URL}/${prno}/${buyer}`);
+      await httpClient.put(
+        `${server.PRCONFIRMDETAILREJECT_URL}/${prno}/${buyer}`
+      );
+      // alert("Update Complete");
+      // history.goBack();
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
+  };
+};
+
+export const updatePRConfirmDetailAll = (prno, buyer) => {
+  return async (dispatch) => {
+    try {
+      // console.log(formData);
+      await httpClient.put(`${server.PRCONFIRMDETAILALL_URL}/${prno}/${buyer}`);
       // alert("Update Complete");
       // history.goBack();
     } catch (err) {

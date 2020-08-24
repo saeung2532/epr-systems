@@ -316,40 +316,31 @@ export default (props) => {
     }
 
     if (prnumber.vPRSelectNumber === "" || reject === true) {
-      setEditDisable(true);
-      setCreateDisable(true);
       setPRHead({
         ...initialStatePRHead,
       });
       dispatch(prdetailbuyerActions.getPRDetails("00"));
+      setEditDisable(true);
+      setCreateDisable(true);
+      setCancelPRDisable(true);
     } else {
-      setNewDisable(true);
-      setEditDisable(false);
-      setCreateDisable(false);
-      setCancelPRDisable(false);
       let fromStatus = "05";
       let toStatus = "10";
       dispatch(
         prheadActions.getPRHeads(prnumber.vPRSelectNumber, fromStatus, toStatus)
       );
       dispatch(prdetailbuyerActions.getPRDetails(prnumber.vPRSelectNumber));
+      setNewDisable(true);
+      setEditDisable(false);
+      setCreateDisable(false);
+      setCancelPRDisable(false);
     }
   };
 
-  const handleNew = () => {
-    setSearchDisable(true);
-    setEditDisable(false);
-    setCreateDisable(true);
-    setWhsDisable(false);
-    setDeptDisable(false);
-    setPRHead({
-      ...initialStatePRHead,
-      vMonth: prhead.vDate.substr(2, 2) + prhead.vDate.substr(5, 2),
-      vPlanUnPlan: "Plan",
-    });
-  };
-
   const handleCancel = () => {
+    setPRNumber({ ...prnumber, vPRSelectNumber: "" });
+    setPRHead({ ...initialStatePRHead });
+    dispatch(prdetailbuyerActions.getPRDetails("00"));
     setSearchDisable(false);
     setNewDisable(false);
     setEditDisable(true);
@@ -357,9 +348,6 @@ export default (props) => {
     setCancelPRDisable(true);
     setWhsDisable(true);
     setDeptDisable(true);
-    setPRNumber({ ...prnumber, vPRSelectNumber: "" });
-    setPRHead({ ...initialStatePRHead });
-    dispatch(prdetailbuyerActions.getPRDetails("00"));
   };
 
   const handleClose = () => {
@@ -372,17 +360,10 @@ export default (props) => {
   };
 
   const handleRejectPR = () => {
-    setSearchDisable(false);
-    setNewDisable(false);
-    setEditDisable(true);
-    setCreateDisable(true);
-    setCancelPRDisable(true);
-    setWhsDisable(true);
-    setDeptDisable(true);
     let status = "05"; //Reject
     dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
     dispatch(
-      prdetailbuyerActions.updatePRConfirmDetail(
+      prdetailbuyerActions.updatePRConfirmDetailReject(
         prhead.vPRNumber,
         loginActions.getTokenUsername()
       )
@@ -396,11 +377,6 @@ export default (props) => {
       dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
       dispatch(prdetailbuyerActions.getPRDetails("00"));
       alert("Reject Complete");
-    }, 500);
-  };
-
-  const handleConfirmAll = () => {
-    if (prdetailbuyerReducer.result.length > 0) {
       setSearchDisable(false);
       setNewDisable(false);
       setEditDisable(true);
@@ -408,18 +384,26 @@ export default (props) => {
       setCancelPRDisable(true);
       setWhsDisable(true);
       setDeptDisable(true);
-      let status = "10";
-      dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
+    }, 500);
+  };
+
+  const handleConfirmAll = () => {
+    if (prdetailbuyerReducer.result.length > 0) {
+      // console.log("confirm");
+      dispatch(
+        prdetailbuyerActions.updatePRConfirmDetailAll(
+          prhead.vPRNumber,
+          loginActions.getTokenUsername()
+        )
+      );
       setTimeout(() => {
-        setCancelPRDisable(true);
-        setPRNumber({ ...prnumber, vPRSelectNumber: "" });
-        setPRHead({ ...initialStatePRHead });
-        dispatch(prnumberbuyerActions.getPRNumbers("00", "00"));
-        dispatch(prdetailbuyerActions.getPRDetails("00"));
-        alert("Submit Complete");
+        setItemPRDetail({ ...initialStateItemPRDetail });
+        dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+        dispatch(prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber));
+        setConfirm(false);
       }, 500);
     } else {
-      alert("Please create item detail before submit to PH");
+      alert("Please create item detail before comfirm MPR");
     }
   };
 
@@ -1073,11 +1057,33 @@ export default (props) => {
                     variant="contained"
                     color="secondary"
                     startIcon={<SendIcon />}
-                    disabled="true"
+                    disabled={cancelprdisable}
                     onClick={handleConfirmAll}
                   >
                     Confirm All
                   </Button>
+                </Grid>
+
+                <Grid className={classes.margin}>
+                  <a
+                    href={`${
+                      process.env.REACT_APP_API_URL
+                    }/br_api/api_report/viewmpr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
+                      prnumber.vPRSelectNumber
+                    }`}
+                    target="_blank"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      disabled={cancelprdisable}
+                      startIcon={<SearchIcon />}
+                    >
+                      View MPR
+                    </Button>
+                  </a>
                 </Grid>
               </Grid>
             </Paper>
@@ -1166,6 +1172,12 @@ export default (props) => {
                       });
                       dispatch(itemunitActions.getItemUnits(values.MMITNO));
 
+                      if (values.MMITNO.substr(0, 2) === "OH") {
+                        setEditNameDisable(false);
+                      } else {
+                        setEditNameDisable(true);
+                      }
+
                       if (values.MMPUPR < 0) {
                         setSaveDisable(true);
                         setConfirmDisable(true);
@@ -1224,7 +1236,7 @@ export default (props) => {
                   required
                   error={true}
                   fullWidth
-                  disabled={editnamedisable}
+                  disabled={editdisable}
                   margin="dense"
                   id="vQty"
                   label="Qty"
@@ -1246,9 +1258,8 @@ export default (props) => {
               <Grid item xs>
                 <TextField
                   className={classes.margin}
-                  disabled={editdisable}
                   fullWidth
-                  disabled="true"
+                  disabled={editnamedisable}
                   required
                   select
                   margin="dense"
@@ -1396,7 +1407,7 @@ export default (props) => {
                   required
                   error={true}
                   fullWidth
-                  disabled={editnamedisable}
+                  // disabled={editnamedisable}
                   margin="dense"
                   id="vVat"
                   label="Vat"
@@ -1428,14 +1439,27 @@ export default (props) => {
               <Grid item xs>
                 <TextField
                   required
+                  error={true}
                   fullWidth
-                  disabled="true"
+                  // disabled="true"
                   margin="dense"
                   id="vOrderType"
                   label="Order Type"
-                  type="text"
+                  type="number"
                   value={itemprdetail.vOrdertype}
                   values={(values.vOrdertype = itemprdetail.vOrdertype)}
+                  // onInput={(e) => {
+                  //   e.target.value = Math.max(0, parseInt(e.target.value))
+                  //     .toString()
+                  //     .slice(0, 3);
+                  // }}
+                  onChange={(event) => {
+                    // console.log(event.target.value);
+                    setItemPRDetail({
+                      ...itemprdetail,
+                      vOrdertype: event.target.value,
+                    });
+                  }}
                 />
               </Grid>
             </Grid>
@@ -1616,7 +1640,6 @@ export default (props) => {
                 } else {
                   setUpdate(true);
                 }
-                setConfirmDisable(false);
               }}
             >
               Save
@@ -1627,9 +1650,6 @@ export default (props) => {
               color="secondary"
               onClick={(event) => {
                 setConfirm(true);
-                // dispatch(
-                //   prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber)
-                // );
               }}
               style={{ display: "" }}
             >
@@ -2256,9 +2276,11 @@ export default (props) => {
                     // let phgroup = "PH";
                     setItemPRDetail({ ...itemprdetail, vAddFreeItem: "1" });
                     setSelectedProduct("rowData");
-                    setEditNameDisable(false);
-                    setConfirmDisable(true);
                     setOpenDialog(true);
+                    setEditDisable(false);
+                    setEditNameDisable(true);
+                    setConfirmDisable(true);
+
                     // dispatch(itemActions.getItems(prhead.vWarehouse));
                     // dispatch(phgroupActions.getPHGroups(phgroup));
                   }}
@@ -2324,7 +2346,7 @@ export default (props) => {
           }
         }
         editable={{
-          //Edit data in line
+          // Edit data in line
           // isEditable: rowData => rowData.name === "a", // only name(a) rows would be editable
           // isDeletable: rowData => rowData.name === "b", // only name(a) rows would be deletable
           // onRowAdd: newData =>
@@ -2379,23 +2401,27 @@ export default (props) => {
             iconProps: { color: "secondary" },
             onClick: (event, rowData) => {
               // console.log("rowData: " + JSON.stringify([rowData]));
-
               let data = [rowData];
               let phgroup = "PH";
               data.map((item) => {
-                // setItemDetail({ ...itemdetail, MMITNO: item.PR_IBITNO });
-                // setItemPRDetail({
-                //   ...itemprdetail,
-                //   vItemNo: { MMITNO: item.PR_IBITNO },
-                // });
-                // dispatch(itemActions.getItems(prhead.vWarehouse));
                 dispatch(itemunitActions.getItemUnits(item.PR_IBITNO));
-                // dispatch(phgroupActions.getPHGroups(phgroup));
                 dispatch(phbuyerActions.getPHBuyers(phgroup, item.PR_IBMODL));
               });
 
               setTimeout(() => {
                 data.map((item) => {
+                  if (item.PR_IBITNO.substr(0, 2) === "OH") {
+                    setEditNameDisable(false);
+                  } else {
+                    setEditNameDisable(true);
+                  }
+
+                  if (item.PR_IBPLPS === "") {
+                    setConfirmDisable(true);
+                  } else {
+                    setConfirmDisable(false);
+                  }
+
                   setItemPRDetail({
                     ...itemprdetail,
                     vItemLine: item.PR_IBPLPS,
@@ -2425,6 +2451,7 @@ export default (props) => {
 
               setSelectedProduct("rowData");
               setAddFreeItem(true);
+              setEditDisable(true);
               setOpenDialog(true);
             },
           }),
@@ -2487,8 +2514,8 @@ export default (props) => {
               setItemPRDetail({ ...initialStateItemPRDetail });
               dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
+              setCreate(false);
             }, 500);
-            setCreate(false);
           } else if (update) {
             // console.log("update");
             dispatch(
@@ -2498,8 +2525,10 @@ export default (props) => {
               setItemPRDetail({ ...initialStateItemPRDetail });
               dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
+              setAddFreeItem(false);
+              setConfirmDisable(false);
+              setUpdate(false);
             }, 500);
-            setUpdate(false);
           } else {
             // console.log("confirm");
             dispatch(
@@ -2507,15 +2536,14 @@ export default (props) => {
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              // let status = "10";
-              // dispatch(prnumberbuyerActions.getPRNumbers(status));
               dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
               dispatch(
                 prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber)
               );
               setOpenDialog(false);
+              setAddFreeItem(false);
+              setConfirm(false);
             }, 500);
-            setConfirm(false);
           }
         }}
       >

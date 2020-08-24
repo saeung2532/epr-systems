@@ -219,7 +219,7 @@ export default (props) => {
                       // disabled={viewMPRDisable}
                       startIcon={<SearchIcon />}
                     >
-                      View PR
+                      View MPR
                     </Button>
                   </a>
                 </Grid>

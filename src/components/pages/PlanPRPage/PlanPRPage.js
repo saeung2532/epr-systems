@@ -159,6 +159,7 @@ export default (props) => {
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
   const [confirm, setConfirm] = useState(false);
+  const [copy, setCopy] = useState(false);
   const [whsdisable, setWhsDisable] = useState(true);
   const [deptdisable, setDeptDisable] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
@@ -215,10 +216,10 @@ export default (props) => {
 
       if (item.HD_IBWHLO === "A99") {
         // console.log("Warehouse A99: true");
-        setEditNameDisable(false);
+        // setEditNameDisable(false);
       } else {
         // console.log("Warehouse A99: false");
-        setEditNameDisable(true);
+        // setEditNameDisable(true);
       }
     });
   }, [prheadReducer]);
@@ -247,35 +248,28 @@ export default (props) => {
 
   const handleSearch = () => {
     if (prnumber.vPRSelectNumber === "") {
-      setEditDisable(true);
-      setCreateDisable(true);
       setPRHead({
         ...initialStatePRHead,
       });
       dispatch(prdetailActions.getPRDetails("00"));
+      setEditDisable(true);
+      setCreateDisable(true);
+      setCancelPRDisable(true);
     } else {
-      setNewDisable(true);
-      setEditDisable(false);
-      setCreateDisable(false);
-      setCancelPRDisable(false);
       let fromStatus = "00";
       let toStatus = "05";
       dispatch(
         prheadActions.getPRHeads(prnumber.vPRSelectNumber, fromStatus, toStatus)
       );
       dispatch(prdetailActions.getPRDetails(prnumber.vPRSelectNumber));
+      setNewDisable(true);
+      setEditDisable(false);
+      setCreateDisable(false);
+      setCancelPRDisable(false);
     }
   };
 
   const handleNew = () => {
-    setSearchDisable(true);
-    setNewDisable(true);
-    setEditDisable(false);
-    setCreateDisable(true);
-    setWhsDisable(false);
-    setDeptDisable(false);
-    setNewPR(true);
-
     var dateNow = new Date();
     var futureMonth = moment(dateNow)
       .add(1, "M")
@@ -289,9 +283,19 @@ export default (props) => {
         futureMonth.toString().substr(5, 2),
       vPlanUnPlan: "Plan",
     });
+    setSearchDisable(true);
+    setNewDisable(true);
+    setEditDisable(false);
+    setCreateDisable(true);
+    setWhsDisable(false);
+    setDeptDisable(false);
+    setNewPR(true);
   };
 
   const handleCancel = () => {
+    setPRNumber({ ...prnumber, vPRSelectNumber: "" });
+    setPRHead({ ...initialStatePRHead });
+    dispatch(prdetailActions.getPRDetails("00"));
     setSearchDisable(false);
     setNewDisable(false);
     setEditDisable(true);
@@ -299,9 +303,6 @@ export default (props) => {
     setCancelPRDisable(true);
     setWhsDisable(true);
     setDeptDisable(true);
-    setPRNumber({ ...prnumber, vPRSelectNumber: "" });
-    setPRHead({ ...initialStatePRHead });
-    dispatch(prdetailActions.getPRDetails("00"));
   };
 
   const handleClose = () => {
@@ -312,13 +313,6 @@ export default (props) => {
   };
 
   const handleCancelPR = () => {
-    setSearchDisable(false);
-    setNewDisable(false);
-    setEditDisable(true);
-    setCreateDisable(true);
-    setCancelPRDisable(true);
-    setWhsDisable(true);
-    setDeptDisable(true);
     let status = "99";
     dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
     setTimeout(() => {
@@ -328,11 +322,6 @@ export default (props) => {
       dispatch(prnumberActions.getPRNumbers("00", "00"));
       dispatch(prdetailActions.getPRDetails("00"));
       alert("Cancel Complete");
-    }, 500);
-  };
-
-  const handleSubmitPH = () => {
-    if (prdetailReducer.result.length > 0) {
       setSearchDisable(false);
       setNewDisable(false);
       setEditDisable(true);
@@ -340,6 +329,11 @@ export default (props) => {
       setCancelPRDisable(true);
       setWhsDisable(true);
       setDeptDisable(true);
+    }, 500);
+  };
+
+  const handleSubmitPH = () => {
+    if (prdetailReducer.result.length > 0) {
       let status = "10";
       dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
       setTimeout(() => {
@@ -349,6 +343,13 @@ export default (props) => {
         dispatch(prnumberActions.getPRNumbers("00", "00"));
         dispatch(prdetailActions.getPRDetails("00"));
         alert("Submit Complete");
+        setSearchDisable(false);
+        setNewDisable(false);
+        setEditDisable(true);
+        setCreateDisable(true);
+        setCancelPRDisable(true);
+        setWhsDisable(true);
+        setDeptDisable(true);
       }, 500);
     } else {
       alert("Please create item detail before submit to PH");
@@ -1006,6 +1007,7 @@ export default (props) => {
     const phgroups = phgroupReducer.result ? phgroupReducer.result : [];
     const phbuyers = phbuyerReducer.result ? phbuyerReducer.result : [];
     const suppliers = supplierReducer.result ? supplierReducer.result : [];
+
     return (
       <Dialog
         open={openDialog}
@@ -1020,6 +1022,7 @@ export default (props) => {
             {itemprdetail.vItemLine
               ? ` - Line : ${itemprdetail.vItemLine}`
               : ""}
+            {copy ? ` (Copy)` : ""}
           </DialogTitle>
           <DialogContent>
             <Grid container item xs={12} spacing={2}>
@@ -1037,6 +1040,8 @@ export default (props) => {
                   values={(values.vItemNo = itemprdetail.vItemNo)}
                   onChange={(event, values) => {
                     // console.log(values);
+                    // alert(values.MMITNO.substr(0, 2));
+
                     if (values) {
                       // console.log(
                       //   "Price: " +
@@ -1065,6 +1070,12 @@ export default (props) => {
                         vOrdertype: values.MBORTY,
                       });
                       dispatch(itemunitActions.getItemUnits(values.MMITNO));
+
+                      if (values.MMITNO.substr(0, 2) === "OH") {
+                        setEditNameDisable(false);
+                      } else {
+                        setEditNameDisable(true);
+                      }
 
                       if (values.MMPUPR < 0) {
                         setSaveDisable(true);
@@ -2139,7 +2150,6 @@ export default (props) => {
       </Formik>
 
       {/* Plan PR Table */}
-      {/* <p>#Debug {JSON.stringify(selectedProduct)}</p> */}
       <MaterialTable
         id="root_pr"
         title={`Plan MPR Stock & Non Stock : ${prhead.vStatus}`}
@@ -2279,19 +2289,64 @@ export default (props) => {
             tooltip: "Edit row",
             iconProps: { color: "secondary" },
             onClick: (event, rowData) => {
+              // console.log("rowData: " + JSON.stringify([rowData]));
+              let data = [rowData];
+              let phgroup = "PH";
+              data.map((item) => {
+                dispatch(itemunitActions.getItemUnits(item.PR_IBITNO));
+                dispatch(phbuyerActions.getPHBuyers(phgroup, item.PR_IBMODL));
+              });
+
+              setTimeout(() => {
+                data.map((item) => {
+                  if (item.PR_IBITNO.substr(0, 2) === "OH") {
+                    setEditNameDisable(false);
+                  } else {
+                    setEditNameDisable(true);
+                  }
+
+                  setItemPRDetail({
+                    ...itemprdetail,
+                    vItemLine: item.PR_IBPLPS,
+                    // vItemNo: { MMITNO: item.PR_IBITNO },
+                    vItemNo: item.PR_IBITNO,
+                    vItemDesc1: item.PR_IBPITT,
+                    vItemDesc2: { ITEM: item.ITEM },
+                    vQty: item.PR_IBORQA,
+                    vUnit: item.PR_IBPUUN,
+                    vDateDetail: item.PR_IBDWDT,
+                    // vSupplierNo: { IDSUNO: item.PR_IBSUNO },
+                    vSupplierNo: item.PR_IBSUNO,
+                    vSupplierName: item.SASUNM,
+                    vSupplierDesc: { SUPPLIER: item.SUPPLIER },
+                    vPrice: item.PR_IBPUPR,
+                    vVat: item.PR_IBVTCD,
+                    vCurrency: item.PR_IBCUCD,
+                    vOrdertype: item.PR_IBORTY,
+                    vTotal: (item.PR_IBORQA * item.PR_IBPUPR).toFixed(4),
+                    vCostcenterDetail: item.PR_IBCOCE,
+                    vPHGroupDetail: item.PR_IBMODL,
+                    vBuyerDetail: item.PR_IBBUYE,
+                    vRemarkDetail: item.PR_REM3,
+                  });
+                });
+              }, 500);
+
+              setSelectedProduct("rowData");
+              setOpenDialog(true);
+            },
+          }),
+          (rowData) => ({
+            icon: "library_add",
+            tooltip: "Copy",
+            iconProps: { color: "primary" },
+            onClick: (event, rowData) => {
               console.log("rowData: " + JSON.stringify([rowData]));
 
               let data = [rowData];
               let phgroup = "PH";
               data.map((item) => {
-                // setItemDetail({ ...itemdetail, MMITNO: item.PR_IBITNO });
-                // setItemPRDetail({
-                //   ...itemprdetail,
-                //   vItemNo: { MMITNO: item.PR_IBITNO },
-                // });
-                // dispatch(itemActions.getItems(prhead.vWarehouse));
                 dispatch(itemunitActions.getItemUnits(item.PR_IBITNO));
-                // dispatch(phgroupActions.getPHGroups(phgroup));
                 dispatch(phbuyerActions.getPHBuyers(phgroup, item.PR_IBMODL));
               });
 
@@ -2326,6 +2381,7 @@ export default (props) => {
 
               setSelectedProduct("rowData");
               setOpenDialog(true);
+              setCopy(true);
             },
           }),
         ]}
@@ -2380,15 +2436,16 @@ export default (props) => {
           formData.append("vConfirm", "0");
           formData.append("vStatus", "10");
 
-          if (create) {
+          if (create || copy) {
             // console.log("create");
             dispatch(prdetailActions.addPRDetail(formData, props.history));
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
               dispatch(prdetailActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
+              setCreate(false);
+              setCopy(false);
             }, 500);
-            setCreate(false);
           } else if (update) {
             // console.log("update");
             dispatch(prdetailActions.updatePRDetail(formData, props.history));
@@ -2396,19 +2453,17 @@ export default (props) => {
               setItemPRDetail({ ...initialStateItemPRDetail });
               dispatch(prdetailActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
+              setUpdate(false);
             }, 500);
-            setUpdate(false);
           } else {
             // console.log("confirm");
             dispatch(prdetailActions.updatePRDetail(formData, props.history));
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              // let status = "10";
-              // dispatch(prnumberActions.getPRNumbers(status));
               dispatch(prdetailActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
+              setConfirm(false);
             }, 500);
-            setConfirm(false);
           }
         }}
       >

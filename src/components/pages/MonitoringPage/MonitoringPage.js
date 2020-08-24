@@ -511,13 +511,13 @@ export default (props) => {
         aria-describedby="alert-dialog-slide-description"
       >
         <form onSubmit={handleSubmit}>
-          <DialogTitle id="alert-dialog-slide-title">
+          {/* <DialogTitle id="alert-dialog-slide-title">
             MPR Number : {itemprdetail.vPRNumber}
-          </DialogTitle>
+          </DialogTitle> */}
           <DialogContent>
             <MaterialTable
               id="root_prdetail"
-              title={`MPR Detail`}
+              title={`MPR Detail : ${itemprdetail.vPRNumber}`}
               columns={columnsdetail}
               data={prdetailReducer.result ? prdetailReducer.result : []}
               components={{
@@ -537,24 +537,23 @@ export default (props) => {
                           let fromStatus = "";
                           let toStatus = "";
 
-                          if (itemprdetail.vStatus === "15") {
-                            fromStatus = "10";
-                            toStatus = "15";
-                          } else if (itemprdetail.vStatus === "20") {
-                            fromStatus = "15";
-                            toStatus = "20";
-                          } else if (itemprdetail.vStatus === "92") {
-                            fromStatus = "20";
-                            toStatus = "92";
-                          }
+                          // if (itemprdetail.vStatus === "15") {
+                          //   fromStatus = "10";
+                          //   toStatus = "15";
+                          // } else if (itemprdetail.vStatus === "20") {
+                          //   fromStatus = "15";
+                          //   toStatus = "20";
+                          // } else if (itemprdetail.vStatus === "92") {
+                          //   fromStatus = "20";
+                          //   toStatus = "92";
+                          // }
 
                           // alert(itemprdetail.vPRNumber + " : " + fromStatus + " : " + toStatus);
 
                           dispatch(
                             sendemailActions.sendEmail(
                               itemprdetail.vPRNumber,
-                              fromStatus,
-                              toStatus
+                              itemprdetail.vStatus
                             )
                           );
                           // let phgroup = "PH";
@@ -574,7 +573,7 @@ export default (props) => {
                 ),
               }}
               options={{
-                // exportButton: true,
+                exportButton: true,
                 // toolbar: false,
                 paging: true,
                 headerStyle: {
@@ -602,7 +601,7 @@ export default (props) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="default">
+            <Button onClick={handleClose} color="secondary">
               Cancel
             </Button>
           </DialogActions>
@@ -1041,10 +1040,56 @@ export default (props) => {
   ];
 
   const columnsdetail = [
+    // {
+    //   title: "GRN",
+    //   field: "GRN",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.GRN}
+    //     </Typography>
+    //   ),
+    // },
+    // {
+    //   title: "PO Number",
+    //   field: "PR_IBPUNO",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBPUNO}
+    //     </Typography>
+    //   ),
+    // },
     {
-      title: "GRN",
-      field: "GRN",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      title: "Confirm",
+      field: "PR_CONFIRM",
+      headerStyle: { maxWidth: 80, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
         textAlign: "center",
         borderLeft: 1,
@@ -1060,30 +1105,7 @@ export default (props) => {
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
-          {item.GRN}
-        </Typography>
-      ),
-    },
-    {
-      title: "PO Number",
-      field: "PR_IBPUNO",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBPUNO}
+          {item.PR_CONFIRM}
         </Typography>
       ),
     },
@@ -1237,29 +1259,29 @@ export default (props) => {
         </Typography>
       ),
     },
-    {
-      title: "PR_IBPTCD",
-      field: "PR_IBPTCD",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBPTCD}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: "PR_IBPTCD",
+    //   field: "PR_IBPTCD",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBPTCD}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: "Vat.",
       field: "PR_IBVTCD",
@@ -1288,31 +1310,30 @@ export default (props) => {
         </Typography>
       ),
     },
-
-    {
-      title: "PR_IBPRIP",
-      field: "PR_IBPRIP",
-      // type: "numeric",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBPRIP}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: "PR_IBPRIP",
+    //   field: "PR_IBPRIP",
+    //   // type: "numeric",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBPRIP}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: "Order Typ.",
       field: "PR_IBORTY",
@@ -1362,7 +1383,7 @@ export default (props) => {
       ),
     },
     {
-      title: "PR_VTCLM",
+      title: "Vat. Claim",
       field: "PR_VTCLM",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -1440,31 +1461,31 @@ export default (props) => {
         </Typography>
       ),
     },
+    // {
+    //   title: "PR_IBPNLI",
+    //   field: "PR_IBPNLI",
+    //   headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBPNLI}
+    //     </Typography>
+    //   ),
+    // },
     {
-      title: "PR_IBPNLI",
-      field: "PR_IBPNLI",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBPNLI}
-        </Typography>
-      ),
-    },
-    {
-      title: "PR_IBSUNO",
+      title: "Supp. No",
       field: "PR_IBSUNO",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -1487,7 +1508,7 @@ export default (props) => {
       ),
     },
     {
-      title: "IDSUNM",
+      title: "Supp. Name",
       field: "IDSUNM",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -1506,6 +1527,29 @@ export default (props) => {
       render: (item) => (
         <Typography variant="body1" noWrap>
           {item.IDSUNM}
+        </Typography>
+      ),
+    },
+    {
+      title: "Buyer",
+      field: "PR_IBBUYE",
+      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "left",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.PR_IBBUYE}
         </Typography>
       ),
     },

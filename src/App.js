@@ -91,7 +91,7 @@ export default function App() {
         (props) => (
           // loginActions.isLoggedIn() ? (
           <div className={classes.root}>
-            <Header company={loginActions.getApproveTokenCompany()} />
+            {/* <Header company={loginActions.getApproveTokenCompany()} /> */}
             <Container className={classes.content} maxWidth={false}>
               <Component {...props} />
             </Container>

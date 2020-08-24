@@ -10,6 +10,7 @@ import {
   ThemeProvider,
   createMuiTheme,
 } from "@material-ui/core/styles";
+import clsx from "clsx";
 import { Typography, Grid, Paper, TextField, Button } from "@material-ui/core";
 import { Card, CardMedia } from "@material-ui/core/";
 import Dialog from "@material-ui/core/Dialog";
@@ -17,6 +18,11 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
@@ -28,15 +34,39 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Formik, Form, Field } from "formik";
 import { red, green, purple } from "@material-ui/core/colors/";
 import * as loginActions from "./../../../actions/login.action";
+import * as prheadActions from "./../../../actions/prhead.action";
 import * as prheadapproveActions from "./../../../actions/prheadapprove.action";
 import * as prdetailActions from "./../../../actions/prdetail.action";
 import * as companyActions from "./../../../actions/company.action";
 import { server } from "../../../constants";
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     marginTop: 60,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  hide: {
+    display: "none",
   },
   paper: {
     padding: theme.spacing(2),
@@ -111,6 +141,11 @@ export default (props) => {
   const [approveDisable, setApproveDisable] = useState(true);
   const [rejectDisable, setRejectDisable] = useState(true);
   const [viewMPRDisable, setViewMPRDisable] = useState(true);
+  const [opendrawer, setOpenDrawer] = useState(false);
+
+  const handleDraweropendrawer = () => {
+    setOpenDrawer(false);
+  };
 
   useEffect(() => {
     let params = props.match.params;
@@ -118,6 +153,8 @@ export default (props) => {
     let toStatus = "20";
     let statusDetail = "10";
     // console.log(params);
+
+    localStorage.setItem(server.APPROVE_TOKEN_KEY, params.token);
 
     setParams({
       cono: params.cono,
@@ -129,8 +166,6 @@ export default (props) => {
       // approve: loginActions.getApproveTokenUsername(),
       token: params.token,
     });
-
-    localStorage.setItem(server.APPROVE_TOKEN_KEY, params.token);
 
     // if (prheadapproveReducer.result === null) {
     // dispatch(companyActions.getCompanysWithConoDivi(params.cono, params.divi));
@@ -1174,6 +1209,41 @@ export default (props) => {
     <div className={classes.root}>
       {/* <p>#Debug prhead {JSON.stringify(prhead)}</p> */}
       {/* <p>#Debug params {JSON.stringify(params)}</p> */}
+
+      <AppBar
+        color={
+          process.env.REACT_APP_IS_PRODUCTION === "1" ? "primary" : "secondary"
+        }
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: opendrawer,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="opendrawer drawer"
+            onClick={handleDraweropendrawer}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: opendrawer,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          <Typography variant="h6" noWrap>
+            Smart Purchase : Monthly Plan - Ver {process.env.REACT_APP_VERSION}
+            {/* <Typography variant="body1"> Approve </Typography> */}
+            <Typography variant="body1">
+              {loginActions.getApproveTokenCompany()}
+            </Typography>
+          </Typography>
+
+          <div className={classes.grow} />
+        </Toolbar>
+      </AppBar>
+
       <Formik
         initialValues={{
           vPRNumber: prhead.vPRNumber,
@@ -1211,6 +1281,8 @@ export default (props) => {
             }
           } else {
             // console.log("reject");
+            let status = "00"; //Reject
+            dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
             dispatch(prheadapproveActions.rejectPRHead(formData));
             setTimeout(() => {
               setPRHead({ ...initialStatePRHead });

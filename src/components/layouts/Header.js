@@ -134,11 +134,11 @@ const MiniDrawer = (props) => {
   const menuId = "primary-search-account-menu";
 
   return (
-    <div className={classes.root}>
+    <div>
       <CssBaseline />
       <AppBar
         color={
-          process.env.REACT_APP_IS_PRODUCTION === 1 ? "primary" : "secondary"
+          process.env.REACT_APP_IS_PRODUCTION === "1" ? "primary" : "secondary"
         }
         position="fixed"
         className={clsx(classes.appBar, {
