@@ -140,7 +140,6 @@ export default (props) => {
   const [approve, setApprove] = useState(false);
   const [approveDisable, setApproveDisable] = useState(true);
   const [rejectDisable, setRejectDisable] = useState(true);
-  const [viewMPRDisable, setViewMPRDisable] = useState(true);
   const [opendrawer, setOpenDrawer] = useState(false);
 
   const handleDraweropendrawer = () => {
@@ -190,17 +189,6 @@ export default (props) => {
         statusDetail
       )
     );
-
-    // console.log("prheadapproves: " + prheadapproveReducer.result);
-    // if (prheadapproveReducer.result === null) {
-    //   setApproveDisable(true);
-    //   setRejectDisable(true);
-    //   setViewMPRDisable(true);
-    // } else {
-    //   setApproveDisable(false);
-    //   setRejectDisable(false);
-    //   setViewMPRDisable(false);
-    // }
   }, []);
 
   useEffect(() => {
@@ -240,12 +228,8 @@ export default (props) => {
         vStatus: item.HD_STATUS,
       });
 
-      if (item.HD_IBPLPN != "") {
-        setViewMPRDisable(false);
-      }
-
       // console.log("item.HD_APPCK: " + item.HD_APPCK);
-      if (item.HD_APPCK > 0) {
+      if (item.HD_APPCK > 0 || item.HD_IBPLPN === "") {
         setApproveDisable(true);
         setRejectDisable(true);
       } else {
@@ -755,7 +739,8 @@ export default (props) => {
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
-          {item.PR_IBPLPS}
+          {item.PR_IBPLPS === "999" ? "" : item.PR_IBPLPS}
+          {/* {item.PR_IBPLPS} */}
         </Typography>
       ),
     },
@@ -1158,6 +1143,29 @@ export default (props) => {
       ),
     },
     {
+      title: "Cost Name",
+      field: "S2TX15",
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.S2TX15}
+        </Typography>
+      ),
+    },
+    {
       title: "Group",
       field: "PR_IBMODL",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
@@ -1274,17 +1282,18 @@ export default (props) => {
               dispatch(prheadapproveActions.approvePRHead(formData));
               setTimeout(() => {
                 dispatch(prheadapproveActions.checkApprovePRHead(formData));
+                alert("Approve complete.");
+                setApprove(false);
               }, 1000);
-              setApprove(false);
             } else {
               alert("Approver not match.");
             }
           } else {
             // console.log("reject");
-            let status = "00"; //Reject
-            dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
             dispatch(prheadapproveActions.rejectPRHead(formData));
             setTimeout(() => {
+              dispatch(prheadapproveActions.checkApprovePRHead(formData));
+              alert("Reject complete.");
               setPRHead({ ...initialStatePRHead });
               let statusDetail = "10";
               dispatch(
@@ -1295,15 +1304,15 @@ export default (props) => {
                   statusDetail
                 )
               );
+              setApproveDisable(true);
+              setRejectDisable(true);
+              setReject(false);
             }, 1000);
-
-            setReject(false);
           }
 
           setTimeout(() => {
             let fromStatus = "15";
             let toStatus = "20";
-
             dispatch(
               prheadapproveActions.getPRHeadApproves(
                 params.cono,

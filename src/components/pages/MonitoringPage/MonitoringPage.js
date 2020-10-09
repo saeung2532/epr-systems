@@ -821,7 +821,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Aprove1",
+      title: "Approve1",
       field: "HD_APP1",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -845,7 +845,7 @@ export default (props) => {
     },
 
     {
-      title: "Aprove Date1",
+      title: "Approve Date1",
       field: "HD_APPDT1",
       // type: "numeric",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
@@ -871,7 +871,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Aprove2",
+      title: "Approve2",
       field: "HD_APP2",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -894,7 +894,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Aprove Date2",
+      title: "Approve Date2",
       field: "HD_APPDT2",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -919,7 +919,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Aprove3",
+      title: "Approve3",
       field: "HD_APP3",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -942,7 +942,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Aprove Date3",
+      title: "Approve Date3",
       field: "HD_APPDT3",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -967,7 +967,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Aprove4",
+      title: "Approve4",
       field: "HD_APP4",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -990,7 +990,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Aprove Date4",
+      title: "Approve Date4",
       field: "HD_APPDT4",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -1133,9 +1133,32 @@ export default (props) => {
       ),
     },
     {
+      title: "PR Number",
+      field: "HD_IBPLPN",
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.HD_IBPLPN}
+        </Typography>
+      ),
+    },
+    {
       title: "Item No",
       field: "PR_IBITNO",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "left" },
       cellStyle: {
         textAlign: "left",
         borderLeft: 1,
@@ -1159,7 +1182,7 @@ export default (props) => {
       title: "Item Name",
       field: "PR_IBPITT",
       // type: "numeric",
-      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "center" },
+      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "left" },
       cellStyle: {
         textAlign: "left",
         borderLeft: 1,
@@ -1206,7 +1229,7 @@ export default (props) => {
     {
       title: "Qty",
       field: "PR_IBORQA",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "right" },
       cellStyle: {
         textAlign: "center",
         borderLeft: 1,
@@ -1234,7 +1257,7 @@ export default (props) => {
     {
       title: "U/P",
       field: "PR_IBPUPR",
-      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "center" },
+      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "right" },
       cellStyle: {
         textAlign: "right",
         borderLeft: 1,
@@ -1337,7 +1360,7 @@ export default (props) => {
     {
       title: "Order Typ.",
       field: "PR_IBORTY",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
         textAlign: "center",
         borderLeft: 1,
@@ -1550,6 +1573,52 @@ export default (props) => {
       render: (item) => (
         <Typography variant="body1" noWrap>
           {item.PR_IBBUYE}
+        </Typography>
+      ),
+    },
+    {
+      title: "Cost Cen.",
+      field: "PR_IBCOCE",
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.PR_IBCOCE}
+        </Typography>
+      ),
+    },
+    {
+      title: "Cost Name",
+      field: "S2TX15",
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.S2TX15}
         </Typography>
       ),
     },

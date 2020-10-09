@@ -24,18 +24,18 @@ const setStatePRHeadToClear = () => ({
   type: HTTP_PRHEAD_CLEAR,
 });
 
-export const getPRHeads = (prno, fromstatus, toStatus) => {
+export const getMPRHeads = (prno, fromstatus, toStatus) => {
   return async (dispatch) => {
     // console.log("PR: " + prno + " STS: " + status);
     dispatch(setStatePRHeadToFetching());
-    doGetPRHeads(dispatch, prno, fromstatus, toStatus);
+    doGetMPRHeads(dispatch, prno, fromstatus, toStatus);
   };
 };
 
-const doGetPRHeads = async (dispatch, prno, fromstatus, toStatus) => {
+const doGetMPRHeads = async (dispatch, prno, fromstatus, toStatus) => {
   try {
     let result = await httpClient.get(
-      `${server.PRHEAD_URL}/${prno}/${fromstatus}/${toStatus}`
+      `${server.MPRHEAD_URL}/${prno}/${fromstatus}/${toStatus}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRHeadToSuccess(result.data));
@@ -111,6 +111,27 @@ const doGetPRHeadsMonitoring = async (
   try {
     let result = await httpClient.get(
       `${server.PRHEADMONITORING_URL}/${prno}/${whs}/${bu}/${department}/${month}/${status}`
+    );
+    // alert(JSON.stringify(result.data));
+    dispatch(setStatePRHeadToSuccess(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStatePRHeadToFailed());
+  }
+};
+
+export const getPRHeads = (prno, fromstatus, toStatus) => {
+  return async (dispatch) => {
+    // console.log("PR: " + prno + " STS: " + status);
+    dispatch(setStatePRHeadToFetching());
+    doGetPRHeads(dispatch, prno, fromstatus, toStatus);
+  };
+};
+
+const doGetPRHeads = async (dispatch, prno, fromstatus, toStatus) => {
+  try {
+    let result = await httpClient.get(
+      `${server.PRHEAD_URL}/${prno}/${fromstatus}/${toStatus}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRHeadToSuccess(result.data));

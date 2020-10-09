@@ -22,6 +22,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SaveIcon from "@material-ui/icons/Save";
 import SendIcon from "@material-ui/icons/Send";
+import ConfirmationNumberIcon from "@material-ui/icons/ConfirmationNumber";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Formik, Form, Field } from "formik";
 import { red, green, purple } from "@material-ui/core/colors/";
@@ -249,13 +250,14 @@ export default (props) => {
         dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
 
         let statusprhead = "15";
-
         dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, statusprhead));
         prheadReducer.result = null;
         prdetailbuyerReducer.result = null;
         setPRHead({
           ...initialStatePRHead,
         });
+
+        handleCancel();
       }
     });
   }, [prconfirmbuyerReducer]);
@@ -327,7 +329,11 @@ export default (props) => {
       let fromStatus = "05";
       let toStatus = "10";
       dispatch(
-        prheadActions.getPRHeads(prnumber.vPRSelectNumber, fromStatus, toStatus)
+        prheadActions.getMPRHeads(
+          prnumber.vPRSelectNumber,
+          fromStatus,
+          toStatus
+        )
       );
       dispatch(prdetailbuyerActions.getPRDetails(prnumber.vPRSelectNumber));
       setNewDisable(true);
@@ -398,8 +404,9 @@ export default (props) => {
       );
       setTimeout(() => {
         setItemPRDetail({ ...initialStateItemPRDetail });
-        dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
         dispatch(prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber));
+        setOpenDialog(false);
+        setAddFreeItem(false);
         setConfirm(false);
       }, 500);
     } else {
@@ -1166,13 +1173,16 @@ export default (props) => {
                         vSupplierDesc: { SUPPLIER: values.SUPPLIER },
                         // vPrice: values.MMPUPR,
                         vPrice: addfreeitem ? values.MMPUPR : "0",
-                        vVat: values.MMVTCS,
+                        vVat: values.MMVTCP,
                         vCurrency: values.MMCUCD,
                         vOrdertype: values.MBORTY,
                       });
                       dispatch(itemunitActions.getItemUnits(values.MMITNO));
 
-                      if (values.MMITNO.substr(0, 2) === "OH") {
+                      if (
+                        values.MMITNO.substr(0, 2) === "OH" ||
+                        values.MMITNO.substr(0, 2) === "BU"
+                      ) {
                         setEditNameDisable(false);
                       } else {
                         setEditNameDisable(true);
@@ -1204,6 +1214,7 @@ export default (props) => {
                       id="vItemNo"
                       label="Item No"
                       required
+                      InputLabelProps={{ shrink: true }}
                     />
                   )}
                 />
@@ -1220,6 +1231,7 @@ export default (props) => {
                   type="text"
                   value={itemprdetail.vItemDesc1}
                   values={(values.vItemDesc1 = itemprdetail.vItemDesc1)}
+                  InputLabelProps={{ shrink: true }}
                   onChange={(event) => {
                     // console.log(event.target.value);
                     setItemPRDetail({
@@ -1243,6 +1255,7 @@ export default (props) => {
                   type="number"
                   value={itemprdetail.vQty}
                   values={(values.vQty = itemprdetail.vQty)}
+                  InputLabelProps={{ shrink: true }}
                   onChange={(event) => {
                     // console.log(event.target.value);
                     let qty = event.target.value;
@@ -1270,6 +1283,7 @@ export default (props) => {
                   label="Unit"
                   value={itemprdetail.vUnit}
                   values={(values.vUnit = itemprdetail.vUnit)}
+                  InputLabelProps={{ shrink: true }}
                   onChange={(event) => {
                     // console.log(event.target.value);
                     setItemPRDetail({
@@ -1359,6 +1373,7 @@ export default (props) => {
                       id="vSupplierNo"
                       label="Supplier No"
                       required
+                      InputLabelProps={{ shrink: true }}
                     />
                   )}
                 />
@@ -1374,6 +1389,7 @@ export default (props) => {
                   type="text"
                   value={itemprdetail.vSupplierName}
                   values={(values.vSupplierName = itemprdetail.vSupplierName)}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
             </Grid>
@@ -1390,6 +1406,7 @@ export default (props) => {
                   type="number"
                   value={itemprdetail.vPrice}
                   values={(values.vPrice = itemprdetail.vPrice)}
+                  InputLabelProps={{ shrink: true }}
                   onChange={(event) => {
                     // console.log(event.target.value);
                     let price = event.target.value;
@@ -1414,6 +1431,7 @@ export default (props) => {
                   type="number"
                   value={itemprdetail.vVat}
                   values={(values.vVat = itemprdetail.vVat)}
+                  InputLabelProps={{ shrink: true }}
                   onChange={(event) => {
                     // console.log(event.target.value);
                     setItemPRDetail({
@@ -1434,6 +1452,7 @@ export default (props) => {
                   type="text"
                   value={itemprdetail.vCurrency}
                   values={(values.vCurrency = itemprdetail.vCurrency)}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid item xs>
@@ -1448,6 +1467,7 @@ export default (props) => {
                   type="number"
                   value={itemprdetail.vOrdertype}
                   values={(values.vOrdertype = itemprdetail.vOrdertype)}
+                  InputLabelProps={{ shrink: true }}
                   // onInput={(e) => {
                   //   e.target.value = Math.max(0, parseInt(e.target.value))
                   //     .toString()
@@ -2455,6 +2475,38 @@ export default (props) => {
               setOpenDialog(true);
             },
           }),
+          (rowData) => ({
+            icon: "library_add",
+            tooltip: "Confirm",
+            iconProps: { color: "primary" },
+            onClick: (event, rowData) => {
+              console.log("rowData: " + JSON.stringify([rowData]));
+
+              let data = [rowData];
+              data.map((item) => {
+                dispatch(
+                  prdetailbuyerActions.updatePRConfirmDetailItem(
+                    item.PR_IBPLPN,
+                    item.PR_IBPLPS,
+                    item.PR_IBBUYE
+                  )
+                );
+
+                setTimeout(() => {
+                  setItemPRDetail({ ...initialStateItemPRDetail });
+                  dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+                  dispatch(
+                    prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber)
+                  );
+                  setOpenDialog(false);
+                  setAddFreeItem(false);
+                  setConfirm(false);
+                }, 1000);
+              });
+
+              setSelectedProduct("rowData");
+            },
+          }),
         ]}
       />
 
@@ -2515,7 +2567,7 @@ export default (props) => {
               dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setCreate(false);
-            }, 500);
+            }, 1000);
           } else if (update) {
             // console.log("update");
             dispatch(
@@ -2528,7 +2580,7 @@ export default (props) => {
               setAddFreeItem(false);
               setConfirmDisable(false);
               setUpdate(false);
-            }, 500);
+            }, 1000);
           } else {
             // console.log("confirm");
             dispatch(
@@ -2543,7 +2595,7 @@ export default (props) => {
               setOpenDialog(false);
               setAddFreeItem(false);
               setConfirm(false);
-            }, 500);
+            }, 1000);
           }
         }}
       >

@@ -95,12 +95,61 @@ export const updatePRConfirmDetailReject = (prno, buyer) => {
   };
 };
 
+export const updatePRConfirmDetailItem = (prno, line, buyer) => {
+  return async (dispatch) => {
+    try {
+      // console.log(formData);
+      await httpClient.put(
+        `${server.PRCONFIRMDETAILITEM_URL}/${prno}/${line}/${buyer}`
+      );
+      alert("Confirm Complete");
+      // history.goBack();
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
+  };
+};
+
 export const updatePRConfirmDetailAll = (prno, buyer) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
       await httpClient.put(`${server.PRCONFIRMDETAILALL_URL}/${prno}/${buyer}`);
-      // alert("Update Complete");
+      alert("Confirm Complete");
+      // history.goBack();
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
+  };
+};
+
+export const getPRDetailsGrouping = (prno) => {
+  return async (dispatch) => {
+    // console.log("PR: " + prno);
+    dispatch(setStatePRDetailBuyerToFetching());
+    doGetPRDetailsGrouping(dispatch, prno);
+  };
+};
+
+const doGetPRDetailsGrouping = async (dispatch, prno) => {
+  try {
+    let result = await httpClient.get(`${server.PRDETAILGROUPING_URL}/${prno}`);
+    // alert(JSON.stringify(result.data));
+    dispatch(setStatePRDetailBuyerToSuccess(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStatePRDetailBuyerToFailed());
+  }
+};
+
+export const updatePRDetailGrouping = (prno, itemline, group) => {
+  return async (dispatch) => {
+    try {
+      // console.log(formData);
+      await httpClient.put(
+        `${server.PRDETAILGROUPING_URL}/${prno}/${itemline}/${group}`
+      );
+      // alert("Delete Complete");
       // history.goBack();
     } catch (err) {
       alert(JSON.stringify(err));

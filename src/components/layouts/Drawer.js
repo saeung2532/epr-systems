@@ -17,6 +17,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import MailIcon from "@material-ui/icons/Mail";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import DynamicFeedIcon from "@material-ui/icons/DynamicFeed";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -288,6 +289,18 @@ const MiniDrawer = (props) => {
                   <StarBorder />
                 </ListItemIcon>
                 <ListItemText primary="Confirm MPR" />
+              </ListItem>
+              <ListItem
+                component={NavLink}
+                to="/grouping_pr"
+                button
+                key="grouping_pr"
+                activeClassName={classes.isActive}
+              >
+                <ListItemIcon>
+                  <DynamicFeedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Grouping PR" />
               </ListItem>
             </List>
           </Collapse>

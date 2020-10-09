@@ -44,3 +44,24 @@ const doGetPRNumbers = async (dispatch, fromStatus, toStatus) => {
     dispatch(setStatePRNumberBuyerToFailed());
   }
 };
+
+export const getPRNumbersGrouping = (statusHead, statusLine) => {
+  return async (dispatch) => {
+    dispatch(setStatePRNumberBuyerToFetching());
+    doGetPRNumbersGrouping(dispatch, statusHead, statusLine);
+  };
+};
+
+const doGetPRNumbersGrouping = async (dispatch, statusHead, statusLine) => {
+  try {
+    let result = await httpClient.get(
+      `${server.PRNUMBERGROUPING_URL}/${statusHead}/${statusLine}`
+    );
+    dispatch(setStatePRNumberBuyerToSuccess(result.data));
+    // alert(JSON.stringify(result.data));
+  } catch (err) {
+    alert(JSON.stringify(err));
+    localStorage.removeItem(server.TOKEN_KEY);
+    dispatch(setStatePRNumberBuyerToFailed());
+  }
+};
