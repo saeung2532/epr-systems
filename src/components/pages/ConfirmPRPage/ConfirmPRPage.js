@@ -390,7 +390,7 @@ export default (props) => {
       setCancelPRDisable(true);
       setWhsDisable(true);
       setDeptDisable(true);
-    }, 500);
+    }, 1000);
   };
 
   const handleConfirmAll = () => {
@@ -408,7 +408,7 @@ export default (props) => {
         setOpenDialog(false);
         setAddFreeItem(false);
         setConfirm(false);
-      }, 500);
+      }, 1000);
     } else {
       alert("Please create item detail before comfirm MPR");
     }
@@ -2263,7 +2263,7 @@ export default (props) => {
               let fromStatus = "05";
               let toStatus = "10";
               dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
-            }, 500);
+            }, 1000);
           } else if (searchdisable === false) {
             dispatch(prheadActions.updatePRHead(formData, props.history));
           }
@@ -2379,7 +2379,7 @@ export default (props) => {
           //         this.setState({ data }, () => resolve());
           //       }
           //       resolve();
-          //     }, 500);
+          //     }, 1000);
           //   }),
           // onRowUpdate: (newData, oldData) =>
           //   new Promise((resolve, reject) => {
@@ -2391,7 +2391,7 @@ export default (props) => {
           //         // dispatch(prdetailActions.getPRDetails(item.PR_IBPLPN, "00"));
           //       });
           //       resolve();
-          //     }, 500);
+          //     }, 1000);
           //   }),
           onRowDelete: (oldData) =>
             new Promise((resolve, reject) => {
@@ -2411,7 +2411,7 @@ export default (props) => {
                   dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
                 }
                 resolve();
-              }, 500);
+              }, 1000);
             }),
         }}
         actions={[
@@ -2467,7 +2467,7 @@ export default (props) => {
                     vRemarkDetail: item.PR_REM3,
                   });
                 });
-              }, 500);
+              }, 1000);
 
               setSelectedProduct("rowData");
               setAddFreeItem(true);

@@ -333,7 +333,7 @@ export default (props) => {
       setCancelPRDisable(true);
       setWhsDisable(true);
       setDeptDisable(true);
-    }, 500);
+    }, 1000);
   };
 
   const handleSubmitPH = () => {
@@ -354,7 +354,7 @@ export default (props) => {
         setCancelPRDisable(true);
         setWhsDisable(true);
         setDeptDisable(true);
-      }, 500);
+      }, 1000);
     } else {
       alert("Please create item detail before submit to PH");
     }
@@ -2109,7 +2109,7 @@ export default (props) => {
               let fromStatus = "00";
               let toStatus = "05";
               dispatch(prnumberActions.getPRNumbers(fromStatus, toStatus));
-            }, 500);
+            }, 1000);
           } else {
             // Check approve duplicate
             let checkApprove = false;
@@ -2266,7 +2266,7 @@ export default (props) => {
           //         this.setState({ data }, () => resolve());
           //       }
           //       resolve();
-          //     }, 500);
+          //     }, 1000);
           //   }),
           // onRowUpdate: (newData, oldData) =>
           //   new Promise((resolve, reject) => {
@@ -2278,7 +2278,7 @@ export default (props) => {
           //         // dispatch(prdetailActions.getPRDetails(item.PR_IBPLPN, "00"));
           //       });
           //       resolve();
-          //     }, 500);
+          //     }, 1000);
           //   }),
           onRowDelete: (oldData) =>
             new Promise((resolve, reject) => {
@@ -2296,7 +2296,7 @@ export default (props) => {
                   dispatch(prdetailActions.getPRDetails(prhead.vPRNumber));
                 }
                 resolve();
-              }, 500);
+              }, 1000);
             }),
         }}
         actions={[
@@ -2346,7 +2346,7 @@ export default (props) => {
                     vRemarkDetail: item.PR_REM3,
                   });
                 });
-              }, 500);
+              }, 1000);
 
               setSelectedProduct("rowData");
               setOpenDialog(true);
@@ -2393,7 +2393,7 @@ export default (props) => {
                     vRemarkDetail: item.PR_REM3,
                   });
                 });
-              }, 500);
+              }, 1000);
 
               setSelectedProduct("rowData");
               setOpenDialog(true);

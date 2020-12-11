@@ -6,6 +6,12 @@ import {
   HTTP_PRNUMBERBUYER_CLEAR,
   server,
 } from "../constants";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from "react-router-dom";
 
 export const setStatePRNumberBuyerToSuccess = (payload) => ({
   type: HTTP_PRNUMBERBUYER_SUCCESS,
@@ -57,6 +63,25 @@ const doGetPRNumbersGrouping = async (dispatch, statusHead, statusLine) => {
     let result = await httpClient.get(
       `${server.PRNUMBERGROUPING_URL}/${statusHead}/${statusLine}`
     );
+    dispatch(setStatePRNumberBuyerToSuccess(result.data));
+    // alert(JSON.stringify(result.data));
+  } catch (err) {
+    alert(JSON.stringify(err));
+    localStorage.removeItem(server.TOKEN_KEY);
+    dispatch(setStatePRNumberBuyerToFailed());
+  }
+};
+
+export const getPRNumbersGenPO = (statusHead, statusLine) => {
+  return async (dispatch) => {
+    dispatch(setStatePRNumberBuyerToFetching());
+    doGetPRNumbersGenPO(dispatch, statusHead, statusLine);
+  };
+};
+
+const doGetPRNumbersGenPO = async (dispatch, status) => {
+  try {
+    let result = await httpClient.get(`${server.PRNUMBERGENPO_URL}/${status}`);
     dispatch(setStatePRNumberBuyerToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {

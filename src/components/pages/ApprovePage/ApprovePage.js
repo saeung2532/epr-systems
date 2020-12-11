@@ -99,11 +99,11 @@ export default (props) => {
     cono: "",
     divi: "",
     prno: "",
-    // fromstatus: "",
-    // tostatus: "",
+    page: "",
     approve: "",
     token: "",
   };
+
   const [params, setParams] = useState(initialStateParams);
   const initialStatePRHead = {
     vPRNumber: "",
@@ -134,6 +134,7 @@ export default (props) => {
     vApproveSign4: null,
     vApproveDate4: null,
     vStatus: "",
+    vReason: "",
   };
   const [prhead, setPRHead] = useState(initialStatePRHead);
   const [reject, setReject] = useState(false);
@@ -159,10 +160,8 @@ export default (props) => {
       cono: params.cono,
       divi: params.divi,
       prno: params.prno,
-      // fromstatus: params.fromstatus,
-      // tostatus: params.tostatus,
+      page: "approvempr",
       approve: params.approve,
-      // approve: loginActions.getApproveTokenUsername(),
       token: params.token,
     });
 
@@ -177,7 +176,8 @@ export default (props) => {
         params.prno,
         fromStatus,
         toStatus,
-        params.approve
+        params.approve,
+        "approvempr"
       )
     );
 
@@ -186,7 +186,8 @@ export default (props) => {
         params.cono,
         params.divi,
         params.prno,
-        statusDetail
+        statusDetail,
+        "approvempr"
       )
     );
   }, []);
@@ -288,6 +289,20 @@ export default (props) => {
                   className={classes.margin}
                   style={{ width: "150px" }}
                   disabled={true}
+                  margin="normal"
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  id="vCostcenter"
+                  label="Costcenter"
+                  value={prhead.vCostcenter}
+                />
+
+                <TextField
+                  className={classes.margin}
+                  style={{ width: "150px" }}
+                  disabled={true}
                   size="small"
                   variant="outlined"
                   margin="normal"
@@ -320,6 +335,32 @@ export default (props) => {
                   placeholder="Placeholder"
                   variant="outlined"
                   value={prhead.vPlanUnPlan}
+                />
+
+                <TextField
+                  className={classes.margin}
+                  style={{ maxWidth: 120 }}
+                  required
+                  disabled={true}
+                  size="small"
+                  id="vBuyer"
+                  label="Buyer"
+                  placeholder="Placeholder"
+                  variant="outlined"
+                  value={prhead.vBuyer}
+                />
+
+                <TextField
+                  className={classes.margin}
+                  style={{ maxWidth: 120 }}
+                  required
+                  disabled={true}
+                  size="small"
+                  id="vGroup"
+                  label="Group"
+                  placeholder="Placeholder"
+                  variant="outlined"
+                  value={prhead.vGroup}
                 />
 
                 <TextField
@@ -543,7 +584,7 @@ export default (props) => {
 
               <MaterialTable
                 id="root_pr"
-                title={`Approve MPR : ${prhead.vStatus}`}
+                title={`Approve mPR : ${prhead.vStatus}`}
                 columns={columns}
                 data={prdetailReducer.result ? prdetailReducer.result : []}
                 components={{
@@ -709,6 +750,14 @@ export default (props) => {
                     disabled={rejectDisable}
                     style={{ width: "200px" }}
                     placeholder="Reason"
+                    value={prhead.vReason}
+                    onChange={(event) => {
+                      // console.log(event.target.value);
+                      setPRHead({
+                        ...prhead,
+                        vReason: event.target.value,
+                      });
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -1241,7 +1290,7 @@ export default (props) => {
           </IconButton>
 
           <Typography variant="h6" noWrap>
-            Smart Purchase : Monthly Plan - Ver {process.env.REACT_APP_VERSION}
+            Smart Approve : Monthly Plan - Ver {process.env.REACT_APP_VERSION}
             {/* <Typography variant="body1"> Approve </Typography> */}
             <Typography variant="body1">
               {loginActions.getApproveTokenCompany()}
@@ -1275,13 +1324,29 @@ export default (props) => {
             "vNextStatus",
             prhead.vStatus === "15" ? "20" : prhead.vStatus
           );
+          formData.append(
+            "vReason",
+            prhead.vReason ? prhead.vReason : "Reject"
+          );
 
           if (approve) {
             // console.log("approve");
             if (prhead.vApprove === loginActions.getApproveTokenUsername()) {
-              dispatch(prheadapproveActions.approvePRHead(formData));
+              dispatch(
+                prheadapproveActions.approveFinalPRHead(
+                  formData,
+                  props.history,
+                  params.page
+                )
+              );
               setTimeout(() => {
-                dispatch(prheadapproveActions.checkApprovePRHead(formData));
+                dispatch(
+                  prheadapproveActions.checkApprovePRHead(
+                    formData,
+                    props.history,
+                    params.page
+                  )
+                );
                 alert("Approve complete.");
                 setApprove(false);
               }, 1000);
@@ -1290,9 +1355,21 @@ export default (props) => {
             }
           } else {
             // console.log("reject");
-            dispatch(prheadapproveActions.rejectPRHead(formData));
+            dispatch(
+              prheadapproveActions.rejectFinalPRHead(
+                formData,
+                props.history,
+                params.page
+              )
+            );
             setTimeout(() => {
-              dispatch(prheadapproveActions.checkApprovePRHead(formData));
+              dispatch(
+                prheadapproveActions.checkApprovePRHead(
+                  formData,
+                  props.history,
+                  params.page
+                )
+              );
               alert("Reject complete.");
               setPRHead({ ...initialStatePRHead });
               let statusDetail = "10";
@@ -1301,7 +1378,8 @@ export default (props) => {
                   params.cono,
                   params.divi,
                   params.prno,
-                  statusDetail
+                  statusDetail,
+                  params.page
                 )
               );
               setApproveDisable(true);
@@ -1320,7 +1398,8 @@ export default (props) => {
                 params.prno,
                 fromStatus,
                 toStatus,
-                params.approve
+                params.approve,
+                params.page
               )
             );
           }, 1000);

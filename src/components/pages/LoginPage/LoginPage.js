@@ -130,7 +130,8 @@ const LoginPage = (props) => {
           required
           fullWidth
           id="username"
-          label="Username"
+          label="Username (M3-Add on)"
+          placeholder="Username (M3-Add on)"
           onChange={handleChange}
           value={values.username}
           autoFocus
@@ -192,10 +193,15 @@ const LoginPage = (props) => {
           Sign In
         </Button>
         {/* {isSubmitting && <CircularProgress style={{ marginTop: 10 }} />} */}
+
         <Grid container justify="flex-end">
-          {/* <Link component={RouterLink} to="/register" variant="body2">
-            Register
-          </Link> */}
+          <a
+            href="http://192.200.9.106:8080/UserRequest/?page=ChangePW"
+            target="_blank"
+            style={{ textDecoration: "none" }}
+          >
+            Change password
+          </a>
         </Grid>
       </form>
     );

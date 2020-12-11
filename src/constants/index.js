@@ -148,6 +148,12 @@ export const HTTP_SENDEMAIL_FAILED = "HTTP_SENDEMAIL_FAILED";
 export const HTTP_SENDEMAIL_SUCCESS = "HTTP_SENDEMAIL_SUCCESS";
 export const HTTP_SENDEMAIL_CLEAR = "HTTP_SENDEMAIL_CLEAR";
 
+// GENPO
+export const HTTP_GENPO_FETCHING = "HTTP_GENPO_FETCHING";
+export const HTTP_GENPO_FAILED = "HTTP_GENPO_FAILED";
+export const HTTP_GENPO_SUCCESS = "HTTP_GENPO_SUCCESS";
+export const HTTP_GENPO_CLEAR = "HTTP_GENPO_CLEAR";
+
 // Error Code
 export const E_PICKER_CANCELLED = "E_PICKER_CANCELLED";
 export const E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR =
@@ -171,6 +177,7 @@ export const UPLOAD_PHOTO_FAIL_MESSAGE =
 // export const apiUrl = "http://localhost:8080/br_api/";
 // export const apiUrl = "http://192.200.9.106:8080/br_api/";
 export const apiUrl = `${process.env.REACT_APP_API_URL}/br_api/`;
+// export const apiUrl = `${process.env.REACT_APP_API_URL}/br_apiv2/`;
 export const imageUrl = "http://localhost:8080";
 
 export const server = {
@@ -189,31 +196,42 @@ export const server = {
   PHGROUP_URL: `api_data/phgroup`,
   PHBUYER_URL: `api_data/phbuyer`,
   SUPPLIER_URL: `api_data/supplier`,
+  MONTH_URL: `api_data/month`,
+  STATUS_URL: `api_data/status`,
+  COSTCENTERWITHOUTDEPARTMENT_URL: `api_data/costcenterwithoutdepartment`,
+  SENDEMAIL_URL: `api_data/resendemail`,
+
+  MPRHEAD_URL: `api_data/mprhead`,
+  PRHEAD_URL: `api_data/prhead`,
   PRNUMBER_URL: `api_data/prnumber`,
   PRNUMBERBUYER_URL: `api_data/prnumberbuyer`,
   PRNUMBERGROUPING_URL: `api_data/prnumbergrouping`,
-  MPRHEAD_URL: `api_data/mprhead`,
-  PRHEAD_URL: `api_data/prhead`,
-  PRHEADAPPROVE_URL: `api_data/prheadapprove`,
+  PRNUMBERGENPO_URL: `api_data/prnumbergenpo`,
+  PRNUMBERWITHOUTUSER_URL: `api_data/prnumberwithoutuser`,
+  PRNUMBERUSER_URL: `api_data/prnumberuser`,
+  PRHEADMONITORING_URL: `api_data/prheadmonitoring`,
+
   PRDETAIL_URL: `api_data/prdetail`,
+  PRDETAILBUYER_URL: `api_data/prdetailbuyer`,
+  PRDETAILGROUPING_URL: `api_data/prdetailgrouping`,
+  PRDETAILGENPO_URL: `api_data/prdetailgenpo`,
+  PRDETAILMONITORING_URL: `api_data/prdetailmonitoring`,
+
   PRCONFIRMDETAILREJECT_URL: `api_data/prconfirmdetailreject`,
   PRCONFIRMDETAILITEM_URL: `api_data/prconfirmdetailitem`,
   PRCONFIRMDETAILALL_URL: `api_data/prconfirmdetailall`,
-  PRDETAILAPPROVE_URL: `api_data/prdetailapprove`,
-  PRDETAILBUYER_URL: `api_data/prdetailbuyer`,
-  PRDETAILGROUPING_URL: `api_data/prdetailgrouping`,
   PRCONFIRMBUYER_URL: `api_data/prconfirmbuyer`,
+
   PRAPPROVE_URL: `api_data/prapprove`,
+  MPRHEADAPPROVE_URL: `api_data/mprheadapprove`,
+  EPRHEADAPPROVE_URL: `api_data/eprheadapprove`,
+  MPRDETAILAPPROVE_URL: `api_data/mprdetailapprove`,
+  EPRDETAILAPPROVE_URL: `api_data/eprdetailapprove`,
   CHECKPRAPPROVE_URL: `api_data/checkprapprove`,
+  MPRAPPROVEFINAL_URL: `api_data/mprapprovefinal`,
+  EPRAPPROVEFINAL_URL: `api_data/eprapprovefinal`,
   PRREJECT_URL: `api_data/prrejectapprove`,
-  PRNUMBERWITHOUTUSER_URL: `api_data/prnumberwithoutuser`,
-  PRNUMBERUSER_URL: `api_data/prnumberuser`,
-  COSTCENTERWITHOUTDEPARTMENT_URL: `api_data/costcenterwithoutdepartment`,
-  MONTH_URL: `api_data/month`,
-  STATUS_URL: `api_data/status`,
-  PRHEADMONITORING_URL: `api_data/prheadmonitoring`,
-  PRDETAILMONITORING_URL: `api_data/prdetailmonitoring`,
-  SENDEMAIL_URL: `api_data/resendemail`,
+  PRGENPO_URL: `api_data/callmform`,
 
   REFRESH_TOKEN_URL: `refresh/token`,
   TOKEN_KEY: `token`,

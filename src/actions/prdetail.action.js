@@ -43,18 +43,52 @@ const doGetPRDetails = async (dispatch, prno) => {
   }
 };
 
-export const getPRDetailApproves = (cono, divi, prno, status) => {
+export const getPRDetailApproves = (cono, divi, prno, status, page) => {
   return async (dispatch) => {
     // console.log("PR: " + prno);
     dispatch(setStatePRDetailToFetching());
-    doGetPRDetailApproves(dispatch, cono, divi, prno, status);
+    // doGetMPRDetailApproves(dispatch, cono, divi, prno, status);
+    if (page === "approvempr") {
+      doGetMPRDetailApproves(dispatch, cono, divi, prno, status);
+    } else {
+      doGetEPRDetailApproves(dispatch, cono, divi, prno, status);
+    }
   };
 };
 
-const doGetPRDetailApproves = async (dispatch, cono, divi, prno, status) => {
+// export const getMPRDetailApproves = (cono, divi, prno, status) => {
+//   return async (dispatch) => {
+//     // console.log("PR: " + prno);
+//     dispatch(setStatePRDetailToFetching());
+//     doGetMPRDetailApproves(dispatch, cono, divi, prno, status);
+//   };
+// };
+
+const doGetMPRDetailApproves = async (dispatch, cono, divi, prno, status) => {
   try {
     let result = await httpClient.get(
-      `${server.PRDETAILAPPROVE_URL}/${cono}/${divi}/${prno}/${status}`
+      `${server.MPRDETAILAPPROVE_URL}/${cono}/${divi}/${prno}/${status}`
+    );
+    // alert(JSON.stringify(result.data));
+    dispatch(setStatePRDetailToSuccess(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStatePRDetailToFailed());
+  }
+};
+
+// export const getEPRDetailApproves = (cono, divi, prno, status) => {
+//   return async (dispatch) => {
+//     // console.log("PR: " + prno);
+//     dispatch(setStatePRDetailToFetching());
+//     doGetEPRDetailApproves(dispatch, cono, divi, prno, status);
+//   };
+// };
+
+const doGetEPRDetailApproves = async (dispatch, cono, divi, prno, status) => {
+  try {
+    let result = await httpClient.get(
+      `${server.EPRDETAILAPPROVE_URL}/${cono}/${divi}/${prno}/${status}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRDetailToSuccess(result.data));

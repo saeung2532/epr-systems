@@ -113,6 +113,7 @@ export default (props) => {
     ({ prconfirmbuyerReducer }) => prconfirmbuyerReducer
   );
   const [prnumber, setPRNumber] = useState({ vPRSelectNumber: "" });
+  const [ponumber, setPONumber] = useState({ vPOSelectNumber: "" });
   const initialStatePRHead = {
     vPRNumber: "",
     vDate: moment(new Date()).format("YYYY-MM-DD"),
@@ -299,6 +300,16 @@ export default (props) => {
       },
     },
   })(TextField);
+
+  const ColorButton = withStyles((theme) => ({
+    root: {
+      color: theme.palette.getContrastText(green[500]),
+      backgroundColor: green[500],
+      "&:hover": {
+        backgroundColor: green[700],
+      },
+    },
+  }))(Button);
 
   const theme = createMuiTheme({
     palette: {
@@ -1308,6 +1319,7 @@ export default (props) => {
     {
       title: "Line",
       field: "PR_IBPLPS",
+      // type: "numeric",
       editable: "never",
       width: 50,
       headerStyle: {
@@ -1338,8 +1350,8 @@ export default (props) => {
       title: "Group",
       field: "PR_SPORDER",
       type: "numeric",
-      width: 100,
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      width: 80,
+      headerStyle: { maxWidth: 80, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
         textAlign: "center",
         borderLeft: 1,
@@ -1922,11 +1934,12 @@ export default (props) => {
               prdetailbuyerActions.updatePRDetailGrouping(
                 oldData.PR_IBPLPN,
                 oldData.PR_IBPLPS,
-                newData.PR_SPORDER
+                newData.PR_SPORDER,
+                moment(oldData.PR_IBDWDT).format("YYYY-MM-DD")
               )
             );
             return new Promise((resolve, reject) => {
-              // console.log("newValue: " + oldData.PR_IBPLPN + " " + oldData.PR_IBPLPS + " " + newData.PR_SPORDER);
+              // console.log("newValue: " + oldData.PR_IBPLPN + " " + oldData.PR_IBPLPS + " " + newData.PR_SPORDER + " " + moment(oldData.PR_IBDWDT).format("YYYY-MM-DD"));
               setTimeout(() => {
                 dispatch(
                   prdetailbuyerActions.getPRDetailsGrouping(

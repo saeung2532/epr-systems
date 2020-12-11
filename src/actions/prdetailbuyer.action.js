@@ -142,12 +142,12 @@ const doGetPRDetailsGrouping = async (dispatch, prno) => {
   }
 };
 
-export const updatePRDetailGrouping = (prno, itemline, group) => {
+export const updatePRDetailGrouping = (prno, itemline, group, date) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
       await httpClient.put(
-        `${server.PRDETAILGROUPING_URL}/${prno}/${itemline}/${group}`
+        `${server.PRDETAILGROUPING_URL}/${prno}/${itemline}/${group}/${date}`
       );
       // alert("Delete Complete");
       // history.goBack();
@@ -155,4 +155,25 @@ export const updatePRDetailGrouping = (prno, itemline, group) => {
       alert(JSON.stringify(err));
     }
   };
+};
+
+export const getPRDetailsGenPO = (status, prnoline) => {
+  return async (dispatch) => {
+    // console.log("PR: " + prno);
+    dispatch(setStatePRDetailBuyerToFetching());
+    doGetPRDetailsGenPO(dispatch, status, prnoline);
+  };
+};
+
+const doGetPRDetailsGenPO = async (dispatch, status, prnoline) => {
+  try {
+    let result = await httpClient.get(
+      `${server.PRDETAILGENPO_URL}/${status}/${prnoline}`
+    );
+    // alert(JSON.stringify(result.data));
+    dispatch(setStatePRDetailBuyerToSuccess(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStatePRDetailBuyerToFailed());
+  }
 };

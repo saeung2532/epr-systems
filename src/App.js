@@ -19,6 +19,7 @@ import HomePage from "./components/pages/HomePage/HomePage";
 import PlanPRPage from "./components/pages/PlanPRPage/PlanPRPage";
 import ConfirmPRPage from "./components/pages/ConfirmPRPage/ConfirmPRPage";
 import GroupPRPage from "./components/pages/GroupPRPage/GroupPRPage";
+import GenPOPage from "./components/pages/GenPOPage/GenPOPage";
 import MonitoringPage from "./components/pages/MonitoringPage/MonitoringPage";
 import PrintReportPage from "./components/pages/PrintReportPage/PrintReportPage";
 import ApprovePage from "./components/pages/ApprovePage/ApprovePage";
@@ -120,6 +121,7 @@ export default function App() {
         <PrivateRoute exact path="/plan_pr" component={PlanPRPage} />
         <PrivateRoute exact path="/confirm_pr" component={ConfirmPRPage} />
         <PrivateRoute exact path="/grouping_pr" component={GroupPRPage} />
+        <PrivateRoute exact path="/genpo" component={GenPOPage} />
         <PrivateRoute exact path="/monitoring" component={MonitoringPage} />
         <PrivateRoute exact path="/printreport" component={PrintReportPage} />
         <PrivateRoute exact path="/test" component={TestPage} />
