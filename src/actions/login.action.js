@@ -128,7 +128,7 @@ export const getTokenCono = () => {
   try {
     let token = localStorage.getItem(server.TOKEN_KEY);
     var decodedToken = jwt.decode(token, { complete: true });
-    var getCono = decodedToken.payload.role.toString().split(":");
+    var getCono = decodedToken.payload.sub.toString().split(":");
     return getCono[0].trim();
   } catch (e) {
     return false;
@@ -139,7 +139,7 @@ export const getTokenDivi = () => {
   try {
     let token = localStorage.getItem(server.TOKEN_KEY);
     var decodedToken = jwt.decode(token, { complete: true });
-    var getDivi = decodedToken.payload.role.toString().split(":");
+    var getDivi = decodedToken.payload.sub.toString().split(":");
     return getDivi[1].trim();
   } catch (e) {
     return false;
@@ -150,7 +150,7 @@ export const getTokenCompany = () => {
   try {
     let token = localStorage.getItem(server.TOKEN_KEY);
     var decodedToken = jwt.decode(token, { complete: true });
-    return decodedToken.payload.role;
+    return decodedToken.payload.sub;
   } catch (e) {
     return false;
   }
@@ -170,7 +170,7 @@ export const getApproveTokenCompany = () => {
   try {
     let token = localStorage.getItem(server.APPROVE_TOKEN_KEY);
     var decodedToken = jwt.decode(token, { complete: true });
-    return decodedToken.payload.role;
+    return decodedToken.payload.sub;
   } catch (e) {
     return false;
   }

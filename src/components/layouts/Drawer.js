@@ -21,6 +21,8 @@ import DynamicFeedIcon from "@material-ui/icons/DynamicFeed";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ReceiptIcon from "@material-ui/icons/Receipt";
+import ViewListIcon from "@material-ui/icons/ViewList";
 import Collapse from "@material-ui/core/Collapse";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -264,7 +266,7 @@ const MiniDrawer = (props) => {
             activeClassName={classes.isActive}
           >
             <ListItemIcon>
-              <StoreIcon />
+              <ViewListIcon />
             </ListItemIcon>
             <ListItemText primary="Plan MPR" />
           </ListItem>
@@ -301,6 +303,18 @@ const MiniDrawer = (props) => {
                   <DynamicFeedIcon />
                 </ListItemIcon>
                 <ListItemText primary="Grouping PR" />
+              </ListItem>
+              <ListItem
+                component={NavLink}
+                to="/genpo"
+                button
+                key="genpo"
+                activeClassName={classes.isActive}
+              >
+                <ListItemIcon>
+                  <ReceiptIcon />
+                </ListItemIcon>
+                <ListItemText primary="Gen PO" />
               </ListItem>
             </List>
           </Collapse>

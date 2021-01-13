@@ -15,6 +15,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
@@ -45,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginTop: 60,
   },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative",
+  },
   paper: {
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
@@ -64,6 +69,27 @@ const useStyles = makeStyles((theme) => ({
     borderTop: 1,
     borderColor: "#E0E0E0",
     borderStyle: "solid",
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    "&:hover": {
+      backgroundColor: green[700],
+    },
+  },
+  fabProgress: {
+    color: green[500],
+    position: "absolute",
+    top: -6,
+    left: -6,
+    zIndex: 1,
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
   },
 }));
 
@@ -164,6 +190,8 @@ export default (props) => {
   const [deptdisable, setDeptDisable] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     // console.log("dispatch prnumberActions");
@@ -224,6 +252,12 @@ export default (props) => {
     });
   }, [prheadReducer]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [prdetailReducer]);
+
   const prnumbers = useMemo(() =>
     prnumberReducer.result ? prnumberReducer.result : []
   );
@@ -270,6 +304,7 @@ export default (props) => {
       setEditDisable(false);
       setCreateDisable(false);
       setCancelPRDisable(false);
+      setLoading(true);
     }
   };
 
@@ -1077,7 +1112,8 @@ export default (props) => {
 
                       if (
                         values.MMITNO.substr(0, 2) === "OH" ||
-                        values.MMITNO.substr(0, 2) === "BU"
+                        values.MMITNO.substr(0, 2) === "BU" ||
+                        values.MMITNO.substr(0, 2) === "EL"
                       ) {
                         setEditNameDisable(false);
                       } else {
@@ -1519,34 +1555,44 @@ export default (props) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="default">
-              Close
-            </Button>
-            <Button
-              disabled={savedisable}
-              type="submit"
-              color="primary"
-              onClick={(event) => {
-                if (itemprdetail.vItemLine === "") {
-                  setCreate(true);
-                } else {
-                  setUpdate(true);
-                }
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              disabled={confirmdisable}
-              type="submit"
-              color="secondary"
-              onClick={(event) => {
-                setConfirm(true);
-              }}
-              style={{ display: "none" }}
-            >
-              Confirm
-            </Button>
+            <div>
+              <Button onClick={handleClose} color="default">
+                Close
+              </Button>
+              <Button
+                disabled={savedisable}
+                type="submit"
+                color="primary"
+                // className={classes.wrapper}
+                onClick={(event) => {
+                  if (itemprdetail.vItemLine === "") {
+                    setCreate(true);
+                  } else {
+                    setUpdate(true);
+                  }
+                  // setSaveDisable(true);
+                }}
+              >
+                Save
+              </Button>
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
+              )}
+              <Button
+                disabled={confirmdisable}
+                type="submit"
+                color="secondary"
+                onClick={(event) => {
+                  setConfirm(true);
+                }}
+                style={{ display: "none" }}
+              >
+                Confirm
+              </Button>
+            </div>
           </DialogActions>
         </form>
       </Dialog>
@@ -2170,6 +2216,7 @@ export default (props) => {
         id="root_pr"
         title={`Plan MPR Stock & Non Stock : ${prhead.vStatus}`}
         columns={columns}
+        isLoading={loading}
         data={prdetailReducer.result ? prdetailReducer.result : []}
         components={{
           Toolbar: (props) => (
@@ -2315,7 +2362,11 @@ export default (props) => {
 
               setTimeout(() => {
                 data.map((item) => {
-                  if (item.PR_IBITNO.substr(0, 2) === "OH") {
+                  if (
+                    item.PR_IBITNO.substr(0, 2) === "OH" ||
+                    item.PR_IBITNO.substr(0, 2) === "BU" ||
+                    item.PR_IBITNO.substr(0, 2) === "EL"
+                  ) {
                     setEditNameDisable(false);
                   } else {
                     setEditNameDisable(true);
@@ -2452,6 +2503,10 @@ export default (props) => {
           formData.append("vConfirm", "0");
           formData.append("vStatus", "10");
 
+          setSaveDisable(true);
+          setSuccess(false);
+          setLoading(true);
+
           if (create || copy) {
             // console.log("create");
             dispatch(prdetailActions.addPRDetail(formData, props.history));
@@ -2461,6 +2516,9 @@ export default (props) => {
               setOpenDialog(false);
               setCreate(false);
               setCopy(false);
+              setSaveDisable(false);
+              setSuccess(true);
+              setLoading(false);
             }, 1000);
           } else if (update) {
             // console.log("update");
@@ -2470,6 +2528,9 @@ export default (props) => {
               dispatch(prdetailActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setUpdate(false);
+              setSaveDisable(false);
+              setSuccess(true);
+              setLoading(false);
             }, 1000);
           } else {
             // console.log("confirm");
@@ -2479,6 +2540,9 @@ export default (props) => {
               dispatch(prdetailActions.getPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setConfirm(false);
+              setSaveDisable(false);
+              setSuccess(true);
+              setLoading(false);
             }, 1000);
           }
         }}

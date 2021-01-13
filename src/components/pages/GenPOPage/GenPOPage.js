@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import NumberFormat from "react-number-format";
@@ -9,20 +9,10 @@ import {
   ThemeProvider,
   createMuiTheme,
 } from "@material-ui/core/styles";
+import clsx from "clsx";
 import { Typography, Grid, Paper, TextField, Button } from "@material-ui/core";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import SearchIcon from "@material-ui/icons/Search";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import EditIcon from "@material-ui/icons/Edit";
-import CancelIcon from "@material-ui/icons/Cancel";
-import SaveIcon from "@material-ui/icons/Save";
-import SendIcon from "@material-ui/icons/Send";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { Formik, Form, Field } from "formik";
 import { red, green, purple } from "@material-ui/core/colors/";
 import * as loginActions from "./../../../actions/login.action";
@@ -42,10 +32,15 @@ import * as phbuyerActions from "./../../../actions/phbuyer.action";
 import * as supplierActions from "./../../../actions/supplier.action";
 import * as prconfirmbuyerActions from "./../../../actions/prconfirmbuyer.action";
 import * as genpoActions from "./../../../actions/genpo.action";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     marginTop: 60,
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative",
   },
   paper: {
     padding: theme.spacing(2),
@@ -66,6 +61,31 @@ const useStyles = makeStyles((theme) => ({
     borderTop: 1,
     borderColor: "#E0E0E0",
     borderStyle: "solid",
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative",
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    "&:hover": {
+      backgroundColor: green[700],
+    },
+  },
+  fabProgress: {
+    color: green[500],
+    position: "absolute",
+    top: -6,
+    left: -6,
+    zIndex: 1,
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
   },
 }));
 
@@ -181,6 +201,9 @@ export default (props) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [prconfirmbuyer, setPRConfirmBuyer] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const timer = useRef();
 
   useEffect(() => {
     // console.log("dispatch prnumberbuyerActions");
@@ -269,10 +292,13 @@ export default (props) => {
 
   useEffect(() => {
     const genpos = genpoReducer.result ? [genpoReducer.result] : [];
-    console.log(JSON.stringify(genpos));
+    // console.log(JSON.stringify(genpos));
     genpos.map((item) => {
-      console.log(item.message);
+      // console.log(item.message);
       setPONumber({ ...prnumber, vPOSelectNumber: item.message });
+      setSuccess(true);
+      setLoading(false);
+      handleAfterGenPO();
     });
   }, [genpoReducer]);
 
@@ -301,6 +327,10 @@ export default (props) => {
   const genpos = useMemo(() =>
     genpoReducer.result ? genpoReducer.result : []
   );
+
+  const buttonClassname = clsx({
+    [classes.buttonSuccess]: success,
+  });
 
   const ValidationTextField = withStyles({
     root: {
@@ -348,16 +378,23 @@ export default (props) => {
         prnumber.vPRSelectNumberLine
       )
     );
+    setPONumber({ ...prnumber, vPOSelectNumber: "" });
     setGenPODisable(false);
   };
 
   const handleGenPO = () => {
-    setGenPODisable(true);
     let status = "92";
     dispatch(genpoActions.genPONumber(status, prnumber.vPRSelectNumberLine));
-    // setTimeout(() => {
-    //   setGenPODisable(false);
-    // }, 3000);
+    setGenPODisable(true);
+    setSuccess(false);
+    setLoading(true);
+  };
+
+  const handleAfterGenPO = () => {
+    let status = "92";
+    dispatch(prnumberbuyerActions.getPRNumbersGenPO(status));
+    prheadReducer.result = null;
+    prdetailbuyerReducer.result = null;
   };
 
   const handleCancel = () => {
@@ -373,61 +410,14 @@ export default (props) => {
     setDeptDisable(true);
   };
 
-  const handleClose = () => {
-    setOpenDialog(false);
-    setItemPRDetail(initialStateItemPRDetail);
-    setSaveDisable(false);
-    setConfirmDisable(false);
-    setAddFreeItem(false);
-    setEditNameDisable(true);
-  };
-
-  const handleRejectPR = () => {
-    let status = "05"; //Reject
-    dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
-    dispatch(
-      prdetailbuyerActions.updatePRConfirmDetailReject(
-        prhead.vPRNumber,
-        loginActions.getTokenUsername()
-      )
-    );
-    setTimeout(() => {
-      setCancelPRDisable(true);
-      setPRNumber({ ...prnumber, vPRSelectNumber: "" });
-      setPRHead({ ...initialStatePRHead });
-      let fromStatus = "05";
-      let toStatus = "10";
-      dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
-      dispatch(prdetailbuyerActions.getPRDetails("00"));
-      alert("Reject Complete");
-      setSearchDisable(false);
-      setNewDisable(false);
-      setEditDisable(true);
-      setCreateDisable(true);
-      setCancelPRDisable(true);
-      setWhsDisable(true);
-      setDeptDisable(true);
-    }, 500);
-  };
-
-  const handleConfirmAll = () => {
-    if (prdetailbuyerReducer.result.length > 0) {
-      // console.log("confirm");
-      dispatch(
-        prdetailbuyerActions.updatePRConfirmDetailAll(
-          prhead.vPRNumber,
-          loginActions.getTokenUsername()
-        )
-      );
-      setTimeout(() => {
-        setItemPRDetail({ ...initialStateItemPRDetail });
-        dispatch(prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber));
-        setOpenDialog(false);
-        setAddFreeItem(false);
-        setConfirm(false);
-      }, 500);
-    } else {
-      alert("Please create item detail before comfirm MPR");
+  const handleButtonClick = () => {
+    if (!loading) {
+      setSuccess(false);
+      setLoading(true);
+      timer.current = window.setTimeout(() => {
+        setSuccess(true);
+        setLoading(false);
+      }, 2000);
     }
   };
 
@@ -545,7 +535,12 @@ export default (props) => {
                     </Button>
                   </a>
                 </Grid>
-                <Grid item xs={12} sm={1} className={classes.margin}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={1}
+                  className={(classes.margin, classes.wrapper)}
+                >
                   <ColorButton
                     fullWidth
                     size="medium"
@@ -555,9 +550,16 @@ export default (props) => {
                     disabled={genpodisable}
                     startIcon={<SearchIcon />}
                     onClick={handleGenPO}
+                    // onClick={handleButtonClick}
                   >
                     Gen PO
                   </ColorButton>
+                  {loading && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
                 </Grid>
 
                 <TextField
@@ -581,6 +583,7 @@ export default (props) => {
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
+
               <Grid container item xs className={classes.margin}>
                 <TextField
                   className={classes.margin}
@@ -823,574 +826,6 @@ export default (props) => {
           </Grid>
         </Grid>
       </form>
-    );
-  };
-
-  const showDialog = ({
-    values,
-    handleChange,
-    handleSubmit,
-    setFieldValue,
-    isSubmitting,
-  }) => {
-    if (selectedProduct === null) {
-      return "";
-    }
-
-    const items = itemReducer.result ? itemReducer.result : [];
-    const itemunits = itemunitReducer.result ? itemunitReducer.result : [];
-    const phgroups = phgroupReducer.result ? phgroupReducer.result : [];
-    const phbuyers = phbuyerReducer.result ? phbuyerReducer.result : [];
-    const suppliers = supplierReducer.result ? supplierReducer.result : [];
-    return (
-      <Dialog
-        open={openDialog}
-        keepMounted
-        onClose={() => {}}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <form onSubmit={handleSubmit}>
-          <DialogTitle id="alert-dialog-slide-title">
-            PR Number : {prhead.vPRNumber}
-            {itemprdetail.vItemLine
-              ? ` - Line : ${itemprdetail.vItemLine}`
-              : ""}
-          </DialogTitle>
-          <DialogContent>
-            <Grid container item xs={12} spacing={2}>
-              <Grid item xs={5}>
-                <Autocomplete
-                  error
-                  className={classes.margin}
-                  autoFocus
-                  required
-                  fullWidth
-                  disabled={addfreeitem}
-                  size="small"
-                  id="vItemNoAuto"
-                  options={items}
-                  getOptionLabel={(option) => option.ITEM}
-                  value={itemprdetail.vItemDesc2}
-                  values={(values.vItemNo = itemprdetail.vItemNo)}
-                  onChange={(event, values) => {
-                    // console.log(values);
-                    if (values) {
-                      // console.log(
-                      //   "Price: " +
-                      //     values.MMPUPR +
-                      //     " : Order Type: " +
-                      //     values.MBORTY +
-                      //     " Currency: " +
-                      //     values.MMCUCD
-                      // );
-
-                      setItemPRDetail({
-                        ...itemprdetail,
-                        vQty: "",
-                        vTotal: "",
-                        // vItemNo: { MMITNO: values.MMITNO },
-                        vItemNo: values.MMITNO,
-                        vItemDesc1: values.MMITDS,
-                        vItemDesc2: { ITEM: values.ITEM },
-                        vUnit: values.MMUNMS,
-                        vSupplierNo: values.MMSUNO,
-                        vSupplierName: values.SASUNM,
-                        vSupplierDesc: { SUPPLIER: values.SUPPLIER },
-                        // vPrice: values.MMPUPR,
-                        vPrice: addfreeitem ? values.MMPUPR : "0",
-                        vVat: values.MMVTCP,
-                        vCurrency: values.MMCUCD,
-                        vOrdertype: values.MBORTY,
-                      });
-                      dispatch(itemunitActions.getItemUnits(values.MMITNO));
-
-                      if (values.MMITNO.substr(0, 2) === "OH") {
-                        setEditNameDisable(false);
-                      } else {
-                        setEditNameDisable(true);
-                      }
-
-                      if (values.MMPUPR < 0) {
-                        setSaveDisable(true);
-                        setConfirmDisable(true);
-                        alert("Price must be enter, Please contact ICT.");
-                      }
-
-                      if (values.MBORTY === "") {
-                        setSaveDisable(true);
-                        setConfirmDisable(true);
-                        alert("Order Type must be enter, Please contact ICT.");
-                      }
-
-                      if (values.MMCUCD === "") {
-                        setSaveDisable(true);
-                        setConfirmDisable(true);
-                        alert("Currency must be enter, Please contact ICT.");
-                      }
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={true}
-                      id="vItemNo"
-                      label="Item No"
-                      required
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  className={classes.margin}
-                  error={true}
-                  fullWidth
-                  disabled={editnamedisable}
-                  margin="dense"
-                  id="vItemName"
-                  label="Item Name"
-                  type="text"
-                  value={itemprdetail.vItemDesc1}
-                  values={(values.vItemDesc1 = itemprdetail.vItemDesc1)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vItemDesc1: event.target.value,
-                    });
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <Grid container item xs={12} spacing={2}>
-              <Grid item xs={5}>
-                <TextField
-                  required
-                  error={true}
-                  fullWidth
-                  disabled={editdisable}
-                  margin="dense"
-                  id="vQty"
-                  label="Qty"
-                  type="number"
-                  value={itemprdetail.vQty}
-                  values={(values.vQty = itemprdetail.vQty)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    let qty = event.target.value;
-                    let price = itemprdetail.vPrice;
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vQty: event.target.value,
-                      vTotal: (qty * price).toFixed(4),
-                    });
-                  }}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  className={classes.margin}
-                  fullWidth
-                  disabled={editnamedisable}
-                  required
-                  select
-                  margin="dense"
-                  variant="standard"
-                  size="small"
-                  required
-                  id="vUnit"
-                  label="Unit"
-                  value={itemprdetail.vUnit}
-                  values={(values.vUnit = itemprdetail.vUnit)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vUnit: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option />
-                  {itemunits.map((option) => (
-                    <option key={option.ID} value={option.MMUNMS}>
-                      {option.MMUNMS}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-            </Grid>
-            <TextField
-              required
-              fullWidth
-              disabled="true"
-              margin="dense"
-              type="date"
-              size="small"
-              id="vDeliveryDate"
-              label="Delivery Date"
-              variant="standard"
-              defaultValue={prhead.vDate}
-              value={itemprdetail.vDateDetail}
-              values={(values.vDateDetail = itemprdetail.vDateDetail)}
-              onChange={(event) => {
-                var dateNow = new Date();
-                if (event.target.value < moment(dateNow).format("YYYY-MM-DD")) {
-                  alert("Date not less than present day.");
-                } else {
-                  setItemPRDetail({
-                    ...itemprdetail,
-                    vDateDetail: event.target.value,
-                  });
-                }
-              }}
-              InputLabelProps={{ shrink: true, required: true }}
-            />
-            <Grid container item xs={12} spacing={2}>
-              <Grid item xs={5}>
-                <Autocomplete
-                  className={classes.margin}
-                  autoFocus
-                  required
-                  fullWidth
-                  size="small"
-                  id="vSupplierNoAuto"
-                  options={suppliers}
-                  // getOptionLabel={(option) => option.IDSUNO}
-                  // value={itemprdetail.vSupplierNo}
-                  // values={(values.vSupplierNo = itemprdetail.vSupplierNo)}
-                  getOptionLabel={(option) => option.SUPPLIER}
-                  value={itemprdetail.vSupplierDesc}
-                  values={(values.vSupplierNo = itemprdetail.vSupplierNo)}
-                  onChange={(event, values) => {
-                    // console.log(values);
-                    if (values) {
-                      setItemPRDetail({
-                        ...itemprdetail,
-                        // vSupplierNo: { IDSUNO: values.IDSUNO },
-                        vSupplierNo: values.IDSUNO,
-                        vSupplierName: values.SASUNM,
-                        vSupplierDesc: { SUPPLIER: values.SUPPLIER },
-                      });
-                      // dispatch(itemunitActions.getItemUnits(values.IDSUNO));
-                      // dispatch(
-                      //   itemprdetailActions.getItems(
-                      //     prhead.vWarehouse,
-                      //     values.MMITNO
-                      //   )
-                      // );
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={true}
-                      id="vSupplierNo"
-                      label="Supplier No"
-                      required
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  // required
-                  fullWidth
-                  disabled="true"
-                  margin="dense"
-                  id="vSupplierName"
-                  label="Supplier Name"
-                  type="text"
-                  value={itemprdetail.vSupplierName}
-                  values={(values.vSupplierName = itemprdetail.vSupplierName)}
-                />
-              </Grid>
-            </Grid>
-            <Grid container item xs={12} spacing={2}>
-              <Grid item xs={4}>
-                <TextField
-                  required
-                  error={true}
-                  fullWidth
-                  // disabled="true"
-                  margin="dense"
-                  id="vPrice"
-                  label="Price"
-                  type="number"
-                  value={itemprdetail.vPrice}
-                  values={(values.vPrice = itemprdetail.vPrice)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    let price = event.target.value;
-                    let qty = itemprdetail.vQty;
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vPrice: event.target.value,
-                      vTotal: (qty * price).toFixed(4),
-                    });
-                  }}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  required
-                  error={true}
-                  fullWidth
-                  // disabled={editnamedisable}
-                  margin="dense"
-                  id="vVat"
-                  label="Vat"
-                  type="number"
-                  value={itemprdetail.vVat}
-                  values={(values.vVat = itemprdetail.vVat)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vVat: event.target.value,
-                    });
-                  }}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  required
-                  fullWidth
-                  disabled="true"
-                  margin="dense"
-                  id="vCurrency"
-                  label="Currency"
-                  type="text"
-                  value={itemprdetail.vCurrency}
-                  values={(values.vCurrency = itemprdetail.vCurrency)}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  required
-                  error={true}
-                  fullWidth
-                  // disabled="true"
-                  margin="dense"
-                  id="vOrderType"
-                  label="Order Type"
-                  type="number"
-                  value={itemprdetail.vOrdertype}
-                  values={(values.vOrdertype = itemprdetail.vOrdertype)}
-                  // onInput={(e) => {
-                  //   e.target.value = Math.max(0, parseInt(e.target.value))
-                  //     .toString()
-                  //     .slice(0, 3);
-                  // }}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vOrdertype: event.target.value,
-                    });
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            {/* <TextField
-              required
-              fullWidth
-              disabled="true"
-              margin="dense"
-              id="vTotal"
-              label="Total"
-              type="number"
-              value={itemprdetail.vTotal}
-              values={(values.vTotal = itemprdetail.vTotal)}
-            /> */}
-
-            <TextField
-              required
-              fullWidth
-              disabled="true"
-              margin="dense"
-              id="vTotal"
-              label="Total"
-              value={itemprdetail.vTotal}
-              values={(values.vTotal = itemprdetail.vTotal)}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{
-                inputComponent: NumberFormatCustom,
-              }}
-            />
-
-            <Grid container item xs={12} spacing={2}>
-              <Grid item xs={5}>
-                <TextField
-                  className={classes.margin}
-                  error={true}
-                  disabled={editdisable}
-                  fullWidth
-                  required
-                  select
-                  margin="dense"
-                  variant="standard"
-                  size="small"
-                  required
-                  id="vPHGroup"
-                  label="PH Group"
-                  value={itemprdetail.vPHGroupDetail}
-                  values={(values.vPHGroupDetail = itemprdetail.vPHGroupDetail)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    let phgroup = "PH";
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vPHGroupDetail: event.target.value,
-                    });
-                    dispatch(
-                      phbuyerActions.getPHBuyers(phgroup, event.target.value)
-                    );
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option />
-                  {phgroups.map((option) => (
-                    <option key={option.ID} value={option.US_GRP}>
-                      {option.US_GRP}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  className={classes.margin}
-                  error={true}
-                  disabled={editdisable}
-                  fullWidth
-                  required
-                  select
-                  margin="dense"
-                  variant="standard"
-                  size="small"
-                  required
-                  id="vBuyer"
-                  label="Buyer"
-                  value={itemprdetail.vBuyerDetail}
-                  values={(values.vBuyerDetail = itemprdetail.vBuyerDetail)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setItemPRDetail({
-                      ...itemprdetail,
-                      vBuyerDetail: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option />
-                  {phbuyers.map((option) => (
-                    <option key={option.ID} value={option.US_LOGIN}>
-                      {option.US_LOGIN}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-            </Grid>
-
-            <TextField
-              className={classes.margin}
-              error={true}
-              disabled={editdisable}
-              fullWidth
-              required
-              select
-              margin="dense"
-              variant="standard"
-              size="small"
-              required
-              id="vCostcenter"
-              label="Cost center"
-              value={itemprdetail.vCostcenterDetail}
-              values={
-                (values.vCostcenterDetail = itemprdetail.vCostcenterDetail)
-              }
-              onChange={(event) => {
-                // console.log(event.target.value);
-                setItemPRDetail({
-                  ...itemprdetail,
-                  vCostcenterDetail: event.target.value,
-                });
-              }}
-              InputLabelProps={{ shrink: true }}
-              SelectProps={{
-                native: true,
-              }}
-            >
-              <option />
-              {costcenters.map((option) => (
-                <option key={option.ID} value={option.S2AITM}>
-                  {option.COSTCENTER}
-                </option>
-              ))}
-            </TextField>
-
-            <TextField
-              // required
-              fullWidth
-              // disabled="true"
-              margin="dense"
-              id="vRemarkDetail"
-              label="Remark"
-              type="text"
-              value={itemprdetail.vRemarkDetail}
-              values={(values.vRemarkDetail = itemprdetail.vRemarkDetail)}
-              onChange={(event) => {
-                // console.log(event.target.value);
-                setItemPRDetail({
-                  ...itemprdetail,
-                  vRemarkDetail: event.target.value,
-                });
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="default">
-              Close
-            </Button>
-            <Button
-              disabled={savedisable}
-              type="submit"
-              color="primary"
-              onClick={(event) => {
-                if (itemprdetail.vItemLine === "") {
-                  setCreate(true);
-                } else {
-                  setUpdate(true);
-                }
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              disabled={confirmdisable}
-              type="submit"
-              color="secondary"
-              onClick={(event) => {
-                setConfirm(true);
-              }}
-              style={{ display: "" }}
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
     );
   };
 
@@ -1991,9 +1426,10 @@ export default (props) => {
       {/* <p>#Debug {JSON.stringify(selectedProduct)}</p> */}
       <MaterialTable
         id="root_pr"
-        title={`Grouping PR : ${prhead.vStatus}`}
+        title={`Gen PO : ${prhead.vStatus}`}
         columns={columns}
         data={prdetailbuyerReducer.result ? prdetailbuyerReducer.result : []}
+        // isLoading={prdetailbuyerReducer.result ? false : true}
         options={{
           exportButton: true,
           // toolbar: false,
@@ -2073,9 +1509,12 @@ export default (props) => {
             return new Promise((resolve, reject) => {
               // console.log("newValue: " + oldData.PR_IBPLPN + " " + oldData.PR_IBPLPS + " " + oldData.PR_SPORDER + " " + moment(newData.PR_IBDWDT).format("YYYY-MM-DD"));
               setTimeout(() => {
+                let fromStatus = "92";
+                let toStatus = "92";
                 dispatch(
-                  prdetailbuyerActions.getPRDetailsGrouping(
-                    prnumber.vPRSelectNumber
+                  prdetailbuyerActions.getPRDetailsGenPO(
+                    fromStatus,
+                    prnumber.vPRSelectNumberLine
                   )
                 );
               }, 1000);
@@ -2084,98 +1523,6 @@ export default (props) => {
           },
         }}
       />
-
-      {/* Dialog */}
-      <Formik
-        initialValues={{
-          vPRNumber: prhead.vPRNumber,
-          vPlanUnPlan: prhead.vPlanUnPlan,
-          vItemLine: "",
-          vItemNo: "", //{ MMITNO: "" },
-          vItemDesc1: "",
-          vItemDesc2: "",
-          vQty: "",
-          vUnit: "",
-          vDateDetail: moment(new Date()).format("YYYY-MM-DD"), //"2018-12-01"
-          vSupplierNo: "",
-          vSupplierName: "",
-          vPrice: "",
-          vVat: "",
-          vCurrency: "",
-          vOrdertype: "",
-          vTotal: "",
-          vCostcenterDetail: "",
-          vPHGroupDetail: "",
-          vBuyerDetail: "",
-          vRemarkDetail: "",
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          // alert(JSON.stringify(values));
-          let formData = new FormData();
-          formData.append("vPRNumber", prhead.vPRNumber);
-          formData.append("vPlanUnPlan", "5");
-          formData.append("vItemLine", itemprdetail.vItemLine);
-          formData.append("vItemNo", values.vItemNo);
-          formData.append("vItemDesc1", values.vItemDesc1);
-          formData.append("vQty", values.vQty);
-          formData.append("vUnit", values.vUnit);
-          formData.append("vDateDetail", values.vDateDetail);
-          formData.append("vSupplierNo", values.vSupplierNo);
-          formData.append("vPrice", values.vPrice);
-          formData.append("vVat", values.vVat);
-          formData.append("vCurrency", values.vCurrency);
-          formData.append("vOrdertype", values.vOrdertype);
-          formData.append("vTotal", values.vTotal);
-          formData.append("vCostcenterDetail", values.vCostcenterDetail);
-          formData.append("vPHGroupDetail", values.vPHGroupDetail);
-          formData.append("vBuyerDetail", values.vBuyerDetail);
-          formData.append("vRemarkDetail", values.vRemarkDetail);
-          formData.append("vAddFreeItem", itemprdetail.vAddFreeItem);
-          formData.append("vConfirm", confirm ? "1" : "0");
-          formData.append("vStatus", "10");
-
-          if (create) {
-            // console.log("create");
-            dispatch(prdetailbuyerActions.addPRDetail(formData, props.history));
-            setTimeout(() => {
-              setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
-              setOpenDialog(false);
-              setCreate(false);
-            }, 500);
-          } else if (update) {
-            // console.log("update");
-            dispatch(
-              prdetailbuyerActions.updatePRDetail(formData, props.history)
-            );
-            setTimeout(() => {
-              setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
-              setOpenDialog(false);
-              setAddFreeItem(false);
-              setConfirmDisable(false);
-              setUpdate(false);
-            }, 500);
-          } else {
-            // console.log("confirm");
-            dispatch(
-              prdetailbuyerActions.updatePRDetail(formData, props.history)
-            );
-            setTimeout(() => {
-              setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
-              dispatch(
-                prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber)
-              );
-              setOpenDialog(false);
-              setAddFreeItem(false);
-              setConfirm(false);
-            }, 500);
-          }
-        }}
-      >
-        {(props) => showDialog(props)}
-      </Formik>
     </div>
   );
 };
