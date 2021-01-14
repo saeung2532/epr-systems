@@ -202,6 +202,8 @@ export default (props) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [prconfirmbuyer, setPRConfirmBuyer] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingreject, setLoadingReject] = useState(false);
+  const [loadingconfirmall, setLoadingConfirmAll] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -318,6 +320,16 @@ export default (props) => {
     approveReducer.result ? approveReducer.result : []
   );
 
+  const ColorButton = withStyles((theme) => ({
+    root: {
+      color: theme.palette.getContrastText(green[500]),
+      backgroundColor: green[500],
+      "&:hover": {
+        backgroundColor: green[700],
+      },
+    },
+  }))(Button);
+
   const ValidationTextField = withStyles({
     root: {
       "& input:valid + fieldset": {
@@ -402,6 +414,10 @@ export default (props) => {
 
   const handleRejectPR = () => {
     let status = "05"; //Reject
+    setCancelPRDisable(true);
+    setSuccess(false);
+    setLoadingReject(true);
+
     dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
     dispatch(
       prdetailbuyerActions.updatePRConfirmDetailReject(
@@ -425,12 +441,18 @@ export default (props) => {
       setCancelPRDisable(true);
       setWhsDisable(true);
       setDeptDisable(true);
+      setSuccess(true);
+      setLoadingReject(false);
     }, 1000);
   };
 
   const handleConfirmAll = () => {
     if (prdetailbuyerReducer.result.length > 0) {
       // console.log("confirm");
+      setCancelPRDisable(true);
+      setSuccess(false);
+      setLoadingConfirmAll(true);
+
       dispatch(
         prdetailbuyerActions.updatePRConfirmDetailAll(
           prhead.vPRNumber,
@@ -443,6 +465,8 @@ export default (props) => {
         setOpenDialog(false);
         setAddFreeItem(false);
         setConfirm(false);
+        setSuccess(true);
+        setLoadingConfirmAll(false);
       }, 1000);
     } else {
       alert("Please create item detail before comfirm MPR");
@@ -1048,7 +1072,7 @@ export default (props) => {
                     </option>
                   ))}
                 </TextField>
-                <Grid className={classes.margin}>
+                <Grid className={(classes.margin, classes.wrapper)}>
                   {/* <Button
                     // fullWidth
                     size="medium"
@@ -1090,8 +1114,14 @@ export default (props) => {
                   >
                     Reject PR
                   </Button>
+                  {loadingreject && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
                 </Grid>
-                <Grid className={classes.margin}>
+                <Grid className={(classes.margin, classes.wrapper)}>
                   <Button
                     // fullWidth
                     size="medium"
@@ -1104,6 +1134,12 @@ export default (props) => {
                   >
                     Confirm All
                   </Button>
+                  {loadingconfirmall && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
                 </Grid>
 
                 <Grid className={classes.margin}>
@@ -1116,7 +1152,7 @@ export default (props) => {
                     target="_blank"
                     style={{ textDecoration: "none" }}
                   >
-                    <Button
+                    <ColorButton
                       fullWidth
                       variant="contained"
                       color="primary"
@@ -1124,7 +1160,7 @@ export default (props) => {
                       startIcon={<SearchIcon />}
                     >
                       View MPR
-                    </Button>
+                    </ColorButton>
                   </a>
                 </Grid>
               </Grid>

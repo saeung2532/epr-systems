@@ -191,6 +191,8 @@ export default (props) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingcancelpr, setLoadingCancelPR] = useState(false);
+  const [loadingsubmitph, setLoadingSubmitPH] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -353,6 +355,10 @@ export default (props) => {
 
   const handleCancelPR = () => {
     let status = "99";
+    setCancelPRDisable(true);
+    setSuccess(false);
+    setLoadingCancelPR(true);
+
     dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
     setTimeout(() => {
       setCancelPRDisable(true);
@@ -368,12 +374,18 @@ export default (props) => {
       setCancelPRDisable(true);
       setWhsDisable(true);
       setDeptDisable(true);
+      setSuccess(true);
+      setLoadingCancelPR(false);
     }, 1000);
   };
 
   const handleSubmitPH = () => {
     if (prdetailReducer.result.length > 0) {
       let status = "10";
+      setCancelPRDisable(true);
+      setSuccess(false);
+      setLoadingSubmitPH(true);
+
       dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
       setTimeout(() => {
         setCancelPRDisable(true);
@@ -389,6 +401,8 @@ export default (props) => {
         setCancelPRDisable(true);
         setWhsDisable(true);
         setDeptDisable(true);
+        setSuccess(true);
+        setLoadingSubmitPH(false);
       }, 1000);
     } else {
       alert("Please create item detail before submit to PH");
@@ -965,7 +979,7 @@ export default (props) => {
                   ))}
                 </TextField>
 
-                <Grid className={classes.margin}>
+                <Grid className={(classes.margin, classes.wrapper)}>
                   <Button
                     // fullWidth
                     size="medium"
@@ -979,8 +993,14 @@ export default (props) => {
                   >
                     Cancel PR
                   </Button>
+                  {loadingcancelpr && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
                 </Grid>
-                <Grid className={classes.margin}>
+                <Grid className={(classes.margin, classes.wrapper)}>
                   <Button
                     // fullWidth
                     size="medium"
@@ -993,6 +1013,12 @@ export default (props) => {
                   >
                     Submit PH
                   </Button>
+                  {loadingsubmitph && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
 
                   {/* <Button
                     // fullWidth
