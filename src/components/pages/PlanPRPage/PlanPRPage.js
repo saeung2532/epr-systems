@@ -302,10 +302,10 @@ export default (props) => {
         )
       );
       dispatch(prdetailActions.getPRDetails(prnumber.vPRSelectNumber));
-      setNewDisable(true);
       setEditDisable(false);
       setCreateDisable(false);
       setCancelPRDisable(false);
+      setNewDisable(true);
       setLoading(true);
     }
   };
@@ -326,24 +326,25 @@ export default (props) => {
     });
     setSearchDisable(true);
     setNewDisable(true);
-    setEditDisable(false);
     setCreateDisable(true);
+    setNewPR(true);
+    setEditDisable(false);
     setWhsDisable(false);
     setDeptDisable(false);
-    setNewPR(true);
   };
 
   const handleCancel = () => {
     setPRNumber({ ...prnumber, vPRSelectNumber: "" });
     setPRHead({ ...initialStatePRHead });
     dispatch(prdetailActions.getPRDetails("00"));
-    setSearchDisable(false);
-    setNewDisable(false);
     setEditDisable(true);
     setCreateDisable(true);
     setCancelPRDisable(true);
     setWhsDisable(true);
     setDeptDisable(true);
+    setSearchDisable(false);
+    setNewDisable(false);
+    setNewPR(false);
   };
 
   const handleClose = () => {
@@ -2124,7 +2125,9 @@ export default (props) => {
       {/* <p>#Debug itemprdetail {JSON.stringify(itemprdetail)}</p> */}
       {/* <p>#Debug editdisable {JSON.stringify(editdisable)}</p> */}
       {/* <p>#Debug warehouse {JSON.stringify(warehouse)}</p> */}
-      {/* <p>#Debug approves {JSON.stringify(approve)}</p> */}
+      {/* <p>
+        #Debug create copy {JSON.stringify(create)} {JSON.stringify(copy)}
+      </p> */}
       <Formik
         initialValues={{
           vPRNumber: "",

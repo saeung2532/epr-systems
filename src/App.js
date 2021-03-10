@@ -112,7 +112,7 @@ export default function App() {
   return (
     <Router
       basename={
-        process.env.REACT_APP_IS_PRODUCTION === "1" ? "/hello-react" : ""
+        process.env.REACT_APP_IS_PRODUCTION === "1" ? "/monthlyplan" : ""
       }
     >
       <Switch>

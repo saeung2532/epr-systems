@@ -15,6 +15,7 @@ import { Formik } from "formik";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import * as loginActions from "./../../../actions/login.action";
 import * as companyActions from "./../../../actions/company.action";
+import LinkPDF from "./../../../../src/doc/mpr_document.pdf";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -193,6 +194,15 @@ const LoginPage = (props) => {
           Sign In
         </Button>
         {/* {isSubmitting && <CircularProgress style={{ marginTop: 10 }} />} */}
+        <Grid container justify="flex-end">
+          <a
+            href="http://192.200.9.106:5000/smartapprove"
+            target="_blank"
+            style={{ textDecoration: "none" }}
+          >
+            Smart Approve
+          </a>
+        </Grid>
 
         <Grid container justify="flex-end">
           <a
@@ -201,6 +211,12 @@ const LoginPage = (props) => {
             style={{ textDecoration: "none" }}
           >
             Change password
+          </a>
+        </Grid>
+
+        <Grid container justify="flex-end">
+          <a href={LinkPDF} target="_blank" style={{ textDecoration: "none" }}>
+            คู่มือการใช้งาน
           </a>
         </Grid>
       </form>
