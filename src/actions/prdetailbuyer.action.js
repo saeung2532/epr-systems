@@ -24,17 +24,17 @@ const setStatePRDetailBuyerToClear = () => ({
   type: HTTP_PRDETAILBUYER_CLEAR,
 });
 
-export const getPRDetails = (prno) => {
+export const getEPRDetails = (prno) => {
   return async (dispatch) => {
     // console.log("PR: " + prno);
     dispatch(setStatePRDetailBuyerToFetching());
-    doGetPRDetails(dispatch, prno);
+    doGetEPRDetails(dispatch, prno);
   };
 };
 
-const doGetPRDetails = async (dispatch, prno) => {
+const doGetEPRDetails = async (dispatch, prno) => {
   try {
-    let result = await httpClient.get(`${server.PRDETAILBUYER_URL}/${prno}`);
+    let result = await httpClient.get(`${server.EPRDETAILBUYER_URL}/${prno}`);
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRDetailBuyerToSuccess(result.data));
   } catch (err) {
@@ -43,10 +43,10 @@ const doGetPRDetails = async (dispatch, prno) => {
   }
 };
 
-export const addPRDetail = (formData, history) => {
+export const addEPRDetail = (formData, history) => {
   return async (dispatch) => {
     try {
-      await httpClient.post(server.PRDETAIL_URL, formData);
+      await httpClient.post(server.EPRDETAIL_URL, formData);
       // history.goBack();
     } catch (err) {
       alert(JSON.stringify(err));
@@ -54,11 +54,11 @@ export const addPRDetail = (formData, history) => {
   };
 };
 
-export const updatePRDetail = (formData, history) => {
+export const updateEPRDetail = (formData, history) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.put(server.PRDETAIL_URL, formData);
+      await httpClient.put(server.EPRDETAIL_URL, formData);
       // alert("Update Complete");
       // history.goBack();
     } catch (err) {
@@ -67,11 +67,11 @@ export const updatePRDetail = (formData, history) => {
   };
 };
 
-export const deletePRDetail = (prno, itemline) => {
+export const deleteEPRDetail = (prno, itemline) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.delete(`${server.PRDETAIL_URL}/${prno}/${itemline}`);
+      await httpClient.delete(`${server.EPRDETAIL_URL}/${prno}/${itemline}`);
       // alert("Delete Complete");
       // history.goBack();
     } catch (err) {
@@ -80,12 +80,12 @@ export const deletePRDetail = (prno, itemline) => {
   };
 };
 
-export const updatePRConfirmDetailReject = (prno, buyer) => {
+export const updateEPRConfirmDetailReject = (prno, buyer) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
       await httpClient.put(
-        `${server.PRCONFIRMDETAILREJECT_URL}/${prno}/${buyer}`
+        `${server.EPRCONFIRMDETAILREJECT_URL}/${prno}/${buyer}`
       );
       // alert("Update Complete");
       // history.goBack();
@@ -95,12 +95,12 @@ export const updatePRConfirmDetailReject = (prno, buyer) => {
   };
 };
 
-export const updatePRConfirmDetailItem = (prno, line, buyer) => {
+export const updateEPRConfirmDetailItem = (prno, line, buyer) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
       await httpClient.put(
-        `${server.PRCONFIRMDETAILITEM_URL}/${prno}/${line}/${buyer}`
+        `${server.EPRCONFIRMDETAILITEM_URL}/${prno}/${line}/${buyer}`
       );
       alert("Confirm Complete");
       // history.goBack();
@@ -110,11 +110,13 @@ export const updatePRConfirmDetailItem = (prno, line, buyer) => {
   };
 };
 
-export const updatePRConfirmDetailAll = (prno, buyer) => {
+export const updateEPRConfirmDetailAll = (prno, buyer) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.put(`${server.PRCONFIRMDETAILALL_URL}/${prno}/${buyer}`);
+      await httpClient.put(
+        `${server.EPRCONFIRMDETAILALL_URL}/${prno}/${buyer}`
+      );
       alert("Confirm Complete");
       // history.goBack();
     } catch (err) {
@@ -123,52 +125,54 @@ export const updatePRConfirmDetailAll = (prno, buyer) => {
   };
 };
 
-export const getPRDetailsGrouping = (prno) => {
+export const getEPRDetailsGrouping = (prno) => {
   return async (dispatch) => {
     // console.log("PR: " + prno);
     dispatch(setStatePRDetailBuyerToFetching());
-    doGetPRDetailsGrouping(dispatch, prno);
+    doGetEPRDetailsGrouping(dispatch, prno);
   };
 };
 
-const doGetPRDetailsGrouping = async (dispatch, prno) => {
-  try {
-    let result = await httpClient.get(`${server.PRDETAILGROUPING_URL}/${prno}`);
-    // alert(JSON.stringify(result.data));
-    dispatch(setStatePRDetailBuyerToSuccess(result.data));
-  } catch (err) {
-    // alert(JSON.stringify(err));
-    dispatch(setStatePRDetailBuyerToFailed());
-  }
-};
-
-export const updatePRDetailGrouping = (prno, itemline, group, date) => {
-  return async (dispatch) => {
-    try {
-      // console.log(formData);
-      await httpClient.put(
-        `${server.PRDETAILGROUPING_URL}/${prno}/${itemline}/${group}/${date}`
-      );
-      // alert("Delete Complete");
-      // history.goBack();
-    } catch (err) {
-      alert(JSON.stringify(err));
-    }
-  };
-};
-
-export const getPRDetailsGenPO = (status, prnoline) => {
-  return async (dispatch) => {
-    // console.log("PR: " + prno);
-    dispatch(setStatePRDetailBuyerToFetching());
-    doGetPRDetailsGenPO(dispatch, status, prnoline);
-  };
-};
-
-const doGetPRDetailsGenPO = async (dispatch, status, prnoline) => {
+const doGetEPRDetailsGrouping = async (dispatch, prno) => {
   try {
     let result = await httpClient.get(
-      `${server.PRDETAILGENPO_URL}/${status}/${prnoline}`
+      `${server.EPRDETAILGROUPING_URL}/${prno}`
+    );
+    // alert(JSON.stringify(result.data));
+    dispatch(setStatePRDetailBuyerToSuccess(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStatePRDetailBuyerToFailed());
+  }
+};
+
+export const updateEPRDetailGrouping = (prno, itemline, group, date) => {
+  return async (dispatch) => {
+    try {
+      // console.log(formData);
+      await httpClient.put(
+        `${server.EPRDETAILGROUPING_URL}/${prno}/${itemline}/${group}/${date}`
+      );
+      // alert("Delete Complete");
+      // history.goBack();
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
+  };
+};
+
+export const getEPRDetailsGenPO = (status, prnoline) => {
+  return async (dispatch) => {
+    // console.log("PR: " + prno);
+    dispatch(setStatePRDetailBuyerToFetching());
+    doGetEPRDetailsGenPO(dispatch, status, prnoline);
+  };
+};
+
+const doGetEPRDetailsGenPO = async (dispatch, status, prnoline) => {
+  try {
+    let result = await httpClient.get(
+      `${server.EPRDETAILGENPO_URL}/${status}/${prnoline}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRDetailBuyerToSuccess(result.data));

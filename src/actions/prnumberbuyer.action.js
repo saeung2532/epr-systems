@@ -30,17 +30,17 @@ const setStatePRNumberBuyerToClear = () => ({
   type: HTTP_PRNUMBERBUYER_CLEAR,
 });
 
-export const getPRNumbers = (fromStatus, toStatus) => {
+export const getEPRNumbers = (fromStatus, toStatus) => {
   return async (dispatch) => {
     dispatch(setStatePRNumberBuyerToFetching());
-    doGetPRNumbers(dispatch, fromStatus, toStatus);
+    doGetEPRNumbers(dispatch, fromStatus, toStatus);
   };
 };
 
-const doGetPRNumbers = async (dispatch, fromStatus, toStatus) => {
+const doGetEPRNumbers = async (dispatch, fromStatus, toStatus) => {
   try {
     let result = await httpClient.get(
-      `${server.PRNUMBERBUYER_URL}/${fromStatus}/${toStatus}`
+      `${server.EPRNUMBERBUYER_URL}/${fromStatus}/${toStatus}`
     );
     dispatch(setStatePRNumberBuyerToSuccess(result.data));
     // alert(JSON.stringify(result.data));
@@ -51,17 +51,17 @@ const doGetPRNumbers = async (dispatch, fromStatus, toStatus) => {
   }
 };
 
-export const getPRNumbersGrouping = (statusHead, statusLine) => {
+export const getEPRNumbersGrouping = (statusHead, statusLine) => {
   return async (dispatch) => {
     dispatch(setStatePRNumberBuyerToFetching());
-    doGetPRNumbersGrouping(dispatch, statusHead, statusLine);
+    doGetEPRNumbersGrouping(dispatch, statusHead, statusLine);
   };
 };
 
-const doGetPRNumbersGrouping = async (dispatch, statusHead, statusLine) => {
+const doGetEPRNumbersGrouping = async (dispatch, statusHead, statusLine) => {
   try {
     let result = await httpClient.get(
-      `${server.PRNUMBERGROUPING_URL}/${statusHead}/${statusLine}`
+      `${server.EPRNUMBERGROUPING_URL}/${statusHead}/${statusLine}`
     );
     dispatch(setStatePRNumberBuyerToSuccess(result.data));
     // alert(JSON.stringify(result.data));
@@ -72,16 +72,37 @@ const doGetPRNumbersGrouping = async (dispatch, statusHead, statusLine) => {
   }
 };
 
-export const getPRNumbersGenPO = (statusHead, statusLine) => {
+export const getEPRNumbersGenPO = (statusHead, statusLine) => {
   return async (dispatch) => {
     dispatch(setStatePRNumberBuyerToFetching());
-    doGetPRNumbersGenPO(dispatch, statusHead, statusLine);
+    doGetEPRNumbersGenPO(dispatch, statusHead, statusLine);
   };
 };
 
-const doGetPRNumbersGenPO = async (dispatch, status) => {
+const doGetEPRNumbersGenPO = async (dispatch, status) => {
   try {
-    let result = await httpClient.get(`${server.PRNUMBERGENPO_URL}/${status}`);
+    let result = await httpClient.get(`${server.EPRNUMBERGENPO_URL}/${status}`);
+    dispatch(setStatePRNumberBuyerToSuccess(result.data));
+    // alert(JSON.stringify(result.data));
+  } catch (err) {
+    alert(JSON.stringify(err));
+    localStorage.removeItem(server.TOKEN_KEY);
+    dispatch(setStatePRNumberBuyerToFailed());
+  }
+};
+
+export const getPONumbers = (fromstatus, tostatus) => {
+  return async (dispatch) => {
+    dispatch(setStatePRNumberBuyerToFetching());
+    doGetPONumbers(dispatch, fromstatus, tostatus);
+  };
+};
+
+const doGetPONumbers = async (dispatch, fromstatus, tostatus) => {
+  try {
+    let result = await httpClient.get(
+      `${server.PONUMBER_URL}/${fromstatus}/${tostatus}`
+    );
     dispatch(setStatePRNumberBuyerToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {

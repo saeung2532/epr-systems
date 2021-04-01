@@ -24,6 +24,7 @@ import monthReducer from "./month.reducer";
 import statusReducer from "./status.reducer";
 import sendemailReducer from "./sendemail.reducer";
 import genpoReducer from "./genpo.reducer";
+import capexReducer from "./capex.reducer";
 
 export default combineReducers({
   companyReducer,
@@ -51,4 +52,5 @@ export default combineReducers({
   statusReducer,
   sendemailReducer,
   genpoReducer,
+  capexReducer,
 });

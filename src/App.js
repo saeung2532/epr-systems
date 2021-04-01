@@ -20,10 +20,10 @@ import PlanPRPage from "./components/pages/PlanPRPage/PlanPRPage";
 import ConfirmPRPage from "./components/pages/ConfirmPRPage/ConfirmPRPage";
 import GroupPRPage from "./components/pages/GroupPRPage/GroupPRPage";
 import GenPOPage from "./components/pages/GenPOPage/GenPOPage";
+import CancelPOPage from "./components/pages/CancelPage/CancelPage";
 import MonitoringPage from "./components/pages/MonitoringPage/MonitoringPage";
 import PrintReportPage from "./components/pages/PrintReportPage/PrintReportPage";
 import ApprovePage from "./components/pages/ApprovePage/ApprovePage";
-import TestPage from "./components/pages/TestPage/TestPage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -112,7 +112,7 @@ export default function App() {
   return (
     <Router
       basename={
-        process.env.REACT_APP_IS_PRODUCTION === "1" ? "/monthlyplan" : ""
+        process.env.REACT_APP_IS_PRODUCTION === "1" ? "/eprsystems" : ""
       }
     >
       <Switch>
@@ -122,9 +122,9 @@ export default function App() {
         <PrivateRoute exact path="/confirm_pr" component={ConfirmPRPage} />
         <PrivateRoute exact path="/grouping_pr" component={GroupPRPage} />
         <PrivateRoute exact path="/genpo" component={GenPOPage} />
+        <PrivateRoute exact path="/cancelpo" component={CancelPOPage} />
         <PrivateRoute exact path="/monitoring" component={MonitoringPage} />
         <PrivateRoute exact path="/printreport" component={PrintReportPage} />
-        <PrivateRoute exact path="/test" component={TestPage} />
         <PublicRoute
           exact
           // path="/approve/:cono/:divi/:prno/:fromstatus/:tostatus/:approve/:token"

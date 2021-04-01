@@ -180,7 +180,9 @@ export default (props) => {
     // console.log("dispatch prnumberbuyerActions");
     let statusHead = "92";
     let statusLine = "10";
-    dispatch(prnumberbuyerActions.getPRNumbersGrouping(statusHead, statusLine));
+    dispatch(
+      prnumberbuyerActions.getEPRNumbersGrouping(statusHead, statusLine)
+    );
     dispatch(warehouseActions.getWarehouses());
     dispatch(buActions.getBUs());
     dispatch(approveActions.getApproves());
@@ -230,7 +232,7 @@ export default (props) => {
       // } else {
       // console.log("prheads.vStatus: false");
       // setPRHead({ ...initialStatePRHead });
-      // dispatch(prdetailbuyerActions.getPRDetails("00"));
+      // dispatch(prdetailbuyerActions.getEPRDetails("00"));
       // handleCancel();
       // }
     });
@@ -247,10 +249,12 @@ export default (props) => {
         console.log("prconfirm: true");
         let fromStatus = "05";
         let toStatus = "10";
-        dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
+        dispatch(prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus));
 
         let statusprhead = "15";
-        dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, statusprhead));
+        dispatch(
+          prheadActions.updateStsEPRHead(prhead.vPRNumber, statusprhead)
+        );
         prheadReducer.result = null;
         prdetailbuyerReducer.result = null;
         setPRHead({
@@ -321,17 +325,17 @@ export default (props) => {
     let fromStatus = "92";
     let toStatus = "92";
     dispatch(
-      prheadActions.getPRHeads(prnumber.vPRSelectNumber, fromStatus, toStatus)
+      prheadActions.getEPRHeads(prnumber.vPRSelectNumber, fromStatus, toStatus)
     );
     dispatch(
-      prdetailbuyerActions.getPRDetailsGrouping(prnumber.vPRSelectNumber)
+      prdetailbuyerActions.getEPRDetailsGrouping(prnumber.vPRSelectNumber)
     );
   };
 
   const handleCancel = () => {
     setPRNumber({ ...prnumber, vPRSelectNumber: "" });
     setPRHead({ ...initialStatePRHead });
-    dispatch(prdetailbuyerActions.getPRDetails("00"));
+    dispatch(prdetailbuyerActions.getEPRDetails("00"));
     setSearchDisable(false);
     setNewDisable(false);
     setEditDisable(true);
@@ -348,55 +352,6 @@ export default (props) => {
     setConfirmDisable(false);
     setAddFreeItem(false);
     setEditNameDisable(true);
-  };
-
-  const handleRejectPR = () => {
-    let status = "05"; //Reject
-    dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
-    dispatch(
-      prdetailbuyerActions.updatePRConfirmDetailReject(
-        prhead.vPRNumber,
-        loginActions.getTokenUsername()
-      )
-    );
-    setTimeout(() => {
-      setCancelPRDisable(true);
-      setPRNumber({ ...prnumber, vPRSelectNumber: "" });
-      setPRHead({ ...initialStatePRHead });
-      let fromStatus = "05";
-      let toStatus = "10";
-      dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
-      dispatch(prdetailbuyerActions.getPRDetails("00"));
-      alert("Reject Complete");
-      setSearchDisable(false);
-      setNewDisable(false);
-      setEditDisable(true);
-      setCreateDisable(true);
-      setCancelPRDisable(true);
-      setWhsDisable(true);
-      setDeptDisable(true);
-    }, 500);
-  };
-
-  const handleConfirmAll = () => {
-    if (prdetailbuyerReducer.result.length > 0) {
-      // console.log("confirm");
-      dispatch(
-        prdetailbuyerActions.updatePRConfirmDetailAll(
-          prhead.vPRNumber,
-          loginActions.getTokenUsername()
-        )
-      );
-      setTimeout(() => {
-        setItemPRDetail({ ...initialStateItemPRDetail });
-        dispatch(prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber));
-        setOpenDialog(false);
-        setAddFreeItem(false);
-        setConfirm(false);
-      }, 500);
-    } else {
-      alert("Please create item detail before comfirm MPR");
-    }
   };
 
   const NumberFormatCustom = (props) => {
@@ -443,7 +398,7 @@ export default (props) => {
                     variant="outlined"
                     required
                     id="vSelectPRNumber"
-                    label="PR Number"
+                    label="EPR Number"
                     disabled={searchdisable}
                     value={prnumber.vPRSelectNumber}
                     onChange={(event) => {
@@ -484,7 +439,7 @@ export default (props) => {
                   <a
                     href={`${
                       process.env.REACT_APP_API_URL
-                    }/br_api/api_report/viewmpr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
+                    }/br_api/api_report/viewepr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
                       prnumber.vPRSelectNumber
                     }`}
                     target="_blank"
@@ -497,7 +452,7 @@ export default (props) => {
                       disabled={searchdisable}
                       startIcon={<SearchIcon />}
                     >
-                      View PR
+                      View EPR
                     </Button>
                   </a>
                 </Grid>
@@ -510,8 +465,8 @@ export default (props) => {
                   disabled={true}
                   size="small"
                   id="vPRNumber"
-                  label="PR Number"
-                  placeholder="PR Number"
+                  label="EPR Number"
+                  placeholder="EPR Number"
                   variant="outlined"
                   value={prhead.vPRNumber}
                   values={(values.vPRNumber = prhead.vPRNumber)}
@@ -773,7 +728,7 @@ export default (props) => {
       >
         <form onSubmit={handleSubmit}>
           <DialogTitle id="alert-dialog-slide-title">
-            PR Number : {prhead.vPRNumber}
+            EPR Number : {prhead.vPRNumber}
             {itemprdetail.vItemLine
               ? ` - Line : ${itemprdetail.vItemLine}`
               : ""}
@@ -1834,7 +1789,7 @@ export default (props) => {
           formData.append("vStatus", prhead.vStatus ? prhead.vStatus : "00");
 
           if (newdisable === false && cancelprdisable === true) {
-            dispatch(prheadActions.addPRHead(formData, props.history));
+            dispatch(prheadActions.addEPRHead(formData, props.history));
             setTimeout(() => {
               setSearchDisable(false);
               setNewDisable(false);
@@ -1846,10 +1801,12 @@ export default (props) => {
               setPRHead({ ...initialStatePRHead });
               let fromStatus = "05";
               let toStatus = "10";
-              dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
+              dispatch(
+                prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus)
+              );
             }, 500);
           } else if (searchdisable === false) {
-            dispatch(prheadActions.updatePRHead(formData, props.history));
+            dispatch(prheadActions.updateEPRHead(formData, props.history));
           }
         }}
       >
@@ -1908,7 +1865,7 @@ export default (props) => {
         //   {
         // onCellEditApproved: (newValue, oldValue, rowData, columnDef) => {
         //   dispatch(
-        //     prdetailbuyerActions.updatePRDetailGrouping(
+        //     prdetailbuyerActions.updateEPRDetailGrouping(
         //       rowData.PR_IBPLPN,
         //       rowData.PR_IBPLPS,
         //       newValue
@@ -1918,7 +1875,7 @@ export default (props) => {
         //     // console.log("newValue: " + rowData.PR_IBPLPN + " " + rowData.PR_IBPLPS + " " + newValue );
         //     setTimeout(() => {
         //       dispatch(
-        //         prdetailbuyerActions.getPRDetailsGrouping(
+        //         prdetailbuyerActions.getEPRDetailsGrouping(
         //           prnumber.vPRSelectNumber
         //         )
         //       );
@@ -1931,7 +1888,7 @@ export default (props) => {
         editable={{
           onRowUpdate: (newData, oldData) => {
             dispatch(
-              prdetailbuyerActions.updatePRDetailGrouping(
+              prdetailbuyerActions.updateEPRDetailGrouping(
                 oldData.PR_IBPLPN,
                 oldData.PR_IBPLPS,
                 newData.PR_SPORDER,
@@ -1942,7 +1899,7 @@ export default (props) => {
               // console.log("newValue: " + oldData.PR_IBPLPN + " " + oldData.PR_IBPLPS + " " + newData.PR_SPORDER + " " + moment(oldData.PR_IBDWDT).format("YYYY-MM-DD"));
               setTimeout(() => {
                 dispatch(
-                  prdetailbuyerActions.getPRDetailsGrouping(
+                  prdetailbuyerActions.getEPRDetailsGrouping(
                     prnumber.vPRSelectNumber
                   )
                 );
@@ -2004,21 +1961,23 @@ export default (props) => {
 
           if (create) {
             // console.log("create");
-            dispatch(prdetailbuyerActions.addPRDetail(formData, props.history));
+            dispatch(
+              prdetailbuyerActions.addEPRDetail(formData, props.history)
+            );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+              dispatch(prdetailbuyerActions.getEPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setCreate(false);
             }, 500);
           } else if (update) {
             // console.log("update");
             dispatch(
-              prdetailbuyerActions.updatePRDetail(formData, props.history)
+              prdetailbuyerActions.updateEPRDetail(formData, props.history)
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+              dispatch(prdetailbuyerActions.getEPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setAddFreeItem(false);
               setConfirmDisable(false);
@@ -2027,13 +1986,13 @@ export default (props) => {
           } else {
             // console.log("confirm");
             dispatch(
-              prdetailbuyerActions.updatePRDetail(formData, props.history)
+              prdetailbuyerActions.updateEPRDetail(formData, props.history)
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+              dispatch(prdetailbuyerActions.getEPRDetails(prhead.vPRNumber));
               dispatch(
-                prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber)
+                prconfirmbuyerActions.getEPRConfirmBuyers(prhead.vPRNumber)
               );
               setOpenDialog(false);
               setAddFreeItem(false);

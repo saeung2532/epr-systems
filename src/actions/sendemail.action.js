@@ -24,17 +24,17 @@ const setStateSendEmailToClear = () => ({
   type: HTTP_SENDEMAIL_CLEAR,
 });
 
-export const sendEmail = (prno, status) => {
+export const sendEmail = (prno, status, document) => {
   return async (dispatch) => {
     dispatch(setStateSendEmailToFetching());
-    doSendEmail(dispatch, prno, status);
+    doSendEmail(dispatch, prno, status, document);
   };
 };
 
-const doSendEmail = async (dispatch, prno, status) => {
+const doSendEmail = async (dispatch, prno, status, document) => {
   try {
     let result = await httpClient.post(
-      `${server.SENDEMAIL_URL}/${prno}/${status}`
+      `${server.SENDEMAIL_URL}/${prno}/${status}/${document}`
     );
     dispatch(setStateSendEmailToSuccess(result.data));
     alert(JSON.stringify(result.data));

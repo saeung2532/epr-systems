@@ -24,32 +24,11 @@ const setStatePRHeadToClear = () => ({
   type: HTTP_PRHEAD_CLEAR,
 });
 
-export const getMPRHeads = (prno, fromstatus, toStatus) => {
-  return async (dispatch) => {
-    // console.log("PR: " + prno + " STS: " + status);
-    dispatch(setStatePRHeadToFetching());
-    doGetMPRHeads(dispatch, prno, fromstatus, toStatus);
-  };
-};
-
-const doGetMPRHeads = async (dispatch, prno, fromstatus, toStatus) => {
-  try {
-    let result = await httpClient.get(
-      `${server.MPRHEAD_URL}/${prno}/${fromstatus}/${toStatus}`
-    );
-    // alert(JSON.stringify(result.data));
-    dispatch(setStatePRHeadToSuccess(result.data));
-  } catch (err) {
-    // alert(JSON.stringify(err));
-    dispatch(setStatePRHeadToFailed());
-  }
-};
-
-export const addPRHead = (formData, history) => {
+export const addEPRHead = (formData, history) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      let result = await httpClient.post(server.PRHEAD_URL, formData);
+      let result = await httpClient.post(server.EPRHEAD_URL, formData);
       alert("Save Complete: " + JSON.stringify(result.data));
       // history.goBack();
     } catch (err) {
@@ -58,11 +37,11 @@ export const addPRHead = (formData, history) => {
   };
 };
 
-export const updatePRHead = (formData, history) => {
+export const updateEPRHead = (formData, history) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.put(server.PRHEAD_URL, formData);
+      await httpClient.put(server.EPRHEAD_URL, formData);
       alert("Update Complete");
       // history.goBack();
     } catch (err) {
@@ -71,11 +50,11 @@ export const updatePRHead = (formData, history) => {
   };
 };
 
-export const updateStsPRHead = (prno, status) => {
+export const updateStsEPRHead = (prno, status) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.put(`${server.PRHEAD_URL}/${prno}/${status}`);
+      await httpClient.put(`${server.EPRHEAD_URL}/${prno}/${status}`);
       // alert("Update Complete");
       // history.goBack();
     } catch (err) {
@@ -84,7 +63,7 @@ export const updateStsPRHead = (prno, status) => {
   };
 };
 
-export const getPRHeadsMonitoring = (
+export const getEPRHeadsMonitoring = (
   prno,
   whs,
   bu,
@@ -95,11 +74,11 @@ export const getPRHeadsMonitoring = (
   return async (dispatch) => {
     // console.log(prno + " " + whs + " " + bu + " " + department + " " + month + " " + status);
     dispatch(setStatePRHeadToFetching());
-    doGetPRHeadsMonitoring(dispatch, prno, whs, bu, department, month, status);
+    doGetEPRHeadsMonitoring(dispatch, prno, whs, bu, department, month, status);
   };
 };
 
-const doGetPRHeadsMonitoring = async (
+const doGetEPRHeadsMonitoring = async (
   dispatch,
   prno,
   whs,
@@ -110,7 +89,7 @@ const doGetPRHeadsMonitoring = async (
 ) => {
   try {
     let result = await httpClient.get(
-      `${server.PRHEADMONITORING_URL}/${prno}/${whs}/${bu}/${department}/${month}/${status}`
+      `${server.EPRHEADMONITORING_URL}/${prno}/${whs}/${bu}/${department}/${month}/${status}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRHeadToSuccess(result.data));
@@ -120,18 +99,18 @@ const doGetPRHeadsMonitoring = async (
   }
 };
 
-export const getPRHeads = (prno, fromstatus, toStatus) => {
+export const getEPRHeads = (prno, fromstatus, toStatus) => {
   return async (dispatch) => {
     // console.log("PR: " + prno + " STS: " + status);
     dispatch(setStatePRHeadToFetching());
-    doGetPRHeads(dispatch, prno, fromstatus, toStatus);
+    doGetEPRHeads(dispatch, prno, fromstatus, toStatus);
   };
 };
 
-const doGetPRHeads = async (dispatch, prno, fromstatus, toStatus) => {
+const doGetEPRHeads = async (dispatch, prno, fromstatus, toStatus) => {
   try {
     let result = await httpClient.get(
-      `${server.PRHEAD_URL}/${prno}/${fromstatus}/${toStatus}`
+      `${server.EPRHEAD_URL}/${prno}/${fromstatus}/${toStatus}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRHeadToSuccess(result.data));

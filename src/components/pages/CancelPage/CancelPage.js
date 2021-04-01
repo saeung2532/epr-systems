@@ -207,8 +207,9 @@ export default (props) => {
 
   useEffect(() => {
     // console.log("dispatch prnumberbuyerActions");
-    let status = "92";
-    dispatch(prnumberbuyerActions.getEPRNumbersGenPO(status));
+    let fromstatus = "15";
+    let tostatus = "85";
+    dispatch(prnumberbuyerActions.getPONumbers(fromstatus, tostatus));
     dispatch(warehouseActions.getWarehouses());
     dispatch(buActions.getBUs());
     dispatch(approveActions.getApproves());
@@ -384,9 +385,9 @@ export default (props) => {
     setGenPODisable(false);
   };
 
-  const handleGenPO = () => {
+  const handleCancelPO = () => {
     let status = "92";
-    dispatch(genpoActions.genPONumber(status, prnumber.vPRSelectNumberLine));
+    // dispatch(genpoActions.genPONumber(status, prnumber.vPRSelectNumberLine));
     setGenPODisable(true);
     setSuccess(false);
     setLoading(true);
@@ -467,7 +468,7 @@ export default (props) => {
                     variant="outlined"
                     required
                     id="vSelectPRNumber"
-                    label="EPR Number"
+                    label="PO Number"
                     disabled={searchdisable}
                     value={prnumber.vPRSelectNumberLine}
                     onChange={(event) => {
@@ -496,8 +497,8 @@ export default (props) => {
                   >
                     <option />
                     {prnumberbuyers.map((option) => (
-                      <option key={option.ID} value={option.PRNUMBER}>
-                        {option.PRNUMBER}
+                      <option key={option.ID} value={option.PONUMBER}>
+                        {option.PONUMBER}
                       </option>
                     ))}
                   </TextField>
@@ -522,45 +523,20 @@ export default (props) => {
                   </Button>
                 </Grid>
                 <Grid className={(classes.margin, classes.wrapper)}>
-                  <a
-                    href={`${
-                      process.env.REACT_APP_API_URL
-                    }/br_api/api_report/viewepr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
-                      prnumber.vPRSelectNumber
-                    }`}
-                    target="_blank"
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      color="secondary"
-                      disabled={searchdisable}
-                      startIcon={<SearchIcon />}
-                    >
-                      View EPR
-                    </Button>
-                  </a>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={1}
-                  className={(classes.margin, classes.wrapper)}
-                >
-                  <ColorButton
+                  <Button
+                    style={{ maxWidth: 200 }}
                     fullWidth
                     size="medium"
                     id="vSearch"
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     disabled={genpodisable}
                     startIcon={<SearchIcon />}
-                    onClick={handleGenPO}
+                    onClick={handleCancelPO}
                     // onClick={handleButtonClick}
                   >
-                    Gen PO
-                  </ColorButton>
+                    Cancel PO
+                  </Button>
                   {loading && (
                     <CircularProgress
                       size={24}
@@ -568,266 +544,6 @@ export default (props) => {
                     />
                   )}
                 </Grid>
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 200 }}
-                  disabled={true}
-                  size="small"
-                  id="vPONumber"
-                  label="PO Number"
-                  placeholder="PO Number"
-                  variant="outlined"
-                  value={ponumber.vPOSelectNumber}
-                  onChange={(event) => {
-                    // handleSearch();
-                    // console.log(event.target.value);
-                    // setPRHead({
-                    //   ...prhead,
-                    //   vPRNumber: event.target.value,
-                    // });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-
-              <Grid container item xs className={classes.margin}>
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 120 }}
-                  required
-                  disabled={true}
-                  size="small"
-                  id="vPRNumber"
-                  label="EPR Number"
-                  placeholder="EPR Number"
-                  variant="outlined"
-                  value={prhead.vPRNumber}
-                  values={(values.vPRNumber = prhead.vPRNumber)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setPRHead({
-                      ...prhead,
-                      vPRNumber: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 180 }}
-                  required
-                  disabled={true}
-                  // disabled={editdisable}
-                  type="date"
-                  size="small"
-                  id="vDate"
-                  label="Date"
-                  variant="outlined"
-                  defaultValue={prhead.vDate}
-                  value={prhead.vDate}
-                  values={(values.vDate = prhead.vDate)}
-                  onChange={(event) => {
-                    // console.log("onChange: " + event.target.value.substr(2, 2) +
-                    // event.target.value.substr(5, 2));
-                    var dateNow = new Date();
-                    if (
-                      event.target.value < moment(dateNow).format("YYYY-MM-DD")
-                    ) {
-                      alert("Date not less than present day.");
-                    } else {
-                      setPRHead({
-                        ...prhead,
-                        vDate: event.target.value,
-                        vMonth:
-                          event.target.value.substr(2, 2) +
-                          event.target.value.substr(5, 2),
-                      });
-                    }
-                  }}
-                  InputLabelProps={{ shrink: true, required: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  style={{ width: "150px" }}
-                  disabled={true}
-                  // disabled={whsdisable}
-                  select
-                  size="small"
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  id="vWarehouse"
-                  label="Warehouse"
-                  value={prhead.vWarehouse}
-                  values={(values.vWarehouse = prhead.vWarehouse)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setPRHead({
-                      ...prhead,
-                      vWarehouse: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option />
-                  {warehouses.map((option) => (
-                    <option key={option.ID} value={option.MWWHLO}>
-                      {option.WAREHOUSE}
-                    </option>
-                  ))}
-                </TextField>
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 100 }}
-                  required
-                  disabled={deptdisable}
-                  select
-                  size="small"
-                  id="vBU"
-                  label="BU"
-                  placeholder="Placeholder"
-                  variant="outlined"
-                  value={prhead.vBU}
-                  values={(values.vBU = prhead.vBU)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setPRHead({
-                      ...prhead,
-                      vBU: event.target.value,
-                    });
-
-                    dispatch(
-                      departmentActions.getDepartments(event.target.value)
-                    );
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option />
-                  {bus.map((option) => (
-                    <option key={option.ID} value={option.S1STID}>
-                      {option.BU}
-                    </option>
-                  ))}
-                </TextField>
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 120 }}
-                  required
-                  // disabled={editdisable}
-                  disabled={true}
-                  size="small"
-                  id="vCostcenter"
-                  label="Costcenter"
-                  placeholder="Costcenter"
-                  variant="outlined"
-                  value={prhead.vCostcenter}
-                  values={(values.vCostcenter = prhead.vCostcenter)}
-                  InputLabelProps={{ shrink: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 100 }}
-                  required
-                  // disabled={editdisable}
-                  disabled={true}
-                  size="small"
-                  id="vMonth"
-                  label="Month"
-                  placeholder="Month"
-                  variant="outlined"
-                  value={prhead.vMonth}
-                  values={(values.vMonth = prhead.vMonth)}
-                  InputLabelProps={{ shrink: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 120 }}
-                  required
-                  // disabled={editdisable}
-                  disabled={true}
-                  size="small"
-                  id="vPlanUnPlan"
-                  label="Plan / UnPlan"
-                  placeholder="Plan / UnPlan"
-                  variant="outlined"
-                  value={prhead.vPlanUnPlan}
-                  values={(values.vPlanUnPlan = prhead.vPlanUnPlan)}
-                  InputLabelProps={{ shrink: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 100 }}
-                  // required
-                  // disabled={editdisable}
-                  disabled={true}
-                  size="small"
-                  id="vCAPNo"
-                  label="CAP No"
-                  placeholder="CAP No"
-                  variant="outlined"
-                  value={prhead.vCAPNo}
-                  values={(values.vCAPNo = prhead.vCAPNo)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setPRHead({
-                      ...prhead,
-                      vCAPNo: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 150 }}
-                  required
-                  // disabled={editdisable}
-                  disabled={true}
-                  size="small"
-                  id="vRequestor"
-                  label="Requestor"
-                  placeholder="Requestor"
-                  variant="outlined"
-                  value={prhead.vRequestor}
-                  values={(values.vRequestor = prhead.vRequestor)}
-                  InputLabelProps={{ shrink: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  style={{ maxWidth: 200 }}
-                  // required
-                  // disabled={editdisable}
-                  disabled={true}
-                  size="small"
-                  id="vRemark"
-                  label="Remark"
-                  placeholder="Remark"
-                  variant="outlined"
-                  value={prhead.vRemark}
-                  values={(values.vRemark = prhead.vRemark)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setPRHead({
-                      ...prhead,
-                      vRemark: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
               </Grid>
             </Paper>
           </Grid>

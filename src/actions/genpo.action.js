@@ -49,3 +49,24 @@ const doGenPONumber = async (dispatch, status, prnoline) => {
     dispatch(setStateGenPOToFailed());
   }
 };
+
+export const cancelPONumber = (pono) => {
+  return async (dispatch) => {
+    // console.log("PR: " + prno + " STS: " + status);
+    dispatch(setStateGenPOToFetching());
+    doCancelPONumber(dispatch, pono);
+  };
+};
+
+const doCancelPONumber = async (dispatch, pono) => {
+  try {
+    // let result = await httpClient.post(
+    //   `${server.PRGENPO_URL}/${status}/${prnoline}`
+    // );
+    // alert(JSON.stringify(result.data));
+    // dispatch(setStateGenPOToSuccess(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStateGenPOToFailed());
+  }
+};

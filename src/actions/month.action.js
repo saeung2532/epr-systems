@@ -33,7 +33,7 @@ export const getMonths = () => {
 
 const doGetMonths = async (dispatch) => {
   try {
-    let result = await httpClient.get(`${server.MONTH_URL}`);
+    let result = await httpClient.get(`${server.EPRMONTH_URL}`);
     dispatch(setStateMonthToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {

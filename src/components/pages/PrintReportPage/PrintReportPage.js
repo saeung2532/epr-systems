@@ -133,7 +133,7 @@ export default (props) => {
 
   useEffect(() => {
     let status = "20";
-    dispatch(prnumberActions.getPRNumbersUser(status));
+    dispatch(prnumberActions.getEPRNumbersUser(status));
     prheadReducer.result = null;
   }, []);
 
@@ -144,7 +144,7 @@ export default (props) => {
   const handleSearch = () => {
     setSearch(true);
     dispatch(
-      prheadActions.getPRHeadsMonitoring(
+      prheadActions.getEPRHeadsMonitoring(
         prnumber.vPRSelectNumber,
         prnumber.vWarehouse,
         prnumber.vDepartment,
@@ -176,7 +176,7 @@ export default (props) => {
                     variant="outlined"
                     // required
                     id="vSelectPRNumber"
-                    label="MPR Number"
+                    label="EPR Number"
                     value={prnumber.vPRSelectNumber}
                     onChange={(event) => {
                       // console.log(event.target.value);
@@ -204,7 +204,7 @@ export default (props) => {
                   <a
                     href={`${
                       process.env.REACT_APP_API_URL
-                    }/br_api/api_report/viewmpr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
+                    }/br_api/api_report/viewepr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
                       prnumber.vPRSelectNumber
                     }`}
                     target="_blank"
@@ -217,7 +217,7 @@ export default (props) => {
                       // disabled={viewMPRDisable}
                       startIcon={<SearchIcon />}
                     >
-                      View MPR
+                      View EPR
                     </Button>
                   </a>
                 </Grid>

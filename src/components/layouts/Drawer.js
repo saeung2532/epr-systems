@@ -27,19 +27,25 @@ import Collapse from "@material-ui/core/Collapse";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import StoreIcon from "@material-ui/icons/Store";
-import ShopIcon from "@material-ui/icons/Shop";
-import LayersIcon from "@material-ui/icons/Layers";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import PrintIcon from "@material-ui/icons/Print";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import StarBorder from "@material-ui/icons/StarBorder";
+import BlockIcon from "@material-ui/icons/Block";
+import {
+  red,
+  green,
+  purple,
+  deepOrange,
+  pink,
+  teal,
+} from "@material-ui/core/colors/";
 import * as loginActions from "./../../actions/login.action";
 
 const drawerWidth = 240;
+const secondary = pink.A400;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -180,8 +186,15 @@ const MiniDrawer = (props) => {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
-        color={
-          process.env.REACT_APP_IS_PRODUCTION === "1" ? "primary" : "secondary"
+        // color={
+        //   process.env.REACT_APP_IS_PRODUCTION === "1" ? "primary" : "secondary"
+        // }
+        // style={{ background: teal[500], boxShadow: "none" }}
+
+        style={
+          process.env.REACT_APP_IS_PRODUCTION === "1"
+            ? { background: teal[500], boxShadow: "none" }
+            : { background: secondary, boxShadow: "none" }
         }
         position="fixed"
         className={clsx(classes.appBar, {
@@ -202,14 +215,14 @@ const MiniDrawer = (props) => {
           </IconButton>
 
           <Typography variant="h6" noWrap>
-            Smart Purchase : Monthly Plan - Ver {process.env.REACT_APP_VERSION}
+            Smart Purchase : ePR Systems - Ver {process.env.REACT_APP_VERSION}
             <Typography variant="body1">{props.company}</Typography>
           </Typography>
 
           <div className={classes.grow} />
 
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
+            <IconButton aria-label="how 4 new mails" color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>
@@ -268,7 +281,7 @@ const MiniDrawer = (props) => {
             <ListItemIcon>
               <ViewListIcon />
             </ListItemIcon>
-            <ListItemText primary="Plan MPR" />
+            <ListItemText primary="Plan EPR" />
           </ListItem>
 
           <ListItem button onClick={handleClick}>
@@ -290,7 +303,7 @@ const MiniDrawer = (props) => {
                 <ListItemIcon>
                   <StarBorder />
                 </ListItemIcon>
-                <ListItemText primary="Confirm MPR" />
+                <ListItemText primary="Confirm PR" />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -316,50 +329,20 @@ const MiniDrawer = (props) => {
                 </ListItemIcon>
                 <ListItemText primary="Gen PO" />
               </ListItem>
+              {/* <ListItem
+                component={NavLink}
+                to="/cancelpo"
+                button
+                key="cancelpo"
+                activeClassName={classes.isActive}
+              >
+                <ListItemIcon>
+                  <BlockIcon />
+                </ListItemIcon>
+                <ListItemText primary="Cancel PO" />
+              </ListItem> */}
             </List>
           </Collapse>
-
-          {/* PR Stock */}
-          {/* <ListItem
-            component={NavLink}
-            to="/pr_stock"
-            button
-            key="pr_stock"
-            activeClassName={classes.isActive}
-          >
-            <ListItemIcon>
-              <ShopIcon />
-            </ListItemIcon>
-            <ListItemText primary="PR Stock" />
-          </ListItem> */}
-
-          {/* PR NonStock */}
-          {/* <ListItem
-            component={NavLink}
-            to="/pr_nonstock"
-            button
-            key="pr_nonstock"
-            activeClassName={classes.isActive}
-          >
-            <ListItemIcon>
-              <LayersIcon />
-            </ListItemIcon>
-            <ListItemText primary="PR NonStock" />
-          </ListItem> */}
-
-          {/* PH Manage */}
-          {/* <ListItem
-            component={NavLink}
-            to="/ph_manage"
-            button
-            key="ph_manage"
-            activeClassName={classes.isActive}
-          >
-            <ListItemIcon>
-              <AttachMoneyIcon />
-            </ListItemIcon>
-            <ListItemText primary="PH Manage" />
-          </ListItem> */}
 
           {/* Monitoring */}
           <ListItem

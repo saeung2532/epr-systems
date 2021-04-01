@@ -24,17 +24,17 @@ const setStatePRDetailToClear = () => ({
   type: HTTP_PRDETAIL_CLEAR,
 });
 
-export const getPRDetails = (prno) => {
+export const getEPRDetails = (prno) => {
   return async (dispatch) => {
     // console.log("PR: " + prno);
     dispatch(setStatePRDetailToFetching());
-    doGetPRDetails(dispatch, prno);
+    doGetEPRDetails(dispatch, prno);
   };
 };
 
-const doGetPRDetails = async (dispatch, prno) => {
+const doGetEPRDetails = async (dispatch, prno) => {
   try {
-    let result = await httpClient.get(`${server.PRDETAIL_URL}/${prno}`);
+    let result = await httpClient.get(`${server.EPRDETAIL_URL}/${prno}`);
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRDetailToSuccess(result.data));
   } catch (err) {
@@ -98,18 +98,18 @@ const doGetEPRDetailApproves = async (dispatch, cono, divi, prno, status) => {
   }
 };
 
-export const getPRDetailsMonitoring = (prno) => {
+export const getEPRDetailsMonitoring = (prno) => {
   return async (dispatch) => {
     // console.log("PR: " + prno);
     dispatch(setStatePRDetailToFetching());
-    doGetPRDetailsMonitoring(dispatch, prno);
+    doGetEPRDetailsMonitoring(dispatch, prno);
   };
 };
 
-const doGetPRDetailsMonitoring = async (dispatch, prno) => {
+const doGetEPRDetailsMonitoring = async (dispatch, prno) => {
   try {
     let result = await httpClient.get(
-      `${server.PRDETAILMONITORING_URL}/${prno}`
+      `${server.EPRDETAILMONITORING_URL}/${prno}`
     );
     // alert(JSON.stringify(result.data));
     dispatch(setStatePRDetailToSuccess(result.data));
@@ -119,10 +119,10 @@ const doGetPRDetailsMonitoring = async (dispatch, prno) => {
   }
 };
 
-export const addPRDetail = (formData, history) => {
+export const addEPRDetail = (formData, history) => {
   return async (dispatch) => {
     try {
-      await httpClient.post(server.PRDETAIL_URL, formData);
+      await httpClient.post(server.EPRDETAIL_URL, formData);
       // history.goBack();
     } catch (err) {
       alert(JSON.stringify(err));
@@ -130,11 +130,11 @@ export const addPRDetail = (formData, history) => {
   };
 };
 
-export const updatePRDetail = (formData, history) => {
+export const updateEPRDetail = (formData, history) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.put(server.PRDETAIL_URL, formData);
+      await httpClient.put(server.EPRDETAIL_URL, formData);
       // alert("Update Complete");
       // history.goBack();
     } catch (err) {
@@ -143,11 +143,11 @@ export const updatePRDetail = (formData, history) => {
   };
 };
 
-export const deletePRDetail = (prno, itemline) => {
+export const deleteEPRDetail = (prno, itemline) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
-      await httpClient.delete(`${server.PRDETAIL_URL}/${prno}/${itemline}`);
+      await httpClient.delete(`${server.EPRDETAIL_URL}/${prno}/${itemline}`);
       // alert("Delete Complete");
       // history.goBack();
     } catch (err) {

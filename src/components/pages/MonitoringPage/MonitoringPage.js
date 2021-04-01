@@ -33,6 +33,8 @@ import * as costcenterActions from "./../../../actions/costcenter.action";
 import * as phgroupActions from "./../../../actions/phgroup.action";
 import * as sendemailActions from "./../../../actions/sendemail.action";
 
+const document = "EPR";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -51,17 +53,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
 }));
-
-// const theme = createMuiTheme({
-//   palette: {
-//     // primary: {
-//     //   500: "#0FF",
-//     // },
-//     fourth: {
-//       500: "#0FF",
-//     },
-//   },
-// });
 
 const theme = createMuiTheme({
   overrides: {
@@ -166,7 +157,7 @@ export default (props) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    dispatch(prnumberActions.getPRNumbersWithOutUser());
+    dispatch(prnumberActions.getEPRNumbersWithOutUser());
     dispatch(warehouseActions.getWarehouses());
     dispatch(buActions.getBUs());
     let phgroup = "PH";
@@ -210,7 +201,7 @@ export default (props) => {
   const handleSearch = () => {
     setSearch(true);
     dispatch(
-      prheadActions.getPRHeadsMonitoring(
+      prheadActions.getEPRHeadsMonitoring(
         prnumber.vPRSelectNumber,
         prnumber.vWarehouse,
         prnumber.vBU,
@@ -272,7 +263,7 @@ export default (props) => {
                     variant="outlined"
                     // required
                     id="vSelectPRNumber"
-                    label="MPR Number"
+                    label="EPR Number"
                     value={prnumber.vPRSelectNumber}
                     onChange={(event) => {
                       // console.log(event.target.value);
@@ -517,7 +508,7 @@ export default (props) => {
           <DialogContent>
             <MaterialTable
               id="root_prdetail"
-              title={`MPR Detail : ${itemprdetail.vPRNumber}`}
+              title={`EPR Detail : ${itemprdetail.vPRNumber}`}
               columns={columnsdetail}
               data={prdetailReducer.result ? prdetailReducer.result : []}
               components={{
@@ -553,7 +544,8 @@ export default (props) => {
                           dispatch(
                             sendemailActions.sendEmail(
                               itemprdetail.vPRNumber,
-                              itemprdetail.vStatus
+                              itemprdetail.vStatus,
+                              document
                             )
                           );
                           // let phgroup = "PH";
@@ -1040,52 +1032,6 @@ export default (props) => {
   ];
 
   const columnsdetail = [
-    // {
-    //   title: "GRN",
-    //   field: "GRN",
-    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-    //   cellStyle: {
-    //     textAlign: "center",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //     paddingLeft: "6px",
-    //     paddingRight: "6px",
-    //     paddingBottom: "12px",
-    //     paddingTop: "12px",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       {item.GRN}
-    //     </Typography>
-    //   ),
-    // },
-    // {
-    //   title: "PO Number",
-    //   field: "PR_IBPUNO",
-    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-    //   cellStyle: {
-    //     textAlign: "center",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //     paddingLeft: "6px",
-    //     paddingRight: "6px",
-    //     paddingBottom: "12px",
-    //     paddingTop: "12px",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       {item.PR_IBPUNO}
-    //     </Typography>
-    //   ),
-    // },
     {
       title: "Confirm",
       field: "PR_CONFIRM",
@@ -1133,8 +1079,8 @@ export default (props) => {
       ),
     },
     {
-      title: "PR Number",
-      field: "HD_IBPLPN",
+      title: "GRN",
+      field: "GRN",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
         textAlign: "center",
@@ -1151,7 +1097,30 @@ export default (props) => {
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
-          {item.HD_IBPLPN}
+          {item.GRN}
+        </Typography>
+      ),
+    },
+    {
+      title: "PO Number",
+      field: "PR_IBPUNO",
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.PR_IBPUNO}
         </Typography>
       ),
     },
@@ -1633,7 +1602,7 @@ export default (props) => {
       {/* Plan PR Table */}
       <MaterialTable
         id="root_pr"
-        title={`MPR Monitoring`}
+        title={`EPR Monitoring`}
         columns={columns}
         data={prheadReducer.result ? prheadReducer.result : []}
         options={{
@@ -1676,7 +1645,7 @@ export default (props) => {
                   vStatus: item.HD_STATUS,
                 });
                 dispatch(
-                  prdetailActions.getPRDetailsMonitoring(item.HD_IBPLPN)
+                  prdetailActions.getEPRDetailsMonitoring(item.HD_IBPLPN)
                 );
               });
               setSelectedProduct("rowData");

@@ -35,6 +35,7 @@ import * as warehouseActions from "./../../../actions/warehouse.action";
 import * as buActions from "./../../../actions/bu.action";
 import * as departmentActions from "./../../../actions/department.action";
 import * as costcenterActions from "./../../../actions/costcenter.action";
+import * as capexActions from "./../../../actions/capex.action";
 import * as approveActions from "./../../../actions/approve.action";
 import * as buyerActions from "./../../../actions/buyer.action";
 import * as itemActions from "./../../../actions/item.action";
@@ -131,6 +132,7 @@ export default (props) => {
   );
   const approveReducer = useSelector(({ approveReducer }) => approveReducer);
   const buyerReducer = useSelector(({ buyerReducer }) => buyerReducer);
+  const capexReducer = useSelector(({ capexReducer }) => capexReducer);
   const itemReducer = useSelector(({ itemReducer }) => itemReducer);
   const itemunitReducer = useSelector(({ itemunitReducer }) => itemunitReducer);
   const phgroupReducer = useSelector(({ phgroupReducer }) => phgroupReducer);
@@ -145,6 +147,9 @@ export default (props) => {
     vDate: moment(new Date()).format("YYYY-MM-DD"),
     vWarehouse: "",
     vDepartment: "",
+    vCostcenter: "",
+    vPHGroup: "",
+    vBuyer: "",
     vMonth: "",
     vPlanUnPlan: "",
     vBU: "",
@@ -210,7 +215,7 @@ export default (props) => {
     // console.log("dispatch prnumberbuyerActions");
     let fromStatus = "05";
     let toStatus = "10";
-    dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
+    dispatch(prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus));
     dispatch(warehouseActions.getWarehouses());
     dispatch(buActions.getBUs());
     dispatch(approveActions.getApproves());
@@ -228,21 +233,28 @@ export default (props) => {
     prheads.map((item) => {
       // console.log("prheads.vStatus: " + item.HD_STATUS);
 
-      // if (item.HD_STATUS === "10") {
+      setPRNumber({ ...prnumber, vPRSelectNumber: item.HD_IBPLPN });
       dispatch(itemActions.getItems(item.HD_IBWHLO));
       let phgroup = "PH";
       let bu = item.HD_BU;
-      let department = item.HD_IBCOCE;
+      dispatch(costcenterActions.getCostCentersBU(item.HD_BU));
+      dispatch(
+        capexActions.getCapexCoscenters(
+          prhead.vDate.substr(0, 4),
+          item.HD_IBCOCE
+        )
+      );
       dispatch(phgroupActions.getPHGroups(phgroup));
-      dispatch(costcenterActions.getCostCenters(department));
+      dispatch(phbuyerActions.getPHBuyers(phgroup, item.HD_IBMODL));
       dispatch(departmentActions.getDepartments(bu));
-      setPRNumber({ ...prnumber, vPRSelectNumber: item.HD_IBPLPN });
       setPRHead({
         ...prhead,
         vPRNumber: item.HD_IBPLPN,
         vDate: moment(item.HD_PURCDT).format("YYYY-MM-DD"),
         vWarehouse: item.HD_IBWHLO,
-        vDepartment: item.HD_IBCOCE,
+        vCostcenter: item.HD_IBCOCE,
+        vPHGroup: item.HD_IBMODL,
+        vBuyer: item.HD_IBBUYE,
         vMonth: item.HD_IBMTH,
         vPlanUnPlan: item.HD_IBPRIP,
         vBU: item.HD_BU,
@@ -257,12 +269,6 @@ export default (props) => {
         vApprove4: item.HD_APP4,
         vStatus: item.HD_STATUS,
       });
-      // } else {
-      // console.log("prheads.vStatus: false");
-      // setPRHead({ ...initialStatePRHead });
-      // dispatch(prdetailbuyerActions.getPRDetails("00"));
-      // handleCancel();
-      // }
     });
   }, [prheadReducer]);
 
@@ -277,10 +283,12 @@ export default (props) => {
         console.log("prconfirm: true");
         let fromStatus = "05";
         let toStatus = "10";
-        dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
+        dispatch(prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus));
 
         let statusprhead = "15";
-        dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, statusprhead));
+        dispatch(
+          prheadActions.updateStsEPRHead(prhead.vPRNumber, statusprhead)
+        );
         prheadReducer.result = null;
         prdetailbuyerReducer.result = null;
         setPRHead({
@@ -318,6 +326,18 @@ export default (props) => {
 
   const approves = useMemo(() =>
     approveReducer.result ? approveReducer.result : []
+  );
+
+  const phgroups = useMemo(() =>
+    phgroupReducer.result ? phgroupReducer.result : []
+  );
+
+  const phbuyers = useMemo(() =>
+    phbuyerReducer.result ? phbuyerReducer.result : []
+  );
+
+  const capexs = useMemo(() =>
+    capexReducer.result ? capexReducer.result : []
   );
 
   const ColorButton = withStyles((theme) => ({
@@ -367,7 +387,7 @@ export default (props) => {
       setPRHead({
         ...initialStatePRHead,
       });
-      dispatch(prdetailbuyerActions.getPRDetails("00"));
+      dispatch(prdetailbuyerActions.getEPRDetails("00"));
       setEditDisable(true);
       setCreateDisable(true);
       setCancelPRDisable(true);
@@ -375,13 +395,13 @@ export default (props) => {
       let fromStatus = "05";
       let toStatus = "10";
       dispatch(
-        prheadActions.getMPRHeads(
+        prheadActions.getEPRHeads(
           prnumber.vPRSelectNumber,
           fromStatus,
           toStatus
         )
       );
-      dispatch(prdetailbuyerActions.getPRDetails(prnumber.vPRSelectNumber));
+      dispatch(prdetailbuyerActions.getEPRDetails(prnumber.vPRSelectNumber));
       setNewDisable(true);
       setEditDisable(false);
       setCreateDisable(false);
@@ -393,7 +413,7 @@ export default (props) => {
   const handleCancel = () => {
     setPRNumber({ ...prnumber, vPRSelectNumber: "" });
     setPRHead({ ...initialStatePRHead });
-    dispatch(prdetailbuyerActions.getPRDetails("00"));
+    dispatch(prdetailbuyerActions.getEPRDetails("00"));
     setSearchDisable(false);
     setNewDisable(false);
     setEditDisable(true);
@@ -418,9 +438,9 @@ export default (props) => {
     setSuccess(false);
     setLoadingReject(true);
 
-    dispatch(prheadActions.updateStsPRHead(prhead.vPRNumber, status));
+    dispatch(prheadActions.updateStsEPRHead(prhead.vPRNumber, status));
     dispatch(
-      prdetailbuyerActions.updatePRConfirmDetailReject(
+      prdetailbuyerActions.updateEPRConfirmDetailReject(
         prhead.vPRNumber,
         loginActions.getTokenUsername()
       )
@@ -431,8 +451,8 @@ export default (props) => {
       setPRHead({ ...initialStatePRHead });
       let fromStatus = "05";
       let toStatus = "10";
-      dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
-      dispatch(prdetailbuyerActions.getPRDetails("00"));
+      dispatch(prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus));
+      dispatch(prdetailbuyerActions.getEPRDetails("00"));
       alert("Reject Complete");
       setSearchDisable(false);
       setNewDisable(false);
@@ -454,14 +474,14 @@ export default (props) => {
       setLoadingConfirmAll(true);
 
       dispatch(
-        prdetailbuyerActions.updatePRConfirmDetailAll(
+        prdetailbuyerActions.updateEPRConfirmDetailAll(
           prhead.vPRNumber,
           loginActions.getTokenUsername()
         )
       );
       setTimeout(() => {
         setItemPRDetail({ ...initialStateItemPRDetail });
-        dispatch(prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber));
+        dispatch(prconfirmbuyerActions.getEPRConfirmBuyers(prhead.vPRNumber));
         setOpenDialog(false);
         setAddFreeItem(false);
         setConfirm(false);
@@ -517,7 +537,7 @@ export default (props) => {
                     variant="outlined"
                     required
                     id="vSelectPRNumber"
-                    label="MPR Number"
+                    label="EPR Number"
                     disabled={searchdisable}
                     value={prnumber.vPRSelectNumber}
                     onChange={(event) => {
@@ -634,8 +654,8 @@ export default (props) => {
                   disabled={true}
                   size="small"
                   id="vPRNumber"
-                  label="MPR Number"
-                  placeholder="MPR Number"
+                  label="EPR Number"
+                  placeholder="EPR Number"
                   variant="outlined"
                   value={prhead.vPRNumber}
                   values={(values.vPRNumber = prhead.vPRNumber)}
@@ -721,7 +741,7 @@ export default (props) => {
                   className={classes.margin}
                   style={{ maxWidth: 100 }}
                   required
-                  disabled={deptdisable}
+                  disabled={true}
                   select
                   size="small"
                   id="vBU"
@@ -758,21 +778,99 @@ export default (props) => {
                   className={classes.margin}
                   style={{ width: "150px" }}
                   disabled={true}
-                  // disabled={deptdisable}
                   select
                   size="small"
                   variant="outlined"
                   margin="normal"
                   required
-                  id="vDepartment"
-                  label="Department"
-                  value={prhead.vDepartment}
-                  values={(values.vDepartment = prhead.vDepartment)}
+                  id="vCostcenter"
+                  label="Costcenter"
+                  value={prhead.vCostcenter}
+                  values={(values.vCostcenter = prhead.vCostcenter)}
                   onChange={(event) => {
                     // console.log(event.target.value);
                     setPRHead({
                       ...prhead,
-                      vDepartment: event.target.value,
+                      vCostcenter: event.target.value,
+                    });
+                    dispatch(
+                      capexActions.getCapexCoscenters(
+                        prhead.vDate.substr(0, 4),
+                        event.target.value
+                      )
+                    );
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                >
+                  <option />
+                  {costcenters.map((option) => (
+                    <option key={option.ID} value={option.S2AITM}>
+                      {option.COSTCENTER}
+                    </option>
+                  ))}
+                </TextField>
+
+                <TextField
+                  className={classes.margin}
+                  style={{ minWidth: 100, maxWidth: 100 }}
+                  disabled={true}
+                  // fullWidth
+                  required
+                  select
+                  margin="normal"
+                  variant="outlined"
+                  size="small"
+                  required
+                  id="vPHGroup"
+                  label="PH Group"
+                  value={prhead.vPHGroup}
+                  values={(values.vPHGroup = prhead.vPHGroup)}
+                  onChange={(event) => {
+                    // console.log(event.target.value);
+                    let phgroup = "PH";
+                    setPRHead({
+                      ...prhead,
+                      vPHGroup: event.target.value,
+                    });
+                    dispatch(
+                      phbuyerActions.getPHBuyers(phgroup, event.target.value)
+                    );
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                >
+                  <option />
+                  {phgroups.map((option) => (
+                    <option key={option.ID} value={option.US_GRP}>
+                      {option.US_GRP}
+                    </option>
+                  ))}
+                </TextField>
+
+                <TextField
+                  className={classes.margin}
+                  style={{ minWidth: 150, maxWidth: 150 }}
+                  disabled={editdisable}
+                  required
+                  select
+                  margin="normal"
+                  variant="outlined"
+                  size="small"
+                  required
+                  id="vBuyer"
+                  label="Buyer"
+                  value={prhead.vBuyer}
+                  values={(values.vBuyer = prhead.vBuyer)}
+                  onChange={(event) => {
+                    // console.log(event.target.value);
+                    setPRHead({
+                      ...prhead,
+                      vBuyer: event.target.value,
                     });
                   }}
                   InputLabelProps={{ shrink: true }}
@@ -781,9 +879,9 @@ export default (props) => {
                   }}
                 >
                   <option />
-                  {departments.map((option) => (
-                    <option key={option.ID} value={option.S1STID}>
-                      {option.DEPARTMENT}
+                  {phbuyers.map((option) => (
+                    <option key={option.ID} value={option.US_LOGIN}>
+                      {option.US_LOGIN}
                     </option>
                   ))}
                 </TextField>
@@ -792,7 +890,6 @@ export default (props) => {
                   className={classes.margin}
                   style={{ maxWidth: 100 }}
                   required
-                  // disabled={editdisable}
                   disabled={true}
                   size="small"
                   id="vMonth"
@@ -808,7 +905,6 @@ export default (props) => {
                   className={classes.margin}
                   style={{ maxWidth: 120 }}
                   required
-                  // disabled={editdisable}
                   disabled={true}
                   size="small"
                   id="vPlanUnPlan"
@@ -819,60 +915,6 @@ export default (props) => {
                   values={(values.vPlanUnPlan = prhead.vPlanUnPlan)}
                   InputLabelProps={{ shrink: true }}
                 />
-
-                {/* <FormControl
-                className={classes.margin}
-                style={{ maxWidth: 170 }}
-                required
-                disabled={editdisable}
-                variant="outlined"
-                size="small"
-              >
-                <InputLabel>Buyer</InputLabel>
-                <Select
-                  id="vBuyer"
-                  label="Buyer"
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    
-                    setPRHead({
-                      ...prhead,
-                      vBuyer: event.target.value,
-                    });
-                  }}
-                  value={prhead.vBuyer}
-                >
-                  <MenuItem value="0">
-                    <em>Select Buyer</em>
-                  </MenuItem>
-                  {buyers.map((item) => (
-                    <MenuItem key={item.ID} value={item.US_LOGIN}>
-                      {item.US_LOGIN}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl> */}
-
-                {/* <TextField
-                className={classes.margin}
-                style={{ maxWidth: 100 }}
-                required
-                disabled={editdisable}
-                size="small"
-                id="vGroup"
-                label="Group"
-                placeholder="Placeholder"
-                variant="outlined"
-                onChange={(event) => {
-                  // console.log(event.target.value);
-                  
-                  setPRHead({
-                    ...prhead,
-                    vGroup: event.target.value,
-                  });
-                }}
-                value={prhead.vGroup}
-              /> */}
 
                 <TextField
                   className={classes.margin}
@@ -1073,34 +1115,6 @@ export default (props) => {
                   ))}
                 </TextField>
                 <Grid className={(classes.margin, classes.wrapper)}>
-                  {/* <Button
-                    // fullWidth
-                    size="medium"
-                    id="vCancelPR"
-                    variant="contained"
-                    color="primary"
-                    // style={{ backgroundColor: green[500] }}
-                    startIcon={<DeleteIcon />}
-                    disabled={cancelprdisable}
-                    onClick={handleRejectPR}
-                  >
-                    Cancel PR
-                  </Button>
-                </Grid>
-                <Grid className={classes.margin}>
-                  <Button
-                    // fullWidth
-                    size="medium"
-                    id="vCancelPR"
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<SendIcon />}
-                    disabled={cancelprdisable}
-                    onClick={handleSubmitPH}
-                  >
-                    Submit PH
-                  </Button> */}
-
                   <Button
                     // fullWidth
                     size="medium"
@@ -1142,11 +1156,11 @@ export default (props) => {
                   )}
                 </Grid>
 
-                <Grid className={classes.margin}>
+                <Grid className={(classes.margin, classes.wrapper)}>
                   <a
                     href={`${
                       process.env.REACT_APP_API_URL
-                    }/br_api/api_report/viewmpr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
+                    }/br_api/api_report/viewepr/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
                       prnumber.vPRSelectNumber
                     }`}
                     target="_blank"
@@ -1159,7 +1173,7 @@ export default (props) => {
                       disabled={cancelprdisable}
                       startIcon={<SearchIcon />}
                     >
-                      View MPR
+                      View EPR
                     </ColorButton>
                   </a>
                 </Grid>
@@ -1600,7 +1614,7 @@ export default (props) => {
               }}
             />
 
-            <Grid container item xs={12} spacing={2}>
+            {/* <Grid container item xs={12} spacing={2}>
               <Grid item xs={5}>
                 <TextField
                   className={classes.margin}
@@ -1714,7 +1728,7 @@ export default (props) => {
                   {option.COSTCENTER}
                 </option>
               ))}
-            </TextField>
+            </TextField> */}
 
             <TextField
               // required
@@ -2194,75 +2208,75 @@ export default (props) => {
         </Typography>
       ),
     },
-    {
-      title: "Cost Cen.",
-      field: "PR_IBCOCE",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBCOCE}
-        </Typography>
-      ),
-    },
-    {
-      title: "Group",
-      field: "PR_IBMODL",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBMODL}
-        </Typography>
-      ),
-    },
-    {
-      title: "Buyer",
-      field: "PR_IBBUYE",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "left",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBBUYE}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: "Cost Cen.",
+    //   field: "PR_IBCOCE",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBCOCE}
+    //     </Typography>
+    //   ),
+    // },
+    // {
+    //   title: "Group",
+    //   field: "PR_IBMODL",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBMODL}
+    //     </Typography>
+    //   ),
+    // },
+    // {
+    //   title: "Buyer",
+    //   field: "PR_IBBUYE",
+    //   headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "left",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBBUYE}
+    //     </Typography>
+    //   ),
+    // },
 
     // {
     //   title: "PR Rem3.",
@@ -2353,7 +2367,7 @@ export default (props) => {
           formData.append("vStatus", prhead.vStatus ? prhead.vStatus : "00");
 
           if (newdisable === false && cancelprdisable === true) {
-            dispatch(prheadActions.addPRHead(formData, props.history));
+            dispatch(prheadActions.addEPRHead(formData, props.history));
             setTimeout(() => {
               setSearchDisable(false);
               setNewDisable(false);
@@ -2365,10 +2379,12 @@ export default (props) => {
               setPRHead({ ...initialStatePRHead });
               let fromStatus = "05";
               let toStatus = "10";
-              dispatch(prnumberbuyerActions.getPRNumbers(fromStatus, toStatus));
+              dispatch(
+                prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus)
+              );
             }, 1000);
           } else if (searchdisable === false) {
-            dispatch(prheadActions.updatePRHead(formData, props.history));
+            dispatch(prheadActions.updateEPRHead(formData, props.history));
           }
         }}
       >
@@ -2379,7 +2395,7 @@ export default (props) => {
       {/* <p>#Debug {JSON.stringify(selectedProduct)}</p> */}
       <MaterialTable
         id="root_pr"
-        title={`Confirm MPR : ${prhead.vStatus}`}
+        title={`Confirm EPR : ${prhead.vStatus}`}
         columns={columns}
         isLoading={loading}
         data={prdetailbuyerReducer.result ? prdetailbuyerReducer.result : []}
@@ -2492,7 +2508,7 @@ export default (props) => {
           //     setTimeout(() => {
           //       const data = [newData];
           //       data.map((item) => {
-          //         // dispatch(prdetailActions.getPRDetails(item.PR_IBPLPN, "00"));
+          //         // dispatch(prdetailActions.getEPRDetails(item.PR_IBPLPN, "00"));
           //       });
           //       resolve();
           //     }, 1000);
@@ -2503,7 +2519,7 @@ export default (props) => {
               let data = [oldData];
               data.map((item) => {
                 dispatch(
-                  prdetailbuyerActions.deletePRDetail(
+                  prdetailbuyerActions.deleteEPRDetail(
                     item.PR_IBPLPN,
                     item.PR_IBPLPS
                   )
@@ -2512,7 +2528,9 @@ export default (props) => {
               setTimeout(() => {
                 {
                   setItemPRDetail({ ...initialStateItemPRDetail });
-                  dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+                  dispatch(
+                    prdetailbuyerActions.getEPRDetails(prhead.vPRNumber)
+                  );
                 }
                 resolve();
               }, 1000);
@@ -2529,7 +2547,6 @@ export default (props) => {
               let phgroup = "PH";
               data.map((item) => {
                 dispatch(itemunitActions.getItemUnits(item.PR_IBITNO));
-                dispatch(phbuyerActions.getPHBuyers(phgroup, item.PR_IBMODL));
               });
 
               setTimeout(() => {
@@ -2593,7 +2610,7 @@ export default (props) => {
               let data = [rowData];
               data.map((item) => {
                 dispatch(
-                  prdetailbuyerActions.updatePRConfirmDetailItem(
+                  prdetailbuyerActions.updateEPRConfirmDetailItem(
                     item.PR_IBPLPN,
                     item.PR_IBPLPS,
                     item.PR_IBBUYE
@@ -2602,9 +2619,11 @@ export default (props) => {
 
                 setTimeout(() => {
                   setItemPRDetail({ ...initialStateItemPRDetail });
-                  dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
                   dispatch(
-                    prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber)
+                    prdetailbuyerActions.getEPRDetails(prhead.vPRNumber)
+                  );
+                  dispatch(
+                    prconfirmbuyerActions.getEPRConfirmBuyers(prhead.vPRNumber)
                   );
                   setOpenDialog(false);
                   setAddFreeItem(false);
@@ -2659,9 +2678,9 @@ export default (props) => {
           formData.append("vCurrency", values.vCurrency);
           formData.append("vOrdertype", values.vOrdertype);
           formData.append("vTotal", values.vTotal);
-          formData.append("vCostcenterDetail", values.vCostcenterDetail);
-          formData.append("vPHGroupDetail", values.vPHGroupDetail);
-          formData.append("vBuyerDetail", values.vBuyerDetail);
+          formData.append("vCostcenterDetail", prhead.vCostcenter);
+          formData.append("vPHGroupDetail", prhead.vPHGroup);
+          formData.append("vBuyerDetail", prhead.vBuyer);
           formData.append("vRemarkDetail", values.vRemarkDetail);
           formData.append("vAddFreeItem", itemprdetail.vAddFreeItem);
           formData.append("vConfirm", confirm ? "1" : "0");
@@ -2674,10 +2693,12 @@ export default (props) => {
 
           if (create) {
             // console.log("create");
-            dispatch(prdetailbuyerActions.addPRDetail(formData, props.history));
+            dispatch(
+              prdetailbuyerActions.addEPRDetail(formData, props.history)
+            );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+              dispatch(prdetailbuyerActions.getEPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setCreate(false);
               setSaveDisable(false);
@@ -2688,11 +2709,11 @@ export default (props) => {
           } else if (update) {
             // console.log("update");
             dispatch(
-              prdetailbuyerActions.updatePRDetail(formData, props.history)
+              prdetailbuyerActions.updateEPRDetail(formData, props.history)
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+              dispatch(prdetailbuyerActions.getEPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setAddFreeItem(false);
               setConfirmDisable(false);
@@ -2704,13 +2725,13 @@ export default (props) => {
           } else {
             // console.log("confirm");
             dispatch(
-              prdetailbuyerActions.updatePRDetail(formData, props.history)
+              prdetailbuyerActions.updateEPRDetail(formData, props.history)
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailbuyerActions.getPRDetails(prhead.vPRNumber));
+              dispatch(prdetailbuyerActions.getEPRDetails(prhead.vPRNumber));
               dispatch(
-                prconfirmbuyerActions.getPRConfirmBuyers(prhead.vPRNumber)
+                prconfirmbuyerActions.getEPRConfirmBuyers(prhead.vPRNumber)
               );
               setOpenDialog(false);
               setAddFreeItem(false);

@@ -154,6 +154,12 @@ export const HTTP_GENPO_FAILED = "HTTP_GENPO_FAILED";
 export const HTTP_GENPO_SUCCESS = "HTTP_GENPO_SUCCESS";
 export const HTTP_GENPO_CLEAR = "HTTP_GENPO_CLEAR";
 
+// CAPEX
+export const HTTP_CAPEX_FETCHING = "HTTP_CAPEX_FETCHING";
+export const HTTP_CAPEX_FAILED = "HTTP_CAPEX_FAILED";
+export const HTTP_CAPEX_SUCCESS = "HTTP_CAPEX_SUCCESS";
+export const HTTP_CAPEX_CLEAR = "HTTP_CAPEX_CLEAR";
+
 // Error Code
 export const E_PICKER_CANCELLED = "E_PICKER_CANCELLED";
 export const E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR =
@@ -196,33 +202,34 @@ export const server = {
   PHGROUP_URL: `api_data/phgroup`,
   PHBUYER_URL: `api_data/phbuyer`,
   SUPPLIER_URL: `api_data/supplier`,
-  MONTH_URL: `api_data/month`,
-  STATUS_URL: `api_data/status`,
+  EPRMONTH_URL: `v2/api_data/eprmonth`,
+  EPRSTATUS_URL: `v2/api_data/eprstatus`,
   COSTCENTERWITHOUTDEPARTMENT_URL: `api_data/costcenterwithoutdepartment`,
+  COSTCENTERBU_URL: `api_data/costcenterbu`,
+  CAPEXCOST_URL: `api_data/capexcostcenter`,
+  CAPEXDEPT_URL: `api_data/capexdepartment`,
   SENDEMAIL_URL: `api_data/resendemail`,
 
-  MPRHEAD_URL: `api_data/mprhead`,
-  PRHEAD_URL: `api_data/prhead`,
-  PRNUMBER_URL: `api_data/prnumber`,
-  PRNUMBERBUYER_URL: `api_data/prnumberbuyer`,
-  PRNUMBERGROUPING_URL: `api_data/prnumbergrouping`,
-  PRNUMBERGENPO_URL: `api_data/prnumbergenpo`,
-  PRNUMBERWITHOUTUSER_URL: `api_data/prnumberwithoutuser`,
-  PRNUMBERUSER_URL: `api_data/prnumberuser`,
-  PRHEADMONITORING_URL: `api_data/prheadmonitoring`,
+  EPRHEAD_URL: `v2/api_data/eprhead`,
+  EPRNUMBER_URL: `v2/api_data/eprnumber`,
+  EPRNUMBERBUYER_URL: `v2/api_data/eprnumberbuyer`,
+  EPRNUMBERGROUPING_URL: `v2/api_data/eprnumbergrouping`,
+  EPRNUMBERGENPO_URL: `v2/api_data/eprnumbergenpo`,
+  EPRNUMBERWITHOUTUSER_URL: `v2/api_data/eprnumberwithoutuser`,
+  EPRNUMBERUSER_URL: `v2/api_data/eprnumberuser`,
+  EPRHEADMONITORING_URL: `v2/api_data/eprheadmonitoring`,
 
-  PRDETAIL_URL: `api_data/prdetail`,
-  PRDETAILBUYER_URL: `api_data/prdetailbuyer`,
-  PRDETAILGROUPING_URL: `api_data/prdetailgrouping`,
-  PRDETAILGENPO_URL: `api_data/prdetailgenpo`,
-  PRDETAILMONITORING_URL: `api_data/prdetailmonitoring`,
+  EPRDETAIL_URL: `v2/api_data/eprdetail`,
+  EPRDETAILBUYER_URL: `v2/api_data/eprdetailbuyer`,
+  EPRDETAILGROUPING_URL: `v2/api_data/eprdetailgrouping`,
+  EPRDETAILGENPO_URL: `v2/api_data/eprdetailgenpo`,
+  EPRDETAILMONITORING_URL: `v2/api_data/eprdetailmonitoring`,
 
-  PRCONFIRMDETAILREJECT_URL: `api_data/prconfirmdetailreject`,
-  PRCONFIRMDETAILITEM_URL: `api_data/prconfirmdetailitem`,
-  PRCONFIRMDETAILALL_URL: `api_data/prconfirmdetailall`,
-  PRCONFIRMBUYER_URL: `api_data/prconfirmbuyer`,
+  EPRCONFIRMDETAILREJECT_URL: `v2/api_data/eprconfirmdetailreject`,
+  EPRCONFIRMDETAILITEM_URL: `v2/api_data/eprconfirmdetailitem`,
+  EPRCONFIRMDETAILALL_URL: `v2/api_data/eprconfirmdetailall`,
+  EPRCONFIRMBUYER_URL: `v2/api_data/eprconfirmbuyer`,
 
-  PRAPPROVE_URL: `api_data/prapprove`,
   MPRHEADAPPROVE_URL: `api_data/mprheadapprove`,
   EPRHEADAPPROVE_URL: `api_data/eprheadapprove`,
   MPRDETAILAPPROVE_URL: `api_data/mprdetailapprove`,
@@ -232,6 +239,7 @@ export const server = {
   EPRAPPROVEFINAL_URL: `api_data/eprapprovefinal`,
   PRREJECT_URL: `api_data/prrejectapprove`,
   PRGENPO_URL: `api_data/callmform`,
+  PONUMBER_URL: `api_data/ponumber`,
 
   REFRESH_TOKEN_URL: `refresh/token`,
   TOKEN_KEY: `token`,

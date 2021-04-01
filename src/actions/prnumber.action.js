@@ -24,17 +24,17 @@ const setStatePRNumberToClear = () => ({
   type: HTTP_PRNUMBER_CLEAR,
 });
 
-export const getPRNumbers = (fromStatus, toStatus) => {
+export const getEPRNumbers = (fromStatus, toStatus) => {
   return async (dispatch) => {
     dispatch(setStatePRNumberToFetching());
-    doGetPRNumbers(dispatch, fromStatus, toStatus);
+    doGetEPRNumbers(dispatch, fromStatus, toStatus);
   };
 };
 
-const doGetPRNumbers = async (dispatch, fromStatus, toStatus) => {
+const doGetEPRNumbers = async (dispatch, fromStatus, toStatus) => {
   try {
     let result = await httpClient.get(
-      `${server.PRNUMBER_URL}/${fromStatus}/${toStatus}`
+      `${server.EPRNUMBER_URL}/${fromStatus}/${toStatus}`
     );
     dispatch(setStatePRNumberToSuccess(result.data));
     // alert(JSON.stringify(result.data));
@@ -45,16 +45,16 @@ const doGetPRNumbers = async (dispatch, fromStatus, toStatus) => {
   }
 };
 
-export const getPRNumbersWithOutUser = () => {
+export const getEPRNumbersWithOutUser = () => {
   return async (dispatch) => {
     dispatch(setStatePRNumberToFetching());
-    doGetPRNumbersWithOutUser(dispatch);
+    doGetEPRNumbersWithOutUser(dispatch);
   };
 };
 
-const doGetPRNumbersWithOutUser = async (dispatch) => {
+const doGetEPRNumbersWithOutUser = async (dispatch) => {
   try {
-    let result = await httpClient.get(`${server.PRNUMBERWITHOUTUSER_URL}`);
+    let result = await httpClient.get(`${server.EPRNUMBERWITHOUTUSER_URL}`);
     dispatch(setStatePRNumberToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {
@@ -64,16 +64,16 @@ const doGetPRNumbersWithOutUser = async (dispatch) => {
   }
 };
 
-export const getPRNumbersUser = (status) => {
+export const getEPRNumbersUser = (status) => {
   return async (dispatch) => {
     dispatch(setStatePRNumberToFetching(status));
-    doGetPRNumbersUser(dispatch, status);
+    doGetEPRNumbersUser(dispatch, status);
   };
 };
 
-const doGetPRNumbersUser = async (dispatch, status) => {
+const doGetEPRNumbersUser = async (dispatch, status) => {
   try {
-    let result = await httpClient.get(`${server.PRNUMBERUSER_URL}/${status}`);
+    let result = await httpClient.get(`${server.EPRNUMBERUSER_URL}/${status}`);
     dispatch(setStatePRNumberToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {

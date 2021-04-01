@@ -33,7 +33,7 @@ export const getStatuses = () => {
 
 const doGetStatuses = async (dispatch) => {
   try {
-    let result = await httpClient.get(`${server.STATUS_URL}`);
+    let result = await httpClient.get(`${server.EPRSTATUS_URL}`);
     dispatch(setStateStatusToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {

@@ -24,16 +24,16 @@ const setStatePRConfirmBuyerToClear = () => ({
   type: HTTP_PRCONFIRMBUYER_CLEAR,
 });
 
-export const getPRConfirmBuyers = (prno) => {
+export const getEPRConfirmBuyers = (prno) => {
   return async (dispatch) => {
     dispatch(setStatePRConfirmBuyerToFetching());
-    doGetPRConfirmBuyers(dispatch, prno);
+    doGetEPRConfirmBuyers(dispatch, prno);
   };
 };
 
-const doGetPRConfirmBuyers = async (dispatch, prno) => {
+const doGetEPRConfirmBuyers = async (dispatch, prno) => {
   try {
-    let result = await httpClient.get(`${server.PRCONFIRMBUYER_URL}/${prno}`);
+    let result = await httpClient.get(`${server.EPRCONFIRMBUYER_URL}/${prno}`);
     dispatch(setStatePRConfirmBuyerToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {
