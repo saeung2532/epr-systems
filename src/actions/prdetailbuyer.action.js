@@ -181,3 +181,22 @@ const doGetEPRDetailsGenPO = async (dispatch, status, prnoline) => {
     dispatch(setStatePRDetailBuyerToFailed());
   }
 };
+
+export const getPODetails = (pono) => {
+  return async (dispatch) => {
+    // console.log("PR: " + prno);
+    dispatch(setStatePRDetailBuyerToFetching());
+    doGetPODetails(dispatch, pono);
+  };
+};
+
+const doGetPODetails = async (dispatch, pono) => {
+  try {
+    let result = await httpClient.get(`${server.PODETAIL_URL}/${pono}`);
+    // alert(JSON.stringify(result.data));
+    dispatch(setStatePRDetailBuyerToSuccess(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStatePRDetailBuyerToFailed());
+  }
+};

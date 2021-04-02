@@ -238,8 +238,10 @@ export const server = {
   MPRAPPROVEFINAL_URL: `api_data/mprapprovefinal`,
   EPRAPPROVEFINAL_URL: `api_data/eprapprovefinal`,
   PRREJECT_URL: `api_data/prrejectapprove`,
-  PRGENPO_URL: `api_data/callmform`,
+  PRGENPO_URL: `api_data/callmformpps200`,
+  CANCELPO_URL: `api_data/callmformpps350`,
   PONUMBER_URL: `api_data/ponumber`,
+  PODETAIL_URL: `api_data/podetail`,
 
   REFRESH_TOKEN_URL: `refresh/token`,
   TOKEN_KEY: `token`,

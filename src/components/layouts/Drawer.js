@@ -329,7 +329,7 @@ const MiniDrawer = (props) => {
                 </ListItemIcon>
                 <ListItemText primary="Gen PO" />
               </ListItem>
-              {/* <ListItem
+              <ListItem
                 component={NavLink}
                 to="/cancelpo"
                 button
@@ -340,7 +340,7 @@ const MiniDrawer = (props) => {
                   <BlockIcon />
                 </ListItemIcon>
                 <ListItemText primary="Cancel PO" />
-              </ListItem> */}
+              </ListItem>
             </List>
           </Collapse>
 

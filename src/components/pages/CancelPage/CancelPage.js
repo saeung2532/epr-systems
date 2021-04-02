@@ -12,25 +12,12 @@ import {
 import clsx from "clsx";
 import { Typography, Grid, Paper, TextField, Button } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
+import DeleteIcon from "@material-ui/icons/Delete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Formik, Form, Field } from "formik";
 import { red, green, purple } from "@material-ui/core/colors/";
-import * as loginActions from "./../../../actions/login.action";
 import * as prnumberbuyerActions from "./../../../actions/prnumberbuyer.action";
-import * as prheadActions from "./../../../actions/prhead.action";
 import * as prdetailbuyerActions from "./../../../actions/prdetailbuyer.action";
-import * as warehouseActions from "./../../../actions/warehouse.action";
-import * as buActions from "./../../../actions/bu.action";
-import * as departmentActions from "./../../../actions/department.action";
-import * as costcenterActions from "./../../../actions/costcenter.action";
-import * as approveActions from "./../../../actions/approve.action";
-import * as buyerActions from "./../../../actions/buyer.action";
-import * as itemActions from "./../../../actions/item.action";
-import * as itemunitActions from "./../../../actions/itemunit.action";
-import * as phgroupActions from "./../../../actions/phgroup.action";
-import * as phbuyerActions from "./../../../actions/phbuyer.action";
-import * as supplierActions from "./../../../actions/supplier.action";
-import * as prconfirmbuyerActions from "./../../../actions/prconfirmbuyer.action";
 import * as genpoActions from "./../../../actions/genpo.action";
 
 const useStyles = makeStyles((theme) => ({
@@ -113,27 +100,7 @@ export default (props) => {
   const prdetailbuyerReducer = useSelector(
     ({ prdetailbuyerReducer }) => prdetailbuyerReducer
   );
-  const warehouseReducer = useSelector(
-    ({ warehouseReducer }) => warehouseReducer
-  );
-  const buReducer = useSelector(({ buReducer }) => buReducer);
-  const departmentReducer = useSelector(
-    ({ departmentReducer }) => departmentReducer
-  );
-  const costcenterReducer = useSelector(
-    ({ costcenterReducer }) => costcenterReducer
-  );
-  const approveReducer = useSelector(({ approveReducer }) => approveReducer);
-  const buyerReducer = useSelector(({ buyerReducer }) => buyerReducer);
-  const itemReducer = useSelector(({ itemReducer }) => itemReducer);
-  const itemunitReducer = useSelector(({ itemunitReducer }) => itemunitReducer);
-  const phgroupReducer = useSelector(({ phgroupReducer }) => phgroupReducer);
-  const phbuyerReducer = useSelector(({ phbuyerReducer }) => phbuyerReducer);
-  const supplierReducer = useSelector(({ supplierReducer }) => supplierReducer);
   const genpoReducer = useSelector(({ genpoReducer }) => genpoReducer);
-  const prconfirmbuyerReducer = useSelector(
-    ({ prconfirmbuyerReducer }) => prconfirmbuyerReducer
-  );
   const [prnumber, setPRNumber] = useState({
     vPRSelectNumber: "",
     vPRSelectNumberLine: "",
@@ -181,26 +148,8 @@ export default (props) => {
     vRemarkDetail: "",
     vAddFreeItem: "",
   };
-  const [itemprdetail, setItemPRDetail] = useState(initialStateItemPRDetail);
   const [searchdisable, setSearchDisable] = useState(false);
-  const [newdisable, setNewDisable] = useState(false);
-  const [editdisable, setEditDisable] = useState(true);
-  const [genpodisable, setGenPODisable] = useState(true);
-  const [createdisable, setCreateDisable] = useState(true);
-  const [cancelprdisable, setCancelPRDisable] = useState(true);
-  const [savedisable, setSaveDisable] = useState(false);
-  const [confirmdisable, setConfirmDisable] = useState(false);
-  const [addfreeitem, setAddFreeItem] = useState(false);
-  const [editnamedisable, setEditNameDisable] = useState(true);
-  const [create, setCreate] = useState(false);
-  const [update, setUpdate] = useState(false);
-  const [confirm, setConfirm] = useState(false);
-  const [reject, setReject] = useState(false);
-  const [whsdisable, setWhsDisable] = useState(true);
-  const [deptdisable, setDeptDisable] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [prconfirmbuyer, setPRConfirmBuyer] = useState(null);
+  const [cancelpoDisable, setCancelPODisable] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const timer = useRef();
@@ -210,88 +159,9 @@ export default (props) => {
     let fromstatus = "15";
     let tostatus = "85";
     dispatch(prnumberbuyerActions.getPONumbers(fromstatus, tostatus));
-    dispatch(warehouseActions.getWarehouses());
-    dispatch(buActions.getBUs());
-    dispatch(approveActions.getApproves());
-    dispatch(buyerActions.getBuyers());
-    dispatch(supplierActions.getSuppliers());
-    // console.log(loginActions.getTokenUsername());
-    // loginActions.getTokenUsername();
     prheadReducer.result = null;
     prdetailbuyerReducer.result = null;
   }, []);
-
-  useEffect(() => {
-    const prheads = prheadReducer.result ? prheadReducer.result : [];
-
-    prheads.map((item) => {
-      // console.log("prheads.vStatus: " + item.HD_STATUS);
-
-      // if (item.HD_STATUS === "10") {
-      dispatch(itemActions.getItems(item.HD_IBWHLO));
-      let phgroup = "PH";
-      let bu = item.HD_BU;
-      let department = item.HD_IBCOCE;
-      dispatch(phgroupActions.getPHGroups(phgroup));
-      dispatch(costcenterActions.getCostCenters(department));
-      dispatch(departmentActions.getDepartments(bu));
-      setPRNumber({ ...prnumber, vPRSelectNumber: item.HD_IBPLPN });
-      setPRHead({
-        ...prhead,
-        vPRNumber: item.HD_IBPLPN,
-        vDate: moment(item.HD_PURCDT).format("YYYY-MM-DD"),
-        vWarehouse: item.HD_IBWHLO,
-        vCostcenter: item.HD_IBCOCE,
-        vMonth: item.HD_IBMTH,
-        vPlanUnPlan: item.HD_IBPRIP,
-        vBU: item.HD_BU,
-        vBuyer: item.HD_IBBUYE,
-        vGroup: item.HD_IBMODL,
-        vCAPNo: item.HD_CAPNO,
-        vRequestor: item.HD_IBPURC,
-        vRemark: item.HD_REM1,
-        vApprove1: item.HD_APP1,
-        vApprove2: item.HD_APP2,
-        vApprove3: item.HD_APP3,
-        vApprove4: item.HD_APP4,
-        vStatus: item.HD_STATUS,
-      });
-      // } else {
-      // console.log("prheads.vStatus: false");
-      // setPRHead({ ...initialStatePRHead });
-      // dispatch(prdetailbuyerActions.getEPRDetails("00"));
-      // handleCancel();
-      // }
-    });
-  }, [prheadReducer]);
-
-  useEffect(() => {
-    const prconfirmbuyers = prconfirmbuyerReducer.result
-      ? prconfirmbuyerReducer.result
-      : [];
-    prconfirmbuyers.map((item) => {
-      console.log("PR_CONFIRM: " + item.PR_CONFIRM);
-      setPRConfirmBuyer(item.PR_CONFIRM);
-      if (item.PR_CONFIRM === "0") {
-        console.log("prconfirm: true");
-        let fromStatus = "05";
-        let toStatus = "10";
-        dispatch(prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus));
-
-        let statusprhead = "15";
-        dispatch(
-          prheadActions.updateStsEPRHead(prhead.vPRNumber, statusprhead)
-        );
-        prheadReducer.result = null;
-        prdetailbuyerReducer.result = null;
-        setPRHead({
-          ...initialStatePRHead,
-        });
-
-        handleCancel();
-      }
-    });
-  }, [prconfirmbuyerReducer]);
 
   useEffect(() => {
     const genpos = genpoReducer.result ? [genpoReducer.result] : [];
@@ -308,32 +178,6 @@ export default (props) => {
   const prnumberbuyers = useMemo(() =>
     prnumberbuyerReducer.result ? prnumberbuyerReducer.result : []
   );
-
-  const warehouses = useMemo(() =>
-    warehouseReducer.result ? warehouseReducer.result : []
-  );
-
-  const bus = useMemo(() => (buReducer.result ? buReducer.result : []));
-
-  const departments = useMemo(() =>
-    departmentReducer.result ? departmentReducer.result : []
-  );
-
-  const costcenters = useMemo(() =>
-    costcenterReducer.result ? costcenterReducer.result : []
-  );
-
-  const approves = useMemo(() =>
-    approveReducer.result ? approveReducer.result : []
-  );
-
-  const genpos = useMemo(() =>
-    genpoReducer.result ? genpoReducer.result : []
-  );
-
-  const buttonClassname = clsx({
-    [classes.buttonSuccess]: success,
-  });
 
   const ValidationTextField = withStyles({
     root: {
@@ -352,76 +196,24 @@ export default (props) => {
     },
   })(TextField);
 
-  const ColorButton = withStyles((theme) => ({
-    root: {
-      color: theme.palette.getContrastText(green[500]),
-      backgroundColor: green[500],
-      "&:hover": {
-        backgroundColor: green[700],
-      },
-    },
-  }))(Button);
-
-  const theme = createMuiTheme({
-    palette: {
-      primary: green,
-    },
-  });
-
   const handleSearch = () => {
-    let fromStatus = "92";
-    let toStatus = "92";
-
-    dispatch(
-      prheadActions.getEPRHeads(prnumber.vPRSelectNumber, fromStatus, toStatus)
-    );
-    dispatch(
-      prdetailbuyerActions.getEPRDetailsGenPO(
-        fromStatus,
-        prnumber.vPRSelectNumberLine
-      )
-    );
-    setPONumber({ ...prnumber, vPOSelectNumber: "" });
-    setGenPODisable(false);
+    dispatch(prdetailbuyerActions.getPODetails(prnumber.vPRSelectNumber));
+    setCancelPODisable(false);
   };
 
   const handleCancelPO = () => {
-    let status = "92";
-    // dispatch(genpoActions.genPONumber(status, prnumber.vPRSelectNumberLine));
-    setGenPODisable(true);
+    dispatch(genpoActions.cancelPONumber(prnumber.vPRSelectNumber));
+    setCancelPODisable(true);
     setSuccess(false);
     setLoading(true);
   };
 
   const handleAfterGenPO = () => {
-    let status = "92";
-    dispatch(prnumberbuyerActions.getEPRNumbersGenPO(status));
+    let fromstatus = "15";
+    let tostatus = "85";
+    dispatch(prnumberbuyerActions.getPONumbers(fromstatus, tostatus));
     prheadReducer.result = null;
     prdetailbuyerReducer.result = null;
-  };
-
-  const handleCancel = () => {
-    setPRNumber({ ...prnumber, vPRSelectNumber: "" });
-    setPRHead({ ...initialStatePRHead });
-    dispatch(prdetailbuyerActions.getEPRDetails("00"));
-    setSearchDisable(false);
-    setNewDisable(false);
-    setEditDisable(true);
-    setCreateDisable(true);
-    setCancelPRDisable(true);
-    setWhsDisable(true);
-    setDeptDisable(true);
-  };
-
-  const handleButtonClick = () => {
-    if (!loading) {
-      setSuccess(false);
-      setLoading(true);
-      timer.current = window.setTimeout(() => {
-        setSuccess(true);
-        setLoading(false);
-      }, 2000);
-    }
   };
 
   const NumberFormatCustom = (props) => {
@@ -476,13 +268,7 @@ export default (props) => {
                       let getEPRNumberselect = event.target.value
                         .toString()
                         .split("::");
-                      let getPRNumberLine = getEPRNumberselect[0]
-                        .toString()
-                        .split("-");
-                      let getPRnumber = getPRNumberLine[0];
-                      let getBuyer = getEPRNumberselect[2];
-
-                      // console.log(getPRnumber + "  " + getBuyer);
+                      let getPRnumber = getEPRNumberselect[0];
 
                       setPRNumber({
                         ...prnumber,
@@ -527,11 +313,11 @@ export default (props) => {
                     style={{ maxWidth: 200 }}
                     fullWidth
                     size="medium"
-                    id="vSearch"
+                    id="vCancelPO"
                     variant="contained"
                     color="secondary"
-                    disabled={genpodisable}
-                    startIcon={<SearchIcon />}
+                    disabled={cancelpoDisable}
+                    startIcon={<DeleteIcon />}
                     onClick={handleCancelPO}
                     // onClick={handleButtonClick}
                   >
@@ -555,7 +341,7 @@ export default (props) => {
   const columns = [
     {
       title: "Line",
-      field: "PR_IBPLPS",
+      field: "IBPNLI",
       // type: "numeric",
       editable: "never",
       width: 50,
@@ -579,17 +365,21 @@ export default (props) => {
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
-          {item.PR_IBPLPS}
+          {item.IBPNLI}
         </Typography>
       ),
     },
     {
-      title: "Group",
-      field: "PR_SPORDER",
-      type: "numeric",
+      title: "Status",
+      field: "IBPUSL",
+      // type: "numeric",
       editable: "never",
-      width: 80,
-      headerStyle: { maxWidth: 80, whiteSpace: "nowrap", textAlign: "center" },
+      width: 50,
+      headerStyle: {
+        maxWidth: 50,
+        whiteSpace: "nowrap",
+        textAlign: "center",
+      },
       cellStyle: {
         textAlign: "center",
         borderLeft: 1,
@@ -605,13 +395,13 @@ export default (props) => {
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
-          {item.PR_SPORDER}
+          {item.IBPUSL}
         </Typography>
       ),
     },
     {
       title: "Item No",
-      field: "PR_IBITNO",
+      field: "IBITNO",
       editable: "never",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -638,13 +428,13 @@ export default (props) => {
       // ),
       render: (item) => (
         <Typography variant="body1" noWrap>
-          {item.PR_IBITNO}
+          {item.IBITNO}
         </Typography>
       ),
     },
     {
       title: "Item Name",
-      field: "PR_IBPITT",
+      field: "IBPITD",
       editable: "never",
       headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -662,37 +452,13 @@ export default (props) => {
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
-          {item.PR_IBPITT}
-        </Typography>
-      ),
-    },
-    {
-      title: "Unit",
-      field: "PR_IBPUUN",
-      editable: "never",
-      headerStyle: { maxWidth: 50, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBPUUN}
+          {item.IBPITD}
         </Typography>
       ),
     },
     {
       title: "Qty",
-      field: "PR_IBORQA",
+      field: "IBORQA",
       editable: "never",
       type: "numeric",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
@@ -714,7 +480,7 @@ export default (props) => {
           {/* {item.PR_IBORQA} */}
           {/* var NumberFormat = require('react-number-format'); */}
           <NumberFormat
-            value={item.PR_IBORQA}
+            value={item.IBORQA}
             displayType={"text"}
             thousandSeparator={true}
             // prefix={"$"}
@@ -723,38 +489,8 @@ export default (props) => {
       ),
     },
     {
-      title: "U/P",
-      field: "PR_IBPUPR",
-      editable: "never",
-      // type: "numeric",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "right",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          <NumberFormat
-            value={item.PR_IBPUPR}
-            displayType={"text"}
-            thousandSeparator={true}
-            // prefix={"$"}
-          />
-        </Typography>
-      ),
-    },
-    {
-      title: "Vat.",
-      field: "PR_IBVTCD",
+      title: "Unit",
+      field: "IBPUUN",
       editable: "never",
       headerStyle: { maxWidth: 50, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -772,311 +508,7 @@ export default (props) => {
       },
       render: (item) => (
         <Typography variant="body1" noWrap>
-          <NumberFormat
-            value={item.PR_IBVTCD}
-            displayType={"text"}
-            thousandSeparator={true}
-            // prefix={"$"}
-          />
-        </Typography>
-      ),
-    },
-    // {
-    //   title: "Amt.",
-    //   field: "PR_IBTOTA",
-    //   editable: "never",
-    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-    //   cellStyle: {
-    //     textAlign: "right",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //     paddingLeft: "6px",
-    //     paddingRight: "6px",
-    //     paddingBottom: "12px",
-    //     paddingTop: "12px",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       <NumberFormat
-    //         value={item.PR_IBTOTA}
-    //         displayType={"text"}
-    //         thousandSeparator={true}
-    //         // prefix={"$"}
-    //       />
-    //     </Typography>
-    //   ),
-    // },
-    // {
-    //   title: "Curr.",
-    //   field: "PR_IBCUCD",
-    //   editable: "never",
-    //   headerStyle: { maxWidth: 50, whiteSpace: "nowrap", textAlign: "center" },
-    //   cellStyle: {
-    //     textAlign: "center",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //     paddingLeft: "6px",
-    //     paddingRight: "6px",
-    //     paddingBottom: "12px",
-    //     paddingTop: "12px",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       {item.PR_IBCUCD}
-    //     </Typography>
-    //   ),
-    // },
-    {
-      title: "Deli. Date",
-      field: "PR_IBDWDT",
-      // editable: "never",
-      type: "date",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {moment(item.PR_IBDWDT).format("DD/MM/YYYY")}
-        </Typography>
-      ),
-    },
-    {
-      title: "Supp. No",
-      field: "PR_IBSUNO",
-      editable: "never",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "left",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBSUNO}
-        </Typography>
-      ),
-    },
-    // {
-    //   title: "Supp. Name",
-    //   field: "SASUNM",
-    //   editable: "never",
-    //   headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
-    //   cellStyle: {
-    //     textAlign: "left",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //     paddingLeft: "6px",
-    //     paddingRight: "6px",
-    //     paddingBottom: "12px",
-    //     paddingTop: "12px",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       {item.SASUNM}
-    //     </Typography>
-    //   ),
-    // },
-    {
-      title: "Order Typ.",
-      field: "PR_IBORTY",
-      editable: "never",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBORTY}
-        </Typography>
-      ),
-    },
-    {
-      title: "HD_IBPURC",
-      field: "HD_IBPURC",
-      editable: "never",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.HD_IBPURC}
-        </Typography>
-      ),
-    },
-    {
-      title: "PR_IBODI",
-      field: "PR_IBODI1",
-      editable: "never",
-      headerStyle: { maxWidth: 60, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBODI1}
-        </Typography>
-      ),
-    },
-    // {
-    //   title: "V Amt.",
-    //   field: "PR_VTCHARGE",
-    //   editable: "never",
-    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-    //   cellStyle: {
-    //     textAlign: "right",
-    //     borderLeft: 1,
-    //     borderRight: 1,
-    //     borderBottom: 1,
-    //     borderTop: 1,
-    //     borderColor: "#E0E0E0",
-    //     borderStyle: "solid",
-    //     paddingLeft: "6px",
-    //     paddingRight: "6px",
-    //     paddingBottom: "12px",
-    //     paddingTop: "12px",
-    //   },
-    //   render: (item) => (
-    //     <Typography variant="body1" noWrap>
-    //       <NumberFormat
-    //         value={item.PR_VTCHARGE}
-    //         displayType={"text"}
-    //         thousandSeparator={true}
-    //         // prefix={"$"}
-    //       />
-    //     </Typography>
-    //   ),
-    // },
-    {
-      title: "Remark3",
-      field: "PR_REM3",
-      editable: "never",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "left" },
-      cellStyle: {
-        textAlign: "left",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_REM3}
-        </Typography>
-      ),
-    },
-    {
-      title: "PH Remark",
-      field: "PHREMARK",
-      editable: "never",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "left" },
-      cellStyle: {
-        textAlign: "left",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PHREMARK}
-        </Typography>
-      ),
-    },
-    {
-      title: "GRN Return",
-      field: "GRNRETURN",
-      editable: "never",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "left" },
-      cellStyle: {
-        textAlign: "left",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.GRNRETURN}
+          {item.IBPUUN}
         </Typography>
       ),
     },
@@ -1085,73 +517,13 @@ export default (props) => {
   return (
     <div className={classes.root}>
       {/* Grid */}
-      <Formik
-        initialValues={{
-          vPRNumber: "",
-          vDate: "",
-          vWarehouse: "",
-          vCostcenter: "",
-          vMonth: "",
-          vPlanUnPlan: "",
-          vBU: "",
-          vCAPNo: "",
-          vRequestor: "",
-          vRemark: "",
-          vApprove1: "",
-          vApprove2: "",
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          // alert(JSON.stringify(values));
-          let formData = new FormData();
-          formData.append("vPRNumber", values.vPRNumber);
-          formData.append("vDate", values.vDate);
-          formData.append("vWarehouse", values.vWarehouse);
-          formData.append("vCostcenter", values.vCostcenter);
-          formData.append("vMonth", values.vMonth);
-          formData.append("vPlanUnPlan", "5");
-          formData.append("vBU", values.vBU);
-          formData.append("vCAPNo", values.vCAPNo);
-          formData.append(
-            "vRequestor",
-            prhead.vRequestor
-              ? prhead.vRequestor
-              : loginActions.getTokenUsername()
-          );
-          formData.append("vRemark", values.vRemark);
-          formData.append("vApprove1", values.vApprove1);
-          formData.append("vApprove2", values.vApprove2);
-          formData.append("vStatus", prhead.vStatus ? prhead.vStatus : "00");
-
-          if (newdisable === false && cancelprdisable === true) {
-            dispatch(prheadActions.addEPRHead(formData, props.history));
-            setTimeout(() => {
-              setSearchDisable(false);
-              setNewDisable(false);
-              setEditDisable(true);
-              setCreateDisable(true);
-              setWhsDisable(true);
-              setDeptDisable(true);
-              setPRNumber({ ...prnumber, vPRSelectNumber: "" });
-              setPRHead({ ...initialStatePRHead });
-              let fromStatus = "05";
-              let toStatus = "10";
-              dispatch(
-                prnumberbuyerActions.getEPRNumbers(fromStatus, toStatus)
-              );
-            }, 500);
-          } else if (searchdisable === false) {
-            dispatch(prheadActions.updateEPRHead(formData, props.history));
-          }
-        }}
-      >
-        {(props) => showForm(props)}
-      </Formik>
+      <Formik>{(props) => showForm(props)}</Formik>
 
       {/* Plan PR Table */}
       {/* <p>#Debug {JSON.stringify(selectedProduct)}</p> */}
       <MaterialTable
         id="root_pr"
-        title={`Gen PO : ${prhead.vStatus}`}
+        title={`PO Detail : ${prhead.vStatus}`}
         columns={columns}
         data={prdetailbuyerReducer.result ? prdetailbuyerReducer.result : []}
         // isLoading={prdetailbuyerReducer.result ? false : true}
@@ -1194,57 +566,6 @@ export default (props) => {
           // }),
           fixedColumns: {
             // left: 2
-          },
-        }}
-        // cellEditable={
-        //   {
-        // onCellEditApproved: (newValue, oldValue, rowData, columnDef) => {
-        //   dispatch(
-        //     prdetailbuyerActions.updateEPRDetailGrouping(
-        //       rowData.PR_IBPLPN,
-        //       rowData.PR_IBPLPS,
-        //       newValue
-        //     )
-        //   );
-        //   return new Promise((resolve, reject) => {
-        //     // console.log("newValue: " + rowData.PR_IBPLPN + " " + rowData.PR_IBPLPS + " " + newValue );
-        //     setTimeout(() => {
-        //       dispatch(
-        //         prdetailbuyerActions.getEPRDetailsGrouping(
-        //           prnumber.vPRSelectNumber
-        //         )
-        //       );
-        //     }, 500);
-        //     setTimeout(resolve, 1000);
-        //   });
-        // },
-        //   }
-        // }
-        editable={{
-          onRowUpdate: (newData, oldData) => {
-            // console.log(JSON.stringify(oldData));
-            dispatch(
-              prdetailbuyerActions.updateEPRDetailGrouping(
-                oldData.PR_IBPLPN,
-                oldData.PR_IBPLPS,
-                oldData.PR_SPORDER,
-                moment(newData.PR_IBDWDT).format("YYYY-MM-DD")
-              )
-            );
-            return new Promise((resolve, reject) => {
-              // console.log("newValue: " + oldData.PR_IBPLPN + " " + oldData.PR_IBPLPS + " " + oldData.PR_SPORDER + " " + moment(newData.PR_IBDWDT).format("YYYY-MM-DD"));
-              setTimeout(() => {
-                let fromStatus = "92";
-                let toStatus = "92";
-                dispatch(
-                  prdetailbuyerActions.getEPRDetailsGenPO(
-                    fromStatus,
-                    prnumber.vPRSelectNumberLine
-                  )
-                );
-              }, 1000);
-              setTimeout(resolve, 1000);
-            });
           },
         }}
       />

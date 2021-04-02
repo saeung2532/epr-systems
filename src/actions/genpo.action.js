@@ -60,11 +60,9 @@ export const cancelPONumber = (pono) => {
 
 const doCancelPONumber = async (dispatch, pono) => {
   try {
-    // let result = await httpClient.post(
-    //   `${server.PRGENPO_URL}/${status}/${prnoline}`
-    // );
-    // alert(JSON.stringify(result.data));
-    // dispatch(setStateGenPOToSuccess(result.data));
+    let result = await httpClient.post(`${server.CANCELPO_URL}/${pono}`);
+    alert(JSON.stringify(result.data));
+    dispatch(setStateGenPOToSuccess(result.data));
   } catch (err) {
     // alert(JSON.stringify(err));
     dispatch(setStateGenPOToFailed());

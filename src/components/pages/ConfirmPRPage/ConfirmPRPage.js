@@ -185,6 +185,7 @@ export default (props) => {
     vPHGroupDetail: "",
     vBuyerDetail: "",
     vRemarkDetail: "",
+    vPHRemarkDetail: "",
     vAddFreeItem: "",
   };
   const [itemprdetail, setItemPRDetail] = useState(initialStateItemPRDetail);
@@ -1748,6 +1749,24 @@ export default (props) => {
                 });
               }}
             />
+            <TextField
+              // required
+              fullWidth
+              // disabled="true"
+              margin="dense"
+              id="vPHRemarkDetail"
+              label="PH Remark"
+              type="text"
+              value={itemprdetail.vPHRemarkDetail}
+              values={(values.vPHRemarkDetail = itemprdetail.vPHRemarkDetail)}
+              onChange={(event) => {
+                // console.log(event.target.value);
+                setItemPRDetail({
+                  ...itemprdetail,
+                  vPHRemarkDetail: event.target.value,
+                });
+              }}
+            />
           </DialogContent>
           <DialogActions>
             <div>
@@ -2590,6 +2609,7 @@ export default (props) => {
                     vPHGroupDetail: item.PR_IBMODL,
                     vBuyerDetail: item.PR_IBBUYE,
                     vRemarkDetail: item.PR_REM3,
+                    vPHRemarkDetail: item.PR_PHREMARK1,
                   });
                 });
               }, 1000);
@@ -2682,6 +2702,7 @@ export default (props) => {
           formData.append("vPHGroupDetail", prhead.vPHGroup);
           formData.append("vBuyerDetail", prhead.vBuyer);
           formData.append("vRemarkDetail", values.vRemarkDetail);
+          formData.append("vPHRemarkDetail", values.vPHRemarkDetail);
           formData.append("vAddFreeItem", itemprdetail.vAddFreeItem);
           formData.append("vConfirm", confirm ? "1" : "0");
           formData.append("vStatus", "10");
