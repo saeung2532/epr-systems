@@ -34,6 +34,7 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import StarBorder from "@material-ui/icons/StarBorder";
 import BlockIcon from "@material-ui/icons/Block";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 import {
   red,
   green,
@@ -369,6 +370,18 @@ const MiniDrawer = (props) => {
               <PrintIcon />
             </ListItemIcon>
             <ListItemText primary="Print Report" />
+          </ListItem>
+          <ListItem
+            component={NavLink}
+            to="/deptandcost"
+            button
+            key="deptandcost"
+            activeClassName={classes.isActive}
+          >
+            <ListItemIcon>
+              <FormatListNumberedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Find Cost Center" />
           </ListItem>
         </List>
       </Drawer>

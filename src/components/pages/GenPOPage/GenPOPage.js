@@ -32,6 +32,8 @@ import * as phbuyerActions from "./../../../actions/phbuyer.action";
 import * as supplierActions from "./../../../actions/supplier.action";
 import * as prconfirmbuyerActions from "./../../../actions/prconfirmbuyer.action";
 import * as genpoActions from "./../../../actions/genpo.action";
+import * as deliveryActions from "./../../../actions/delivery.action";
+import * as paymentActions from "./../../../actions/payment.action";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -131,6 +133,8 @@ export default (props) => {
   const phbuyerReducer = useSelector(({ phbuyerReducer }) => phbuyerReducer);
   const supplierReducer = useSelector(({ supplierReducer }) => supplierReducer);
   const genpoReducer = useSelector(({ genpoReducer }) => genpoReducer);
+  const deliveryReducer = useSelector(({ deliveryReducer }) => deliveryReducer);
+  const paymentReducer = useSelector(({ paymentReducer }) => paymentReducer);
   const prconfirmbuyerReducer = useSelector(
     ({ prconfirmbuyerReducer }) => prconfirmbuyerReducer
   );
@@ -157,6 +161,8 @@ export default (props) => {
     vApprove3: "",
     vApprove4: "",
     vStatus: "",
+    vDelivery: "",
+    vPayment: "",
   };
   const [prhead, setPRHead] = useState(initialStatePRHead);
   const initialStateItemPRDetail = {
@@ -214,6 +220,7 @@ export default (props) => {
     dispatch(approveActions.getApproves());
     dispatch(buyerActions.getBuyers());
     dispatch(supplierActions.getSuppliers());
+    dispatch(deliveryActions.getDeliverys());
     // console.log(loginActions.getTokenUsername());
     // loginActions.getTokenUsername();
     prheadReducer.result = null;
@@ -263,6 +270,18 @@ export default (props) => {
       // }
     });
   }, [prheadReducer]);
+
+  useEffect(() => {
+    const prdetails = prdetailbuyerReducer.result
+      ? prdetailbuyerReducer.result
+      : [];
+
+    prdetails.map((item) => {
+      console.log("prdetails.PR_IBSUNO: " + item.PR_IBSUNO);
+      dispatch(paymentActions.getPayments(item.PR_IBSUNO));
+      setItemPRDetail({ ...itemprdetail, vSupplierNo: item.PR_IBSUNO });
+    });
+  }, [prdetailbuyerReducer]);
 
   useEffect(() => {
     const prconfirmbuyers = prconfirmbuyerReducer.result
@@ -330,6 +349,14 @@ export default (props) => {
     genpoReducer.result ? genpoReducer.result : []
   );
 
+  const deliverys = useMemo(() =>
+    deliveryReducer.result ? deliveryReducer.result : []
+  );
+
+  const payments = useMemo(() =>
+    paymentReducer.result ? paymentReducer.result : []
+  );
+
   const buttonClassname = clsx({
     [classes.buttonSuccess]: success,
   });
@@ -368,25 +395,39 @@ export default (props) => {
   });
 
   const handleSearch = () => {
-    let fromStatus = "92";
-    let toStatus = "92";
+    if (prnumber.vPRSelectNumber === "") {
+    } else {
+      let fromStatus = "92";
+      let toStatus = "92";
 
-    dispatch(
-      prheadActions.getEPRHeads(prnumber.vPRSelectNumber, fromStatus, toStatus)
-    );
-    dispatch(
-      prdetailbuyerActions.getEPRDetailsGenPO(
-        fromStatus,
-        prnumber.vPRSelectNumberLine
-      )
-    );
-    setPONumber({ ...prnumber, vPOSelectNumber: "" });
-    setGenPODisable(false);
+      dispatch(
+        prheadActions.getEPRHeads(
+          prnumber.vPRSelectNumber,
+          fromStatus,
+          toStatus
+        )
+      );
+      dispatch(
+        prdetailbuyerActions.getEPRDetailsGenPO(
+          fromStatus,
+          prnumber.vPRSelectNumberLine
+        )
+      );
+      setPONumber({ ...prnumber, vPOSelectNumber: "" });
+      setGenPODisable(false);
+    }
   };
 
   const handleGenPO = () => {
     let status = "92";
-    dispatch(genpoActions.genPONumber(status, prnumber.vPRSelectNumberLine));
+    dispatch(
+      genpoActions.genPONumber(
+        status,
+        prnumber.vPRSelectNumberLine,
+        prhead.vDelivery,
+        prhead.vPayment
+      )
+    );
     setGenPODisable(true);
     setSuccess(false);
     setLoading(true);
@@ -543,9 +584,9 @@ export default (props) => {
                   </a>
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  sm={1}
+                  // item
+                  // xs={12}
+                  // sm={1}
                   className={(classes.margin, classes.wrapper)}
                 >
                   <ColorButton
@@ -828,6 +869,73 @@ export default (props) => {
                   }}
                   InputLabelProps={{ shrink: true }}
                 />
+              </Grid>
+              <Grid container item xs className={classes.margin}>
+                <TextField
+                  className={classes.margin}
+                  style={{ width: "200px" }}
+                  error={true}
+                  select
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  id="vDelivery"
+                  label="Delivery terms"
+                  value={prhead.vDelivery}
+                  values={(values.vDelivery = prhead.vDelivery)}
+                  onChange={(event) => {
+                    // console.log(event.target.value);
+                    setPRHead({
+                      ...prhead,
+                      vDelivery: event.target.value,
+                    });
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                >
+                  <option />
+                  {deliverys.map((option) => (
+                    <option key={option.ID} value={option.CTSTKY}>
+                      {option.DELIVERY}
+                    </option>
+                  ))}
+                </TextField>
+
+                <TextField
+                  className={classes.margin}
+                  style={{ width: "200px" }}
+                  error={true}
+                  select
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  id="vPayment"
+                  label="Payment terms"
+                  value={prhead.vPayment}
+                  values={(values.vPayment = prhead.vPayment)}
+                  onChange={(event) => {
+                    // console.log(event.target.value);
+                    setPRHead({
+                      ...prhead,
+                      vPayment: event.target.value,
+                    });
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                >
+                  <option />
+                  {payments.map((option) => (
+                    <option key={option.ID} value={option.IITEPY}>
+                      {option.PAYMENT}
+                    </option>
+                  ))}
+                </TextField>
               </Grid>
             </Paper>
           </Grid>

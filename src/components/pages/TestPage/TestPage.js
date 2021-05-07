@@ -44,6 +44,7 @@ import * as phgroupActions from "./../../../actions/phgroup.action";
 import * as phbuyerActions from "./../../../actions/phbuyer.action";
 import * as supplierActions from "./../../../actions/supplier.action";
 import * as prconfirmbuyerActions from "./../../../actions/prconfirmbuyer.action";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -186,6 +187,9 @@ export default (props) => {
     vBuyerDetail: "",
     vRemarkDetail: "",
     vPHRemarkDetail: "",
+    vNameRemarkDetail: "",
+    vDescemarkDetail: "",
+    vTextRemarkDetail: "",
     vAddFreeItem: "",
   };
   const [itemprdetail, setItemPRDetail] = useState(initialStateItemPRDetail);
@@ -198,6 +202,7 @@ export default (props) => {
   const [confirmdisable, setConfirmDisable] = useState(false);
   const [addfreeitem, setAddFreeItem] = useState(false);
   const [editnamedisable, setEditNameDisable] = useState(true);
+  const [showremark, setShowRemark] = useState(false);
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
   const [confirm, setConfirm] = useState(false);
@@ -434,6 +439,7 @@ export default (props) => {
     setConfirmDisable(false);
     setAddFreeItem(false);
     setEditNameDisable(true);
+    setShowRemark(false);
   };
 
   const handleRejectPR = () => {
@@ -1210,6 +1216,62 @@ export default (props) => {
     );
   };
 
+  const Remarks = () => (
+    <div id="remarks">
+      <TextField
+        // required
+        fullWidth
+        // disabled="true"
+        margin="dense"
+        id="vNameRemarkDetail"
+        label="Name Remark"
+        type="text"
+        value={itemprdetail.vNameRemarkDetail}
+        onChange={(event) => {
+          // console.log(event.target.value);
+          setItemPRDetail({
+            ...itemprdetail,
+            vNameRemarkDetail: event.target.value,
+          });
+        }}
+      />
+      <TextField
+        // required
+        fullWidth
+        // disabled="true"
+        margin="dense"
+        id="vDescRemarkDetail"
+        label="Desc Remark"
+        type="text"
+        value={itemprdetail.vDescRemarkDetail}
+        onChange={(event) => {
+          // console.log(event.target.value);
+          setItemPRDetail({
+            ...itemprdetail,
+            vDescRemarkDetail: event.target.value,
+          });
+        }}
+      />
+      <TextField
+        // required
+        fullWidth
+        // disabled="true"
+        margin="dense"
+        id="vTextRemarkDetail"
+        label="Text Remark"
+        type="text"
+        value={itemprdetail.vTextRemarkDetail}
+        onChange={(event) => {
+          // console.log(event.target.value);
+          setItemPRDetail({
+            ...itemprdetail,
+            vTextRemarkDetail: event.target.value,
+          });
+        }}
+      />
+    </div>
+  );
+
   const showDialog = ({
     values,
     handleChange,
@@ -1609,6 +1671,19 @@ export default (props) => {
                   // }}
                   onChange={(event) => {
                     // console.log(event.target.value);
+
+                    if (
+                      event.target.value == "705" ||
+                      event.target.value == "707" ||
+                      event.target.value == "708" ||
+                      event.target.value == "713"
+                    ) {
+                      // console.log("true");
+                      setShowRemark(true);
+                    } else {
+                      setShowRemark(false);
+                    }
+
                     setItemPRDetail({
                       ...itemprdetail,
                       vOrdertype: event.target.value,
@@ -1779,6 +1854,7 @@ export default (props) => {
                 });
               }}
             />
+
             <TextField
               // required
               fullWidth
@@ -1797,6 +1873,8 @@ export default (props) => {
                 });
               }}
             />
+            {/* {(props) => showRemark(props)} */}
+            {showremark ? <Remarks /> : null}
           </DialogContent>
           {/* order type 707,708,705,713 delivery item = po item = perms = */}
 
@@ -1810,6 +1888,10 @@ export default (props) => {
                 type="submit"
                 color="primary"
                 onClick={(event) => {
+                  values.vNameRemarkDetail = itemprdetail.vNameRemarkDetail;
+                  values.vDescRemarkDetail = itemprdetail.vDescRemarkDetail;
+                  values.vTextRemarkDetail = itemprdetail.vTextRemarkDetail;
+
                   if (itemprdetail.vItemLine === "") {
                     setCreate(true);
                   } else {
@@ -2399,7 +2481,7 @@ export default (props) => {
           vApprove2: "",
         }}
         onSubmit={(values, { setSubmitting }) => {
-          // alert(JSON.stringify(values));
+          alert(JSON.stringify(values));
           let formData = new FormData();
           formData.append("vPRNumber", values.vPRNumber);
           formData.append("vDate", values.vDate);
@@ -2626,6 +2708,18 @@ export default (props) => {
                     setConfirmDisable(false);
                   }
 
+                  if (
+                    item.PR_IBORTY == "705" ||
+                    item.PR_IBORTY == "707" ||
+                    item.PR_IBORTY == "708" ||
+                    item.PR_IBORTY == "713"
+                  ) {
+                    // console.log("true");
+                    setShowRemark(true);
+                  } else {
+                    setShowRemark(false);
+                  }
+
                   setItemPRDetail({
                     ...itemprdetail,
                     id: index,
@@ -2651,6 +2745,9 @@ export default (props) => {
                     vBuyerDetail: item.PR_IBBUYE,
                     vRemarkDetail: item.PR_REM3,
                     vPHRemarkDetail: item.PR_PHREMARK1,
+                    vNameRemarkDetail: item.PR_PHREMARK2,
+                    vDescRemarkDetail: item.PR_PHREMARK3,
+                    vTextRemarkDetail: item.PR_PHREMARK4,
                   });
                 });
               }, 500);
@@ -2719,8 +2816,14 @@ export default (props) => {
           vTotal: "",
           vCostcenterDetail: "",
           vPHGroupDetail: "",
+          vNameRemarkDetail: "",
+          vDescRemarkDetail: "",
+          vTextRemarkDetail: "",
           vBuyerDetail: "",
           vRemarkDetail: "",
+          vNameRemarkDetail: "",
+          vDescRemarkDetail: "",
+          vTextRemarkDetail: "",
         }}
         onSubmit={(values, { setSubmitting }) => {
           // alert(JSON.stringify(values));
@@ -2747,9 +2850,9 @@ export default (props) => {
           formData.append("vBuyerDetail", prhead.vBuyer);
           formData.append("vRemarkDetail", values.vRemarkDetail);
           formData.append("vPHRemarkDetail", values.vPHRemarkDetail);
-          // formData.append("vDelRemarkDetail", values.vDelRemarkDetail);
-          // formData.append("vPORemarkDetail", values.vPORemarkDetail);
-          // formData.append("vPerRemarkDetail", values.vPerRemarkDetail);
+          formData.append("vNameRemarkDetail", values.vNameRemarkDetail);
+          formData.append("vDescRemarkDetail", values.vDescRemarkDetail);
+          formData.append("vTextRemarkDetail", values.vTextRemarkDetail);
           formData.append("vAddFreeItem", itemprdetail.vAddFreeItem);
           formData.append("vConfirm", confirm ? "1" : "0");
           formData.append("vStatus", "10");

@@ -38,6 +38,29 @@ export default (props) => {
 
   const columns = [
     {
+      title: "BU",
+      field: "BU",
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.BU}
+        </Typography>
+      ),
+    },
+    {
       title: "Department",
       field: "S2STID",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },

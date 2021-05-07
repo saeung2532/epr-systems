@@ -179,6 +179,7 @@ export default (props) => {
   const [copy, setCopy] = useState(false);
   const [whsdisable, setWhsDisable] = useState(true);
   const [deptdisable, setDeptDisable] = useState(true);
+  const [roledisable, setRoleDisable] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -249,9 +250,9 @@ export default (props) => {
   }, [prheadReducer]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    // setTimeout(() => {
+    setLoading(false);
+    // }, 500);
   }, [prdetailReducer]);
 
   const prnumbers = useMemo(() =>
@@ -308,6 +309,15 @@ export default (props) => {
       setCreateDisable(true);
       setCancelPRDisable(true);
     } else {
+      if (
+        loginActions.getTokenRole() === "ST" ||
+        loginActions.getTokenRole() === "AP"
+      ) {
+        setRoleDisable(false);
+      } else {
+        setRoleDisable(true);
+      }
+
       let fromStatus = "00";
       let toStatus = "05";
       dispatch(
@@ -327,6 +337,15 @@ export default (props) => {
   };
 
   const handleNew = () => {
+    if (
+      loginActions.getTokenRole() === "ST" ||
+      loginActions.getTokenRole() === "AP"
+    ) {
+      setRoleDisable(false);
+    } else {
+      setRoleDisable(true);
+    }
+
     var dateNow = new Date();
     var futureMonth = moment(dateNow)
       // .add(1, "M")
@@ -357,6 +376,7 @@ export default (props) => {
     setCancelPRDisable(true);
     setWhsDisable(true);
     setDeptDisable(true);
+    setRoleDisable(true);
     setSearchDisable(false);
     setNewDisable(false);
     setNewPR(false);
@@ -367,6 +387,7 @@ export default (props) => {
     setItemPRDetail(initialStateItemPRDetail);
     setSaveDisable(false);
     setConfirmDisable(false);
+    setCopy(false);
   };
 
   const handleCancelPR = () => {
@@ -390,9 +411,10 @@ export default (props) => {
       setCancelPRDisable(true);
       setWhsDisable(true);
       setDeptDisable(true);
+      setRoleDisable(true);
       setSuccess(true);
       setLoadingCancelPR(false);
-    }, 1000);
+    }, 500);
   };
 
   const handleSubmitPH = () => {
@@ -417,9 +439,10 @@ export default (props) => {
         setCancelPRDisable(true);
         setWhsDisable(true);
         setDeptDisable(true);
+        setRoleDisable(true);
         setSuccess(true);
         setLoadingSubmitPH(false);
-      }, 1000);
+      }, 500);
     } else {
       alert("Please create item detail before submit to PH");
     }
@@ -809,7 +832,7 @@ export default (props) => {
                   InputLabelProps={{ shrink: true }}
                 />
 
-                <TextField
+                {/* <TextField
                   className={classes.margin}
                   style={{ maxWidth: 120 }}
                   required
@@ -823,7 +846,60 @@ export default (props) => {
                   value={prhead.vPlanUnPlan}
                   values={(values.vPlanUnPlan = prhead.vPlanUnPlan)}
                   InputLabelProps={{ shrink: true }}
-                />
+                /> */}
+
+                <TextField
+                  className={classes.margin}
+                  style={{ minWidth: 150, maxWidth: 150 }}
+                  required
+                  disabled={roledisable}
+                  error={true}
+                  select
+                  margin="normal"
+                  variant="outlined"
+                  size="small"
+                  id="vPlanUnPlan"
+                  label="Plan / UnPlan"
+                  placeholder="Plan / UnPlan"
+                  variant="outlined"
+                  value={prhead.vPlanUnPlan}
+                  values={(values.vPlanUnPlan = prhead.vPlanUnPlan)}
+                  onChange={(event) => {
+                    // console.log(event.target.value);
+
+                    if (event.target.value === "UnPlan") {
+                      var dateNow = new Date();
+                      var futureMonth = moment(dateNow)
+                        // .add(1, "M")
+                        .format("YYYY-MM-DD");
+                    } else {
+                      var dateNow = new Date();
+                      var futureMonth = moment(dateNow)
+                        .add(1, "M")
+                        .format("YYYY-MM-DD");
+                    }
+
+                    setPRHead({
+                      ...prhead,
+                      vMonth:
+                        futureMonth.toString().substr(2, 2) +
+                        futureMonth.toString().substr(5, 2),
+                      vPlanUnPlan: event.target.value,
+                    });
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                >
+                  <option />
+                  <option key="1" value="Plan">
+                    Plan
+                  </option>
+                  <option key="2" value="UnPlan">
+                    UnPlan
+                  </option>
+                </TextField>
 
                 <TextField
                   className={classes.margin}
@@ -1058,7 +1134,7 @@ export default (props) => {
                   <ColorButton
                     // fullWidth
                     size="medium"
-                    id="vCancelPR"
+                    id="vSubmitPH"
                     variant="contained"
                     color="secondary"
                     startIcon={<SendIcon />}
@@ -1177,7 +1253,10 @@ export default (props) => {
                         vTotal: "",
                         // vItemNo: { MMITNO: values.MMITNO },
                         vItemNo: values.MMITNO,
-                        vItemDesc1: values.MMITDS,
+                        vItemDesc1: values.MMFUDS.replace(
+                          /[^\w\s\ก-๙\-’/`~!#*$@_%+=.,^&(){}[\]|;:”"<>?\\]/g,
+                          ""
+                        ),
                         vItemDesc2: { ITEM: values.ITEM },
                         vUnit: values.MMUNMS,
                         vSupplierNo: values.MMSUNO,
@@ -1248,7 +1327,10 @@ export default (props) => {
                     // console.log(event.target.value);
                     setItemPRDetail({
                       ...itemprdetail,
-                      vItemDesc1: event.target.value,
+                      vItemDesc1: event.target.value.replace(
+                        /[^\w\s\ก-๙\-’/`~!#*$@_%+=.,^&(){}[\]|;:”"<>?\\]/g,
+                        ""
+                      ),
                     });
                   }}
                 />
@@ -2003,7 +2085,10 @@ export default (props) => {
           formData.append("vPHGroup", values.vPHGroup);
           formData.append("vBuyer", values.vBuyer);
           formData.append("vMonth", values.vMonth);
-          formData.append("vPlanUnPlan", "6");
+          formData.append(
+            "vPlanUnPlan",
+            prhead.vPlanUnPlan === "Plan" ? "5" : "6"
+          );
           formData.append("vBU", values.vBU);
           formData.append("vCAPNo", values.vCAPNo);
           formData.append(
@@ -2028,13 +2113,14 @@ export default (props) => {
               setCreateDisable(true);
               setWhsDisable(true);
               setDeptDisable(true);
+              setRoleDisable(true);
               setPRNumber({ ...prnumber, vPRSelectNumber: "" });
               setPRHead({ ...initialStatePRHead });
               setNewPR(false);
               let fromStatus = "00";
               let toStatus = "05";
               dispatch(prnumberActions.getEPRNumbers(fromStatus, toStatus));
-            }, 1000);
+            }, 500);
           } else {
             // Check approve duplicate
             let checkApprove = false;
@@ -2192,7 +2278,7 @@ export default (props) => {
           //         this.setState({ data }, () => resolve());
           //       }
           //       resolve();
-          //     }, 1000);
+          //     }, 500);
           //   }),
           // onRowUpdate: (newData, oldData) =>
           //   new Promise((resolve, reject) => {
@@ -2204,7 +2290,7 @@ export default (props) => {
           //         // dispatch(prdetailActions.getEPRDetails(item.PR_IBPLPN, "00"));
           //       });
           //       resolve();
-          //     }, 1000);
+          //     }, 500);
           //   }),
           onRowDelete: (oldData) =>
             new Promise((resolve, reject) => {
@@ -2220,12 +2306,12 @@ export default (props) => {
               });
 
               setTimeout(() => {
-                {
-                  setItemPRDetail({ ...initialStateItemPRDetail });
-                  dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
-                }
+                // {
+                setItemPRDetail({ ...initialStateItemPRDetail });
+                //   dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
+                // }
                 resolve();
-              }, 1000);
+              }, 500);
             }),
         }}
         actions={[
@@ -2279,7 +2365,7 @@ export default (props) => {
                     vRemarkDetail: item.PR_REM3,
                   });
                 });
-              }, 1000);
+              }, 500);
 
               setSelectedProduct("rowData");
               setOpenDialog(true);
@@ -2326,7 +2412,7 @@ export default (props) => {
                     vRemarkDetail: item.PR_REM3,
                   });
                 });
-              }, 1000);
+              }, 500);
 
               setSelectedProduct("rowData");
               setOpenDialog(true);
@@ -2364,7 +2450,10 @@ export default (props) => {
           // alert(JSON.stringify(values));
           let formData = new FormData();
           formData.append("vPRNumber", prhead.vPRNumber);
-          formData.append("vPlanUnPlan", "6");
+          formData.append(
+            "vPlanUnPlan",
+            prhead.vPlanUnPlan === "Plan" ? "5" : "6"
+          );
           formData.append("vItemLine", itemprdetail.vItemLine);
           formData.append("vItemNo", values.vItemNo);
           formData.append("vItemDesc1", values.vItemDesc1);
@@ -2391,41 +2480,59 @@ export default (props) => {
 
           if (create || copy) {
             // console.log("create");
-            dispatch(prdetailActions.addEPRDetail(formData, props.history));
+            dispatch(
+              prdetailActions.addEPRDetailV2(
+                formData,
+                props.history,
+                prhead.vPRNumber
+              )
+            );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
+              // dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setCreate(false);
               setCopy(false);
               setSaveDisable(false);
               setSuccess(true);
               setLoading(false);
-            }, 1000);
+            }, 500);
           } else if (update) {
             // console.log("update");
-            dispatch(prdetailActions.updateEPRDetail(formData, props.history));
+            dispatch(
+              prdetailActions.updateEPRDetailV2(
+                formData,
+                props.history,
+                prhead.vPRNumber
+              )
+            );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
+              // dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setUpdate(false);
               setSaveDisable(false);
               setSuccess(true);
               setLoading(false);
-            }, 1000);
+            }, 500);
           } else {
             // console.log("confirm");
-            dispatch(prdetailActions.updateEPRDetail(formData, props.history));
+            dispatch(
+              prdetailActions.updateEPRDetailV2(
+                formData,
+                props.history,
+                prhead.vPRNumber
+              )
+            );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
-              dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
+              // dispatch(prdetailActions.getEPRDetails(prhead.vPRNumber));
               setOpenDialog(false);
               setConfirm(false);
               setSaveDisable(false);
               setSuccess(true);
               setLoading(false);
-            }, 1000);
+            }, 500);
           }
         }}
       >

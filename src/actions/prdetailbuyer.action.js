@@ -43,10 +43,24 @@ const doGetEPRDetails = async (dispatch, prno) => {
   }
 };
 
-export const addEPRDetail = (formData, history) => {
+// export const addEPRDetail = (formData, history) => {
+//   return async (dispatch) => {
+//     try {
+//       await httpClient.post(server.EPRDETAIL_URL, formData);
+//       // history.goBack();
+//     } catch (err) {
+//       alert(JSON.stringify(err));
+//     }
+//   };
+// };
+
+export const addEPRDetailV2 = (formData, history, prno) => {
   return async (dispatch) => {
     try {
       await httpClient.post(server.EPRDETAIL_URL, formData);
+      let result = await httpClient.get(`${server.EPRDETAILBUYER_URL}/${prno}`);
+      dispatch(setStatePRDetailBuyerToSuccess(result.data));
+
       // history.goBack();
     } catch (err) {
       alert(JSON.stringify(err));
@@ -54,11 +68,27 @@ export const addEPRDetail = (formData, history) => {
   };
 };
 
-export const updateEPRDetail = (formData, history) => {
+// export const updateEPRDetail = (formData, history) => {
+//   return async (dispatch) => {
+//     try {
+//       // console.log(formData);
+//       await httpClient.put(server.EPRDETAIL_URL, formData);
+//       // alert("Update Complete");
+//       // history.goBack();
+//     } catch (err) {
+//       alert(JSON.stringify(err));
+//     }
+//   };
+// };
+
+export const updateEPRDetailV2 = (formData, history, prno) => {
   return async (dispatch) => {
     try {
       // console.log(formData);
       await httpClient.put(server.EPRDETAIL_URL, formData);
+      let result = await httpClient.get(`${server.EPRDETAILBUYER_URL}/${prno}`);
+      dispatch(setStatePRDetailBuyerToSuccess(result.data));
+
       // alert("Update Complete");
       // history.goBack();
     } catch (err) {
@@ -72,6 +102,29 @@ export const deleteEPRDetail = (prno, itemline) => {
     try {
       // console.log(formData);
       await httpClient.delete(`${server.EPRDETAIL_URL}/${prno}/${itemline}`);
+      let result = await httpClient.get(`${server.EPRDETAILBUYER_URL}/${prno}`);
+      dispatch(setStatePRDetailBuyerToSuccess(result.data));
+
+      // alert("Delete Complete");
+      // history.goBack();
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
+  };
+};
+
+export const cancelEPRDetail = (prno, itemline) => {
+  return async (dispatch) => {
+    try {
+      // console.log(formData);
+      await httpClient.delete(
+        `${server.EPRDETAILGROUPING_URL}/${prno}/${itemline}`
+      );
+      let result = await httpClient.get(
+        `${server.EPRDETAILGROUPING_URL}/${prno}`
+      );
+      dispatch(setStatePRDetailBuyerToSuccess(result.data));
+
       // alert("Delete Complete");
       // history.goBack();
     } catch (err) {
@@ -102,6 +155,9 @@ export const updateEPRConfirmDetailItem = (prno, line, buyer) => {
       await httpClient.put(
         `${server.EPRCONFIRMDETAILITEM_URL}/${prno}/${line}/${buyer}`
       );
+      let result = await httpClient.get(`${server.EPRDETAILBUYER_URL}/${prno}`);
+      dispatch(setStatePRDetailBuyerToSuccess(result.data));
+
       alert("Confirm Complete");
       // history.goBack();
     } catch (err) {
@@ -153,6 +209,11 @@ export const updateEPRDetailGrouping = (prno, itemline, group, date) => {
       await httpClient.put(
         `${server.EPRDETAILGROUPING_URL}/${prno}/${itemline}/${group}/${date}`
       );
+      let result = await httpClient.get(
+        `${server.EPRDETAILGROUPING_URL}/${prno}`
+      );
+      dispatch(setStatePRDetailBuyerToSuccess(result.data));
+
       // alert("Delete Complete");
       // history.goBack();
     } catch (err) {

@@ -185,3 +185,13 @@ export const getApproveTokenUsername = () => {
     return false;
   }
 };
+
+export const getTokenRole = () => {
+  try {
+    let token = localStorage.getItem(server.TOKEN_KEY);
+    var decodedToken = jwt.decode(token, { complete: true });
+    return decodedToken.payload.role;
+  } catch (e) {
+    return false;
+  }
+};

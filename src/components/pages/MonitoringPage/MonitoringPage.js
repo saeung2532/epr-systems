@@ -15,6 +15,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import SearchIcon from "@material-ui/icons/Search";
 import CancelIcon from "@material-ui/icons/Cancel";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
@@ -40,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginTop: 60,
   },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative",
+  },
   paper: {
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
@@ -51,6 +56,27 @@ const useStyles = makeStyles((theme) => ({
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    "&:hover": {
+      backgroundColor: green[700],
+    },
+  },
+  fabProgress: {
+    color: green[500],
+    position: "absolute",
+    top: -6,
+    left: -6,
+    zIndex: 1,
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
   },
 }));
 
@@ -95,9 +121,13 @@ export default (props) => {
   const statusReducer = useSelector(({ statusReducer }) => statusReducer);
   const prheadReducer = useSelector(({ prheadReducer }) => prheadReducer);
   const prdetailReducer = useSelector(({ prdetailReducer }) => prdetailReducer);
+  const sendemailReducer = useSelector(
+    ({ sendemailReducer }) => sendemailReducer
+  );
 
   const initialStatePRNumber = {
     vPRSelectNumber: null,
+    vPRNumberDesc: null,
     vWarehouse: null,
     vBU: null,
     vDepartment: null,
@@ -155,6 +185,9 @@ export default (props) => {
   const [cancle, setCancle] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [sendemaildisable, setSendEmailDisable] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     dispatch(prnumberActions.getEPRNumbersWithOutUser());
@@ -168,6 +201,17 @@ export default (props) => {
     prdetailReducer.result = null;
   }, []);
 
+  useEffect(() => {
+    const sendemails = sendemailReducer.result ? [sendemailReducer.result] : [];
+    // console.log(JSON.stringify(sendemails));
+    sendemails.map((item) => {
+      // console.log(item.message);
+      setSendEmailDisable(false);
+      setSuccess(true);
+      setLoading(false);
+    });
+  }, [sendemailReducer]);
+
   const prnumberbuyers = useMemo(() =>
     prnumberReducer.result ? prnumberReducer.result : []
   );
@@ -178,17 +222,9 @@ export default (props) => {
 
   const bus = useMemo(() => (buReducer.result ? buReducer.result : []));
 
-  const departments = useMemo(() =>
-    departmentReducer.result ? departmentReducer.result : []
+  const costcenters = useMemo(() =>
+    costcenterReducer.result ? costcenterReducer.result : []
   );
-
-  // const costcenters = useMemo(() =>
-  //   costcenterReducer.result ? costcenterReducer.result : []
-  // );
-
-  // const phgroups = useMemo(() =>
-  //   phgroupReducer.result ? phgroupReducer.result : []
-  // );
 
   const months = useMemo(() =>
     monthReducer.result ? monthReducer.result : []
@@ -200,12 +236,13 @@ export default (props) => {
 
   const handleSearch = () => {
     setSearch(true);
+    // console.log(JSON.stringify(prnumber));
     dispatch(
       prheadActions.getEPRHeadsMonitoring(
         prnumber.vPRSelectNumber,
         prnumber.vWarehouse,
         prnumber.vBU,
-        prnumber.vDepartment,
+        prnumber.vCostCenter,
         prnumber.vMonth,
         prnumber.vStatus
       )
@@ -255,8 +292,40 @@ export default (props) => {
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid container item xs={12} className={classes.margin}>
-                <Grid item xs={12} sm={2} className={classes.margin}>
-                  <TextField
+                <Grid item xs={12} sm={3} className={classes.margin}>
+                  <Autocomplete
+                    autoFocus
+                    fullWidth
+                    size="small"
+                    id="vSelectPRNumberAuto"
+                    options={prnumberbuyers}
+                    getOptionLabel={(option) => option.PRNUMBER}
+                    value={prnumber.vPRNumberDesc}
+                    onChange={(event, values) => {
+                      // console.log(values);
+                      if (values) {
+                        setPRNumber({
+                          ...prnumber,
+                          vPRSelectNumber: values.HD_IBPLPN,
+                          vPRNumberDesc: { PRNUMBER: values.PRNUMBER },
+                        });
+                      } else {
+                        setPRNumber(initialStatePRNumber);
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        id="vSelectPRNumber"
+                        label="EPR Number"
+                        required
+                        InputLabelProps={{ shrink: true }}
+                      />
+                    )}
+                  />
+
+                  {/* <TextField
                     fullWidth
                     select
                     size="small"
@@ -284,7 +353,7 @@ export default (props) => {
                         {option.PRNUMBER}
                       </option>
                     ))}
-                  </TextField>
+                  </TextField> */}
                 </Grid>
                 <Grid item xs={12} sm={1} className={classes.margin}>
                   <TextField
@@ -336,7 +405,7 @@ export default (props) => {
                       });
 
                       dispatch(
-                        departmentActions.getDepartments(event.target.value)
+                        costcenterActions.getCostCentersBU(event.target.value)
                       );
                     }}
                     InputLabelProps={{ shrink: true }}
@@ -359,14 +428,14 @@ export default (props) => {
                     size="small"
                     variant="outlined"
                     // required
-                    id="vDepartment"
-                    label="Department"
-                    value={prnumber.vDepartment}
+                    id="vCostcenter"
+                    label="Costcenter"
+                    value={prnumber.vCostcenter}
                     onChange={(event) => {
                       // console.log(event.target.value);
                       setPRNumber({
                         ...prnumber,
-                        vDepartment:
+                        vCostCenter:
                           event.target.value == "" ? null : event.target.value,
                       });
                     }}
@@ -376,9 +445,9 @@ export default (props) => {
                     }}
                   >
                     <option />
-                    {departments.map((option) => (
+                    {costcenters.map((option) => (
                       <option key={option.ID} value={option.S2AITM}>
-                        {option.DEPARTMENT}
+                        {option.COSTCENTER}
                       </option>
                     ))}
                   </TextField>
@@ -515,31 +584,18 @@ export default (props) => {
                 Toolbar: (props) => (
                   <div>
                     <MTableToolbar {...props} />
-                    <div style={{ padding: "0px 10px" }}>
+                    <Grid className={(classes.margin, classes.wrapper)}>
                       <Button
+                        // className={classes.wrapper}
                         fullWidth
-                        // disabled={createdisable}
+                        disabled={sendemaildisable}
                         variant="contained"
                         color="primary"
-                        // component={Link}
-                        // to="/stock/create"
                         startIcon={<MailOutlineIcon />}
                         onClick={(event, rowData) => {
-                          let fromStatus = "";
-                          let toStatus = "";
-
-                          // if (itemprdetail.vStatus === "15") {
-                          //   fromStatus = "10";
-                          //   toStatus = "15";
-                          // } else if (itemprdetail.vStatus === "20") {
-                          //   fromStatus = "15";
-                          //   toStatus = "20";
-                          // } else if (itemprdetail.vStatus === "92") {
-                          //   fromStatus = "20";
-                          //   toStatus = "92";
-                          // }
-
-                          // alert(itemprdetail.vPRNumber + " : " + fromStatus + " : " + toStatus);
+                          setSendEmailDisable(true);
+                          setSuccess(false);
+                          setLoading(true);
 
                           dispatch(
                             sendemailActions.sendEmail(
@@ -548,19 +604,17 @@ export default (props) => {
                               document
                             )
                           );
-                          // let phgroup = "PH";
-                          // setItemPRDetail({ ...itemprdetail, vAddFreeItem: "1" });
-                          // setSelectedProduct("rowData");
-                          // setEditNameDisable(false);
-                          // setConfirmDisable(true);
-                          // setOpenDialog(true);
-                          // dispatch(itemActions.getItems(prhead.vWarehouse));
-                          // dispatch(phgroupActions.getPHGroups(phgroup));
                         }}
                       >
                         Send Email
                       </Button>
-                    </div>
+                      {loading && (
+                        <CircularProgress
+                          size={24}
+                          className={classes.buttonProgress}
+                        />
+                      )}
+                    </Grid>
                   </div>
                 ),
               }}
@@ -627,6 +681,29 @@ export default (props) => {
       ),
     },
     {
+      title: "Status",
+      field: "HD_STATUS",
+      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.HD_STATUS}
+        </Typography>
+      ),
+    },
+    {
       title: "Requestor",
       field: "HD_IBPURC",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
@@ -673,7 +750,7 @@ export default (props) => {
       ),
     },
     {
-      title: "Dept.",
+      title: "Cost.",
       field: "HD_IBCOCE",
       headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
       cellStyle: {
@@ -692,6 +769,52 @@ export default (props) => {
       render: (item) => (
         <Typography variant="body1" noWrap>
           {item.HD_IBCOCE}
+        </Typography>
+      ),
+    },
+    {
+      title: "PH Grp.",
+      field: "HD_IBMODL",
+      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.HD_IBMODL}
+        </Typography>
+      ),
+    },
+    {
+      title: "Buyer",
+      field: "HD_IBBUYE",
+      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "left",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.HD_IBBUYE}
         </Typography>
       ),
     },
@@ -1006,29 +1129,6 @@ export default (props) => {
         </Typography>
       ),
     },
-    {
-      title: "Status",
-      field: "HD_STATUS",
-      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.HD_STATUS}
-        </Typography>
-      ),
-    },
   ];
 
   const columnsdetail = [
@@ -1075,6 +1175,29 @@ export default (props) => {
       render: (item) => (
         <Typography variant="body1" noWrap>
           {item.PR_IBPLPS}
+        </Typography>
+      ),
+    },
+    {
+      title: "Status",
+      field: "PR_STATUS",
+      headerStyle: { maxWidth: 70, whiteSpace: "nowrap", textAlign: "center" },
+      cellStyle: {
+        textAlign: "center",
+        borderLeft: 1,
+        borderRight: 1,
+        borderBottom: 1,
+        borderTop: 1,
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+        paddingBottom: "12px",
+        paddingTop: "12px",
+      },
+      render: (item) => (
+        <Typography variant="body1" noWrap>
+          {item.PR_STATUS}
         </Typography>
       ),
     },
@@ -1522,82 +1645,83 @@ export default (props) => {
         </Typography>
       ),
     },
-    {
-      title: "Buyer",
-      field: "PR_IBBUYE",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "left",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBBUYE}
-        </Typography>
-      ),
-    },
-    {
-      title: "Cost Cen.",
-      field: "PR_IBCOCE",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.PR_IBCOCE}
-        </Typography>
-      ),
-    },
-    {
-      title: "Cost Name",
-      field: "S2TX15",
-      headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.S2TX15}
-        </Typography>
-      ),
-    },
+
+    // {
+    //   title: "Buyer",
+    //   field: "PR_IBBUYE",
+    //   headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "left",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBBUYE}
+    //     </Typography>
+    //   ),
+    // },
+    // {
+    //   title: "Cost Cen.",
+    //   field: "PR_IBCOCE",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.PR_IBCOCE}
+    //     </Typography>
+    //   ),
+    // },
+    // {
+    //   title: "Cost Name",
+    //   field: "S2TX15",
+    //   headerStyle: { maxWidth: 100, whiteSpace: "nowrap", textAlign: "center" },
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     borderLeft: 1,
+    //     borderRight: 1,
+    //     borderBottom: 1,
+    //     borderTop: 1,
+    //     borderColor: "#E0E0E0",
+    //     borderStyle: "solid",
+    //     paddingLeft: "6px",
+    //     paddingRight: "6px",
+    //     paddingBottom: "12px",
+    //     paddingTop: "12px",
+    //   },
+    //   render: (item) => (
+    //     <Typography variant="body1" noWrap>
+    //       {item.S2TX15}
+    //     </Typography>
+    //   ),
+    // },
   ];
 
   return (
     <div className={classes.root}>
       {/* Grid */}
       {/* <p>#Debug prnumber {JSON.stringify(prnumber)}</p> */}
-      <Formik>{(props) => showForm(props)}</Formik>
+      <Formik initialValues="">{(props) => showForm(props)}</Formik>
 
       {/* Plan PR Table */}
       <MaterialTable
@@ -1608,6 +1732,7 @@ export default (props) => {
         options={{
           // exportButton: true,
           // toolbar: false,
+          pageSize: 10,
           paging: true,
           headerStyle: {
             textAlign: "center",

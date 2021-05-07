@@ -1880,7 +1880,7 @@ export default (props) => {
         //         )
         //       );
         //     }, 500);
-        //     setTimeout(resolve, 1000);
+        //     setTimeout(resolve, 500);
         //   });
         // },
         //   }
@@ -1897,16 +1897,38 @@ export default (props) => {
             );
             return new Promise((resolve, reject) => {
               // console.log("newValue: " + oldData.PR_IBPLPN + " " + oldData.PR_IBPLPS + " " + newData.PR_SPORDER + " " + moment(oldData.PR_IBDWDT).format("YYYY-MM-DD"));
-              setTimeout(() => {
-                dispatch(
-                  prdetailbuyerActions.getEPRDetailsGrouping(
-                    prnumber.vPRSelectNumber
-                  )
-                );
-              }, 1000);
-              setTimeout(resolve, 1000);
+              // setTimeout(() => {
+              //   dispatch(
+              //     prdetailbuyerActions.getEPRDetailsGrouping(
+              //       prnumber.vPRSelectNumber
+              //     )
+              //   );
+              // }, 500);
+              setTimeout(resolve, 500);
             });
           },
+          onRowDelete: (oldData) =>
+            new Promise((resolve, reject) => {
+              // console.log("onRowDelete: " + JSON.stringify(oldData));
+              let data = [oldData];
+              data.map((item) => {
+                dispatch(
+                  prdetailbuyerActions.cancelEPRDetail(
+                    item.PR_IBPLPN,
+                    item.PR_IBPLPS
+                  )
+                );
+              });
+              setTimeout(() => {
+                {
+                  setItemPRDetail({ ...initialStateItemPRDetail });
+                  // dispatch(
+                  //   prdetailbuyerActions.getEPRDetails(prhead.vPRNumber)
+                  // );
+                }
+                resolve();
+              }, 500);
+            }),
         }}
       />
 
@@ -1962,7 +1984,11 @@ export default (props) => {
           if (create) {
             // console.log("create");
             dispatch(
-              prdetailbuyerActions.addEPRDetail(formData, props.history)
+              prdetailbuyerActions.addEPRDetailV2(
+                formData,
+                props.history,
+                prhead.vPRNumber
+              )
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
@@ -1973,7 +1999,11 @@ export default (props) => {
           } else if (update) {
             // console.log("update");
             dispatch(
-              prdetailbuyerActions.updateEPRDetail(formData, props.history)
+              prdetailbuyerActions.updateEPRDetailV2(
+                formData,
+                props.history,
+                prhead.vPRNumber
+              )
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });
@@ -1986,7 +2016,11 @@ export default (props) => {
           } else {
             // console.log("confirm");
             dispatch(
-              prdetailbuyerActions.updateEPRDetail(formData, props.history)
+              prdetailbuyerActions.updateEPRDetailV2(
+                formData,
+                props.history,
+                prhead.vPRNumber
+              )
             );
             setTimeout(() => {
               setItemPRDetail({ ...initialStateItemPRDetail });

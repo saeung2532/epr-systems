@@ -160,6 +160,24 @@ export const HTTP_CAPEX_FAILED = "HTTP_CAPEX_FAILED";
 export const HTTP_CAPEX_SUCCESS = "HTTP_CAPEX_SUCCESS";
 export const HTTP_CAPEX_CLEAR = "HTTP_CAPEX_CLEAR";
 
+// DEPTANDCOST
+export const HTTP_DEPTANDCOST_FETCHING = "HTTP_DEPTANDCOST_FETCHING";
+export const HTTP_DEPTANDCOST_FAILED = "HTTP_DEPTANDCOST_FAILED";
+export const HTTP_DEPTANDCOST_SUCCESS = "HTTP_DEPTANDCOST_SUCCESS";
+export const HTTP_DEPTANDCOST_CLEAR = "HTTP_DEPTANDCOST_CLEAR";
+
+// DELIVERY
+export const HTTP_DELIVERY_FETCHING = "HTTP_DELIVERY_FETCHING";
+export const HTTP_DELIVERY_FAILED = "HTTP_DELIVERY_FAILED";
+export const HTTP_DELIVERY_SUCCESS = "HTTP_DELIVERY_SUCCESS";
+export const HTTP_DELIVERY_CLEAR = "HTTP_DELIVERY_CLEAR";
+
+// PAYMENT
+export const HTTP_PAYMENT_FETCHING = "HTTP_PAYMENT_FETCHING";
+export const HTTP_PAYMENT_FAILED = "HTTP_PAYMENT_FAILED";
+export const HTTP_PAYMENT_SUCCESS = "HTTP_PAYMENT_SUCCESS";
+export const HTTP_PAYMENT_CLEAR = "HTTP_PAYMENT_CLEAR";
+
 // Error Code
 export const E_PICKER_CANCELLED = "E_PICKER_CANCELLED";
 export const E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR =
@@ -183,7 +201,6 @@ export const UPLOAD_PHOTO_FAIL_MESSAGE =
 // export const apiUrl = "http://localhost:8080/br_api/";
 // export const apiUrl = "http://192.200.9.106:8080/br_api/";
 export const apiUrl = `${process.env.REACT_APP_API_URL}/br_api/`;
-// export const apiUrl = `${process.env.REACT_APP_API_URL}/br_apiv2/`;
 export const imageUrl = "http://localhost:8080";
 
 export const server = {
@@ -239,9 +256,12 @@ export const server = {
   EPRAPPROVEFINAL_URL: `api_data/eprapprovefinal`,
   PRREJECT_URL: `api_data/prrejectapprove`,
   PRGENPO_URL: `api_data/callmformpps200`,
+  DEPTANDCOST_URL: `api_data/deptandcost`,
   CANCELPO_URL: `api_data/callmformpps350`,
   PONUMBER_URL: `api_data/ponumber`,
   PODETAIL_URL: `api_data/podetail`,
+  DELIVERY_URL: `api_data/deliveryterms`,
+  PAYMENT_URL: `api_data/paymentterms`,
 
   REFRESH_TOKEN_URL: `refresh/token`,
   TOKEN_KEY: `token`,
