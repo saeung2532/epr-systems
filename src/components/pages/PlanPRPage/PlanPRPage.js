@@ -162,6 +162,11 @@ export default (props) => {
     vPHGroupDetail: "",
     vBuyerDetail: "",
     vRemarkDetail: "",
+    vPHRemarkDetail: "",
+    vNameRemarkDetail: "",
+    vDescemarkDetail: "",
+    vTextRemarkDetail: "",
+    vAddFreeItem: "",
   };
   const [itemprdetail, setItemPRDetail] = useState(initialStateItemPRDetail);
   const [searchdisable, setSearchDisable] = useState(false);
@@ -2363,6 +2368,10 @@ export default (props) => {
                     vPHGroupDetail: item.PR_IBMODL,
                     vBuyerDetail: item.PR_IBBUYE,
                     vRemarkDetail: item.PR_REM3,
+                    vPHRemarkDetail: item.PR_PHREMARK1,
+                    vNameRemarkDetail: item.PR_PHREMARK2,
+                    vDescRemarkDetail: item.PR_PHREMARK3,
+                    vTextRemarkDetail: item.PR_PHREMARK4,
                   });
                 });
               }, 500);
@@ -2445,6 +2454,11 @@ export default (props) => {
           vPHGroupDetail: "",
           vBuyerDetail: "",
           vRemarkDetail: "",
+          vPHRemarkDetail: "",
+          vNameRemarkDetail: "",
+          vDescRemarkDetail: "",
+          vTextRemarkDetail: "",
+          vAddFreeItem: "",
         }}
         onSubmit={(values, { setSubmitting }) => {
           // alert(JSON.stringify(values));
@@ -2470,6 +2484,10 @@ export default (props) => {
           formData.append("vPHGroupDetail", prhead.vPHGroup);
           formData.append("vBuyerDetail", prhead.vBuyer);
           formData.append("vRemarkDetail", values.vRemarkDetail);
+          formData.append("vPHRemarkDetail", values.vPHRemarkDetail);
+          formData.append("vNameRemarkDetail", values.vNameRemarkDetail);
+          formData.append("vDescRemarkDetail", values.vDescRemarkDetail);
+          formData.append("vTextRemarkDetail", values.vTextRemarkDetail);
           formData.append("vAddFreeItem", "");
           formData.append("vConfirm", "0");
           formData.append("vStatus", "10");

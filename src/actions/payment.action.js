@@ -24,17 +24,37 @@ const setStatePaymentToClear = () => ({
   type: HTTP_PAYMENT_CLEAR,
 });
 
-export const getPayments = (supplier) => {
-  console.log("supplier: " + supplier);
+export const getPayments = () => {
   return async (dispatch) => {
     dispatch(setStatePaymentToFetching());
-    doGetPayments(dispatch, supplier);
+    doGetPayments(dispatch);
   };
 };
 
-const doGetPayments = async (dispatch, supplier) => {
+const doGetPayments = async (dispatch) => {
   try {
-    let result = await httpClient.get(`${server.PAYMENT_URL}/${supplier}`);
+    let result = await httpClient.get(`${server.PAYMENT_URL}`);
+    dispatch(setStatePaymentToSuccess(result.data));
+    // alert(JSON.stringify(result.data));
+  } catch (err) {
+    // alert(JSON.stringify(err));
+    dispatch(setStatePaymentToFailed());
+  }
+};
+
+export const getPaymentsBySupplier = (supplier) => {
+  console.log("supplier: " + supplier);
+  return async (dispatch) => {
+    dispatch(setStatePaymentToFetching());
+    doGetPaymentsBySupplier(dispatch, supplier);
+  };
+};
+
+const doGetPaymentsBySupplier = async (dispatch, supplier) => {
+  try {
+    let result = await httpClient.get(
+      `${server.PAYMENTSUPPLIER_URL}/${supplier}`
+    );
     dispatch(setStatePaymentToSuccess(result.data));
     // alert(JSON.stringify(result.data));
   } catch (err) {

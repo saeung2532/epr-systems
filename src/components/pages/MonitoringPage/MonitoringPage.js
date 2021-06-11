@@ -302,7 +302,7 @@ export default (props) => {
                     getOptionLabel={(option) => option.PRNUMBER}
                     value={prnumber.vPRNumberDesc}
                     onChange={(event, values) => {
-                      // console.log(values);
+                      console.log(values);
                       if (values) {
                         setPRNumber({
                           ...prnumber,
@@ -601,7 +601,13 @@ export default (props) => {
                             sendemailActions.sendEmail(
                               itemprdetail.vPRNumber,
                               itemprdetail.vStatus,
-                              document
+                              document,
+                              prnumber.vPRSelectNumber,
+                              prnumber.vWarehouse,
+                              prnumber.vBU,
+                              prnumber.vCostCenter,
+                              prnumber.vMonth,
+                              prnumber.vStatus
                             )
                           );
                         }}

@@ -82,3 +82,22 @@ const doGetEPRNumbersUser = async (dispatch, status) => {
     dispatch(setStatePRNumberToFailed());
   }
 };
+
+export const getPONumbersCancel = (status) => {
+  return async (dispatch) => {
+    dispatch(setStatePRNumberToFetching(status));
+    doGetPONumbersCancel(dispatch, status);
+  };
+};
+
+const doGetPONumbersCancel = async (dispatch, status) => {
+  try {
+    let result = await httpClient.get(`${server.EPRNUMBERUSER_URL}/${status}`);
+    dispatch(setStatePRNumberToSuccess(result.data));
+    // alert(JSON.stringify(result.data));
+  } catch (err) {
+    alert(JSON.stringify(err));
+    localStorage.removeItem(server.TOKEN_KEY);
+    dispatch(setStatePRNumberToFailed());
+  }
+};

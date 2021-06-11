@@ -23,6 +23,7 @@ import GenPOPage from "./components/pages/GenPOPage/GenPOPage";
 import CancelPOPage from "./components/pages/CancelPage/CancelPage";
 import MonitoringPage from "./components/pages/MonitoringPage/MonitoringPage";
 import PrintReportPage from "./components/pages/PrintReportPage/PrintReportPage";
+import PrintPOCancelPage from "./components/pages/PrintPOCancelPage/PrintPOCancelPage";
 import ApprovePage from "./components/pages/ApprovePage/ApprovePage";
 import DeptAndCostPage from "./components/pages/DeptAndCostPage/DeptAndCostPage";
 import TestPage from "./components/pages/TestPage/TestPage";
@@ -127,6 +128,16 @@ export default function App() {
         <PrivateRoute exact path="/cancelpo" component={CancelPOPage} />
         <PrivateRoute exact path="/monitoring" component={MonitoringPage} />
         <PrivateRoute exact path="/printreport" component={PrintReportPage} />
+        <PrivateRoute
+          exact
+          path="/printpocancel"
+          component={PrintPOCancelPage}
+        />
+        <PrivateRoute
+          exact
+          path="/printporeport"
+          component={PrintPOCancelPage}
+        />
         <PrivateRoute exact path="/deptandcost" component={DeptAndCostPage} />
         <PrivateRoute exact path="/test" component={TestPage} />
         <PublicRoute

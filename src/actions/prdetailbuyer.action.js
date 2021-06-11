@@ -97,6 +97,30 @@ export const updateEPRDetailV2 = (formData, history, prno) => {
   };
 };
 
+export const updateEPRDetailupdateEPRDetailGenPO = (
+  formData,
+  history,
+  prno,
+  status,
+  prnoline
+) => {
+  return async (dispatch) => {
+    try {
+      // console.log(formData);
+      await httpClient.put(server.EPRDETAIL_URL, formData);
+      let result = await httpClient.get(
+        `${server.EPRDETAILGENPO_URL}/${status}/${prnoline}`
+      );
+      dispatch(setStatePRDetailBuyerToSuccess(result.data));
+
+      // alert("Update Complete");
+      // history.goBack();
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
+  };
+};
+
 export const deleteEPRDetail = (prno, itemline) => {
   return async (dispatch) => {
     try {

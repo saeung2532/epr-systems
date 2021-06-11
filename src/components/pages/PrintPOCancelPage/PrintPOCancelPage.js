@@ -13,15 +13,14 @@ import clsx from "clsx";
 import { Typography, Grid, Paper, TextField, Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchIcon from "@material-ui/icons/Search";
-import SaveIcon from "@material-ui/icons/Save";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Formik, Form, Field } from "formik";
 import { red, green, purple } from "@material-ui/core/colors/";
 import * as prnumberbuyerActions from "./../../../actions/prnumberbuyer.action";
 import * as prdetailbuyerActions from "./../../../actions/prdetailbuyer.action";
+import * as loginActions from "./../../../actions/login.action";
 import * as genpoActions from "./../../../actions/genpo.action";
-import * as paymentActions from "./../../../actions/payment.action";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -104,10 +103,9 @@ export default (props) => {
     ({ prdetailbuyerReducer }) => prdetailbuyerReducer
   );
   const genpoReducer = useSelector(({ genpoReducer }) => genpoReducer);
-  const paymentReducer = useSelector(({ paymentReducer }) => paymentReducer);
   const initialStatePRNumber = {
-    vPRSelectNumber: null,
-    vPRSelectNumberLine: null,
+    vPRSelectNumber: "",
+    vPRSelectNumberLine: "",
     vPRNumberDesc: null,
     vPROrderDate: "",
     vPRDeliDate: "",
@@ -133,8 +131,6 @@ export default (props) => {
     vApprove3: "",
     vApprove4: "",
     vStatus: "",
-    vDelivery: "",
-    vPayment: "",
   };
   const [prhead, setPRHead] = useState(initialStatePRHead);
   const initialStateItemPRDetail = {
@@ -162,38 +158,17 @@ export default (props) => {
   const [searchdisable, setSearchDisable] = useState(false);
   const [cancelpoDisable, setCancelPODisable] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [loadingchangepo, setLoadingChangePO] = useState(false);
   const [success, setSuccess] = useState(false);
   const timer = useRef();
 
   useEffect(() => {
     // console.log("dispatch prnumberbuyerActions");
-    let fromstatus = "15";
-    let tostatus = "85";
+    let fromstatus = "99";
+    let tostatus = "99";
     dispatch(prnumberbuyerActions.getPONumbers(fromstatus, tostatus));
-    dispatch(paymentActions.getPayments());
     prheadReducer.result = null;
     prdetailbuyerReducer.result = null;
   }, []);
-
-  useEffect(() => {
-    const prdetails = prdetailbuyerReducer.result
-      ? prdetailbuyerReducer.result
-      : [];
-    // console.log(JSON.stringify(prnumbers));
-    prdetails.map((item) => {
-      // console.log(item.message);
-      setPRNumber({
-        ...prnumber,
-        vPROrderDate: moment(item.IAPUDT).format("YYYY-MM-DD"),
-        vPRDeliDate: moment(item.IADWDT).format("YYYY-MM-DD"),
-      });
-      setPRHead({
-        ...prhead,
-        vPayment: item.IITEPY,
-      });
-    });
-  }, [prdetailbuyerReducer]);
 
   useEffect(() => {
     const genpos = genpoReducer.result ? [genpoReducer.result] : [];
@@ -203,24 +178,13 @@ export default (props) => {
       setPONumber({ ...prnumber, vPOSelectNumber: item.message });
       setSuccess(true);
       setLoading(false);
-      setLoadingChangePO(false);
-      handleAfterCancelPO();
+      handleAfterGenPO();
     });
   }, [genpoReducer]);
 
   const prnumberbuyers = useMemo(() =>
     prnumberbuyerReducer.result ? prnumberbuyerReducer.result : []
   );
-
-  const ColorButton = withStyles((theme) => ({
-    root: {
-      color: theme.palette.getContrastText(green[500]),
-      backgroundColor: green[500],
-      "&:hover": {
-        backgroundColor: green[700],
-      },
-    },
-  }))(Button);
 
   const ValidationTextField = withStyles({
     root: {
@@ -240,15 +204,8 @@ export default (props) => {
   })(TextField);
 
   const handleSearch = () => {
-    if (prnumber.vPRSelectNumber === "") {
-      setPRNumber(initialStatePRNumber);
-      setCancelPODisable(true);
-      prheadReducer.result = null;
-      prdetailbuyerReducer.result = null;
-    } else {
-      dispatch(prdetailbuyerActions.getPODetails(prnumber.vPRSelectNumber));
-      setCancelPODisable(false);
-    }
+    dispatch(prdetailbuyerActions.getPODetails(prnumber.vPRSelectNumber));
+    setCancelPODisable(false);
   };
 
   const handleCancelPO = () => {
@@ -258,33 +215,13 @@ export default (props) => {
     setLoading(true);
   };
 
-  const handleAfterCancelPO = () => {
-    let fromstatus = "15";
-    let tostatus = "85";
+  const handleAfterGenPO = () => {
+    let fromstatus = "99";
+    let tostatus = "99";
     dispatch(prnumberbuyerActions.getPONumbers(fromstatus, tostatus));
     prheadReducer.result = null;
     prdetailbuyerReducer.result = null;
   };
-
-  const handleChangePO = () => {
-    dispatch(
-      genpoActions.changePO(
-        prnumber.vPRSelectNumber,
-        prnumber.vPROrderDate,
-        prnumber.vPRDeliDate,
-        prhead.vPayment
-      )
-    );
-    setCancelPODisable(true);
-    setSuccess(false);
-    setLoadingChangePO(true);
-    // prheadReducer.result = null;
-    // prdetailbuyerReducer.result = null;
-  };
-
-  const payments = useMemo(() =>
-    paymentReducer.result ? paymentReducer.result : []
-  );
 
   const NumberFormatCustom = (props) => {
     const { inputRef, onChange, ...other } = props;
@@ -321,7 +258,7 @@ export default (props) => {
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid container item xs={12} className={classes.margin}>
-                <Grid item xs={12} sm={3} className={classes.margin}>
+                <Grid item xs={12} sm={2} className={classes.margin}>
                   {/* <TextField
                     error={true}
                     fullWidth
@@ -338,7 +275,7 @@ export default (props) => {
                       let getEPRNumberselect = event.target.value
                         .toString()
                         .split("::");
-                      let getPRnumber = getEPRNumberselect[0].trim();
+                      let getPRnumber = getEPRNumberselect[0];
 
                       setPRNumber({
                         ...prnumber,
@@ -370,10 +307,17 @@ export default (props) => {
                     onChange={(event, values) => {
                       // console.log(event.target.value);
                       if (values) {
+                        // setPRNumber({
+                        //   ...prnumber,
+                        //   vPRSelectNumber: values.HD_IBPLPN,
+                        //   vPRNumberDesc: { PRNUMBER: values.PRNUMBER },
+                        // });
+
                         let getEPRNumberselect = values.PONUMBER.toString().split(
                           "::"
                         );
                         let getPRnumber = getEPRNumberselect[0].trim();
+
                         setPRNumber({
                           ...prnumber,
                           vPRSelectNumber: getPRnumber,
@@ -397,12 +341,7 @@ export default (props) => {
                     )}
                   />
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={1}
-                  className={(classes.margin, classes.wrapper)}
-                >
+                <Grid item xs={12} sm={1} className={classes.margin}>
                   <Button
                     fullWidth
                     size="medium"
@@ -416,169 +355,28 @@ export default (props) => {
                     Search
                   </Button>
                 </Grid>
-
-                <Grid className={(classes.margin, classes.wrapper)}>
-                  <Button
-                    style={{ maxWidth: 200 }}
-                    fullWidth
-                    size="medium"
-                    id="vCancelPO"
-                    variant="contained"
-                    color="secondary"
-                    disabled={cancelpoDisable}
-                    startIcon={<DeleteIcon />}
-                    onClick={handleCancelPO}
+                <Grid className={classes.margin}>
+                  <a
+                    href={`${
+                      process.env.REACT_APP_API_URL
+                    }/br_api/api_report/viewpocancel/${loginActions.getTokenCono()}/${loginActions.getTokenDivi()}/${
+                      prnumber.vPRSelectNumber
+                    }`}
+                    target="_blank"
+                    style={{ textDecoration: "none" }}
                   >
-                    Cancel PO
-                  </Button>
-                  {loading && (
-                    <CircularProgress
-                      size={24}
-                      className={classes.buttonProgress}
-                    />
-                  )}
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="secondary"
+                      // disabled={viewMPRDisable}
+                      startIcon={<SearchIcon />}
+                    >
+                      View PO
+                    </Button>
+                  </a>
                 </Grid>
               </Grid>
-
-              <Grid container item xs className={classes.margin}>
-                <TextField
-                  className={classes.margin}
-                  error={true}
-                  style={{ maxWidth: 180 }}
-                  margin="dense"
-                  type="date"
-                  size="small"
-                  id="vOrderDate"
-                  label="Order Date"
-                  variant="outlined"
-                  disabled={cancelpoDisable}
-                  defaultValue={prnumber.vPROrderDate}
-                  value={prnumber.vPROrderDate}
-                  onChange={(event) => {
-                    // console.log("event.target.value: " + event.target.value);
-                    setPRNumber({
-                      ...prnumber,
-                      vPROrderDate: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true, required: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  error={true}
-                  style={{ maxWidth: 180 }}
-                  margin="dense"
-                  type="date"
-                  size="small"
-                  id="vDeliveryDate"
-                  label="Delivery Date"
-                  variant="outlined"
-                  disabled={cancelpoDisable}
-                  defaultValue={prnumber.vPRDeliDate}
-                  value={prnumber.vPRDeliDate}
-                  onChange={(event) => {
-                    // console.log("event.target.value: " + event.target.value);
-                    setPRNumber({
-                      ...prnumber,
-                      vPRDeliDate: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true, required: true }}
-                />
-
-                <TextField
-                  className={classes.margin}
-                  style={{ width: "200px" }}
-                  required
-                  error={true}
-                  select
-                  size="small"
-                  variant="outlined"
-                  margin="normal"
-                  id="vPayment"
-                  label="Payment terms"
-                  disabled={cancelpoDisable}
-                  value={prhead.vPayment}
-                  // values={(values.vPayment = prhead.vPayment)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setPRHead({
-                      ...prhead,
-                      vPayment: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option />
-                  {payments.map((option) => (
-                    <option key={option.ID} value={option.CTSTKY}>
-                      {option.PAYMENT}
-                    </option>
-                  ))}
-                </TextField>
-
-                <Grid className={(classes.margin, classes.wrapper)}>
-                  <ColorButton
-                    style={{ maxWidth: 200 }}
-                    fullWidth
-                    size="medium"
-                    id="vCancelPO"
-                    variant="contained"
-                    color="secondary"
-                    disabled={cancelpoDisable}
-                    startIcon={<SaveIcon />}
-                    onClick={handleChangePO}
-                  >
-                    Change PO
-                  </ColorButton>
-                  {loadingchangepo && (
-                    <CircularProgress
-                      size={24}
-                      className={classes.buttonProgress}
-                    />
-                  )}
-                </Grid>
-              </Grid>
-
-              {/* <Grid container item xs className={classes.margin}>
-                <TextField
-                  className={classes.margin}
-                  style={{ width: "200px" }}
-                  required
-                  error={true}
-                  select
-                  size="small"
-                  variant="outlined"
-                  margin="normal"
-                  id="vPayment"
-                  label="Payment terms"
-                  disabled={cancelpoDisable}
-                  value={prhead.vPayment}
-                  // values={(values.vPayment = prhead.vPayment)}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    setPRHead({
-                      ...prhead,
-                      vPayment: event.target.value,
-                    });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option />
-                  {payments.map((option) => (
-                    <option key={option.ID} value={option.CTSTKY}>
-                      {option.PAYMENT}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid> */}
             </Paper>
           </Grid>
         </Grid>
@@ -760,41 +558,15 @@ export default (props) => {
         </Typography>
       ),
     },
-    {
-      title: "Conf dely date",
-      field: "IBCODT",
-      type: "date",
-      headerStyle: { maxWidth: 150, whiteSpace: "nowrap", textAlign: "center" },
-      cellStyle: {
-        textAlign: "center",
-        borderLeft: 1,
-        borderRight: 1,
-        borderBottom: 1,
-        borderTop: 1,
-        borderColor: "#E0E0E0",
-        borderStyle: "solid",
-        paddingLeft: "6px",
-        paddingRight: "6px",
-        paddingBottom: "12px",
-        paddingTop: "12px",
-      },
-      render: (item) => (
-        <Typography variant="body1" noWrap>
-          {item.IBCODT === "0--"
-            ? moment(item.IADWDT).format("DD/MM/YYYY")
-            : moment(item.IBCODT).format("DD/MM/YYYY")}
-        </Typography>
-      ),
-    },
   ];
 
   return (
     <div className={classes.root}>
       {/* Grid */}
-      <Formik initialValues="">{(props) => showForm(props)}</Formik>
+      <Formik>{(props) => showForm(props)}</Formik>
 
       {/* Plan PR Table */}
-      {/* <p>#Debug {JSON.stringify(prnumber)}</p> */}
+      {/* <p>#Debug {JSON.stringify(selectedProduct)}</p> */}
       <MaterialTable
         id="root_pr"
         title={`PO Detail : ${prhead.vStatus}`}
@@ -840,29 +612,6 @@ export default (props) => {
           // }),
           fixedColumns: {
             // left: 2
-          },
-        }}
-        editable={{
-          onRowUpdate: (newData, oldData) => {
-            // console.log(JSON.stringify(oldData));
-
-            if (oldData.IBPUSL < 70) {
-              dispatch(
-                genpoActions.changeConfirmDatePO(
-                  oldData.IBPUNO,
-                  oldData.IBPNLI,
-                  moment(newData.IBCODT).format("YYYY-MM-DD")
-                )
-              );
-            } else {
-              alert("Status should not over than 70");
-            }
-
-            return new Promise((resolve, reject) => {
-              // console.log("newValue: " + oldData.PR_IBPLPN + " " + oldData.PR_IBPLPS + " " + oldData.PR_SPORDER + " " + moment(newData.PR_IBDWDT).format("YYYY-MM-DD"));
-
-              setTimeout(resolve, 1000);
-            });
           },
         }}
       />

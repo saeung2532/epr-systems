@@ -260,8 +260,11 @@ export const server = {
   CANCELPO_URL: `api_data/callmformpps350`,
   PONUMBER_URL: `api_data/ponumber`,
   PODETAIL_URL: `api_data/podetail`,
+  CHANGEPO_URL: `api_data/callmformchangepo`,
+  CHANGECONFIRMDATEPO_URL: `api_data/callmformpps250`,
   DELIVERY_URL: `api_data/deliveryterms`,
   PAYMENT_URL: `api_data/paymentterms`,
+  PAYMENTSUPPLIER_URL: `api_data/paymenttermssupplier`,
 
   REFRESH_TOKEN_URL: `refresh/token`,
   TOKEN_KEY: `token`,

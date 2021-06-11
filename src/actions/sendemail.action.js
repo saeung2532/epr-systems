@@ -6,6 +6,7 @@ import {
   HTTP_SENDEMAIL_CLEAR,
   server,
 } from "../constants";
+import * as prheadActions from "./prhead.action";
 
 export const setStateSendEmailToSuccess = (payload) => ({
   type: HTTP_SENDEMAIL_SUCCESS,
@@ -24,20 +25,58 @@ const setStateSendEmailToClear = () => ({
   type: HTTP_SENDEMAIL_CLEAR,
 });
 
-export const sendEmail = (prno, status, document) => {
+export const sendEmail = (
+  prno,
+  status,
+  document,
+  prnoselect,
+  whs,
+  bu,
+  department,
+  month,
+  statusselect
+) => {
   return async (dispatch) => {
     dispatch(setStateSendEmailToFetching());
-    doSendEmail(dispatch, prno, status, document);
+    doSendEmail(
+      dispatch,
+      prno,
+      status,
+      document,
+      prnoselect,
+      whs,
+      bu,
+      department,
+      month,
+      statusselect
+    );
   };
 };
 
-const doSendEmail = async (dispatch, prno, status, document) => {
+const doSendEmail = async (
+  dispatch,
+  prno,
+  status,
+  document,
+  prnoselect,
+  whs,
+  bu,
+  department,
+  month,
+  statusselect
+) => {
   try {
-    let result = await httpClient.post(
+    let resultsendmail = await httpClient.post(
       `${server.SENDEMAIL_URL}/${prno}/${status}/${document}`
     );
-    dispatch(setStateSendEmailToSuccess(result.data));
-    alert(JSON.stringify(result.data));
+    dispatch(setStateSendEmailToSuccess(resultsendmail.data));
+
+    let resultepr = await httpClient.get(
+      `${server.EPRHEADMONITORING_URL}/${prnoselect}/${whs}/${bu}/${department}/${month}/${statusselect}`
+    );
+    dispatch(prheadActions.setStatePRHeadToSuccess(resultepr.data));
+
+    alert(JSON.stringify(resultsendmail.data));
   } catch (err) {
     // alert(JSON.stringify(err));
     dispatch(setStateSendEmailToFailed());

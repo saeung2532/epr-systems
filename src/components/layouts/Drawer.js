@@ -34,9 +34,11 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import StarBorder from "@material-ui/icons/StarBorder";
 import BlockIcon from "@material-ui/icons/Block";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 import {
   red,
+  brown,
   green,
   purple,
   deepOrange,
@@ -280,14 +282,14 @@ const MiniDrawer = (props) => {
             activeClassName={classes.isActive}
           >
             <ListItemIcon>
-              <ViewListIcon />
+              <ViewListIcon color={"primary"} />
             </ListItemIcon>
             <ListItemText primary="Plan EPR" />
           </ListItem>
 
           <ListItem button onClick={handleClick}>
             <ListItemIcon>
-              <AttachMoneyIcon />
+              <AttachMoneyIcon style={{ color: purple[500] }} />
             </ListItemIcon>
             <ListItemText primary="PH Manage" />
             {openmenuph ? <ExpandLess /> : <ExpandMore />}
@@ -302,7 +304,7 @@ const MiniDrawer = (props) => {
                 activeClassName={classes.isActive}
               >
                 <ListItemIcon>
-                  <StarBorder />
+                  <StarBorder style={{ color: purple[500] }} />
                 </ListItemIcon>
                 <ListItemText primary="Confirm PR" />
               </ListItem>
@@ -314,7 +316,7 @@ const MiniDrawer = (props) => {
                 activeClassName={classes.isActive}
               >
                 <ListItemIcon>
-                  <DynamicFeedIcon />
+                  <DynamicFeedIcon style={{ color: purple[500] }} />
                 </ListItemIcon>
                 <ListItemText primary="Grouping PR" />
               </ListItem>
@@ -326,7 +328,7 @@ const MiniDrawer = (props) => {
                 activeClassName={classes.isActive}
               >
                 <ListItemIcon>
-                  <ReceiptIcon />
+                  <ReceiptIcon style={{ color: purple[500] }} />
                 </ListItemIcon>
                 <ListItemText primary="Gen PO" />
               </ListItem>
@@ -338,9 +340,21 @@ const MiniDrawer = (props) => {
                 activeClassName={classes.isActive}
               >
                 <ListItemIcon>
-                  <BlockIcon />
+                  <EditOutlinedIcon style={{ color: purple[500] }} />
                 </ListItemIcon>
-                <ListItemText primary="Cancel PO" />
+                <ListItemText primary="Change PO" />
+              </ListItem>
+              <ListItem
+                component={NavLink}
+                to="/printpocancel"
+                button
+                key="printpocancel"
+                activeClassName={classes.isActive}
+              >
+                <ListItemIcon>
+                  <PrintIcon style={{ color: purple[500] }} />
+                </ListItemIcon>
+                <ListItemText primary="Print PO Cancel" />
               </ListItem>
             </List>
           </Collapse>
@@ -354,7 +368,7 @@ const MiniDrawer = (props) => {
             activeClassName={classes.isActive}
           >
             <ListItemIcon>
-              <BarChartIcon />
+              <BarChartIcon color={"secondary"} />
             </ListItemIcon>
             <ListItemText primary="Monitoring" />
           </ListItem>
@@ -367,7 +381,7 @@ const MiniDrawer = (props) => {
             activeClassName={classes.isActive}
           >
             <ListItemIcon>
-              <PrintIcon />
+              <PrintIcon style={{ color: green[500] }} />
             </ListItemIcon>
             <ListItemText primary="Print Report" />
           </ListItem>
@@ -379,7 +393,7 @@ const MiniDrawer = (props) => {
             activeClassName={classes.isActive}
           >
             <ListItemIcon>
-              <FormatListNumberedIcon />
+              <FormatListNumberedIcon style={{ color: deepOrange[500] }} />
             </ListItemIcon>
             <ListItemText primary="Find Cost Center" />
           </ListItem>
